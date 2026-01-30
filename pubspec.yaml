@@ -28,6 +28,7 @@ dependencies:
   crypto: ^3.0.7
   lottie: ^3.3.2
   path_provider: ^2.1.5
+  shared_preferences: ^2.2.2
   
 
 dev_dependencies:
@@ -52,3 +53,9 @@ flutter:
     - family: DahkaEmbossed
       fonts:
         - asset: assets/fonts/dahka-embossed.ttf
+    - family: tam
+      fonts:
+        - asset: assets/fonts/tam.otf
+    - family: lama
+      fonts:
+        - asset: assets/fonts/lama.otf

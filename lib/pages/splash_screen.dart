@@ -14,7 +14,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   double _textOpacity = 0.0;
-  Offset _textOffset = const Offset(0, 0.5);
+  Offset _textOffset = const Offset(0, -0.5);
   double _fadeOpacity = 1.0;
   @override
   void initState() {
@@ -52,34 +52,10 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: kBodyColor,
       body: AnimatedOpacity(
         opacity: _fadeOpacity,
-        duration: const Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 5000),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            AnimatedSlide(
-              offset: _textOffset,
-              duration: const Duration(milliseconds: 3000),
-              curve: Curves.easeOut,
-              child: AnimatedOpacity(
-                opacity: _textOpacity,
-                duration: const Duration(milliseconds: 3000),
-                child: Column(
-                  children: [
-                    const Text(
-                      'رحيل',
-                      style: TextStyle(
-                        fontFamily: 'DahkaEmbossed',
-                        fontSize: 64,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        letterSpacing: 2,
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                  ],
-                ),
-              ),
-            ),
             Lottie.asset(
               'assets/lottie/earth_tag.json',
               width: MediaQuery.of(context).size.width,
@@ -87,15 +63,38 @@ class _SplashScreenState extends State<SplashScreen> {
               fit: BoxFit.contain,
               repeat: true,
             ),
-            const SizedBox(height: 8),
-            const Text(
-              'رحلتك معنا مؤكدة بإذن الله ',
-              style: TextStyle(
-                fontSize: 18,
-                color: Colors.black54,
-                fontWeight: FontWeight.w500,
+            AnimatedSlide(
+              offset: _textOffset,
+              duration: const Duration(milliseconds: 4000),
+              curve: Curves.easeOut,
+              child: AnimatedOpacity(
+                opacity: _textOpacity,
+                duration: const Duration(milliseconds: 4000),
+                child: Column(
+                  children: [
+                    const Text(
+                      'رحيل',
+                      style: TextStyle(
+                        fontFamily: 'lama',
+                        fontSize: 90,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black87,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    // No SizedBox here for zero gap
+                    const Text(
+                      'رحلتك معنا مؤكدة بإذن الله ',
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.black54,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
               ),
-              textAlign: TextAlign.center,
             ),
           ],
         ),

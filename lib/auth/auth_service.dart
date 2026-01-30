@@ -1,6 +1,7 @@
 
   import 'package:supabase_flutter/supabase_flutter.dart';
   import 'password_utils.dart';
+  import 'package:flutter/foundation.dart';
 
   // Validate mobile number: must be exactly 10 digits
   void validateMobileNumber(String mobile) {
@@ -21,6 +22,7 @@ class AuthService {
     required String firstName,
     required String lastName,
     required String userType, // 'driver' or 'traveler'
+    required String emailAddress,
     String? carType,
     String? carPlate,
   }) async {
@@ -31,13 +33,24 @@ class AuthService {
       'FirstName': firstName,
       'LastName': lastName,
       'MobileNumber': phone,
+      'EmailAddress': emailAddress,
       'Password': hashedPassword,
       'CarType': carType,
       'CarPlate': carPlate,
       'user_type': userType,
     };
     userData.removeWhere((key, value) => value == null);
-    await _supabase.from('user').insert(userData);
+    try {
+      final response = await _supabase.from('user').insert(userData);
+      debugPrint('Supabase insert response: $response');
+      // Defensive: Only throw if error is present and not null
+      if (response != null && response.error != null) {
+        throw Exception('Supabase error: ${response.error!.message}');
+      }
+    } catch (e) {
+      debugPrint('Exception in registerUser: $e');
+      rethrow;
+    }
   }
 
   // Sign up method (basic, for completeness; use registerUser for full registration)
@@ -51,14 +64,16 @@ class AuthService {
 
   // Sign in with mobile number
   Future<Map<String, dynamic>?> signIn(String mobile, String password) async {
-    // Validate mobile number before lookup
-    // Look up user by mobile number
+      debugPrint('MobileNumber input: "$mobile" (length: [36m${mobile.length}[39m)');
+    debugPrint('Attempting login with MobileNumber: "$mobile"');
     final userQuery = await _supabase
         .from('user')
         .select('id, FirstName, LastName, MobileNumber, Password, user_type')
         .eq('MobileNumber', mobile)
         .maybeSingle();
+    debugPrint('Login query result: $userQuery');
     if (userQuery == null) {
+      debugPrint('No user found for MobileNumber: "$mobile"');
       throw Exception('رقم الجوال غير مسجل');
     }
     final storedHash = userQuery['Password'] as String?;

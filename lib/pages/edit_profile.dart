@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({super.key});
@@ -10,6 +11,25 @@ class EditProfilePage extends StatefulWidget {
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  /// Retrieves the current user from SharedPreferences session storage.
+  Future<Map<String, dynamic>?> getCurrentUserFromCustomSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    final id = prefs.getInt('user_id');
+    final firstName = prefs.getString('first_name');
+    final lastName = prefs.getString('last_name');
+    final email = prefs.getString('email');
+    final mobile = prefs.getString('mobile');
+    final userType = prefs.getString('user_type');
+    if (id == null) return null;
+    return {
+      'id': id,
+      'FirstName': firstName ?? '',
+      'LastName': lastName ?? '',
+      'EmailAddress': email ?? '',
+      'MobileNumber': mobile ?? '',
+      'user_type': userType ?? 'traveler',
+    };
+  }
   final _formKey = GlobalKey<FormState>();
   final _firstNameController = TextEditingController();
   final _lastNameController = TextEditingController();
@@ -24,18 +44,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   Future<void> _loadUserData() async {
-    final userResp = await Supabase.instance.client.auth.getUser();
-    final userId = userResp.user?.id;
-    if (userId == null) return;
-    final data = await Supabase.instance.client
-        .from('user')
-        .select('FirstName, LastName, MobileNumber')
-        .eq('id', userId)
-        .single();
-    _firstNameController.text = data['FirstName'] ?? '';
-    _lastNameController.text = data['LastName'] ?? '';
-    final mobileNumber = data['MobileNumber'];
-    _mobileController.text = mobileNumber != null ? '0${mobileNumber.toString()}' : '';
+    final user = await getCurrentUserFromCustomSession();
+    if (user == null) return;
+    _firstNameController.text = user['FirstName'] ?? '';
+    _lastNameController.text = user['LastName'] ?? '';
+    final mobileNumber = user['MobileNumber'];
+    _mobileController.text = mobileNumber != null ? mobileNumber.toString() : '';
     setState(() {});
   }
 
@@ -46,8 +60,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       _errorMessage = null;
     });
     try {
-      final userResp = await Supabase.instance.client.auth.getUser();
-      final userId = userResp.user?.id;
+      final user = await getCurrentUserFromCustomSession();
+      final userId = user?['id'];
       if (userId == null) {
         setState(() {
           _errorMessage = 'لم يتم العثور على المستخدم.';
@@ -55,7 +69,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
         });
         return;
       }
-      int? mobileInt;
       final mobileText = _mobileController.text.trim();
       if (mobileText.isNotEmpty) {
         // Validate exactly 10 digits
@@ -66,17 +79,14 @@ class _EditProfilePageState extends State<EditProfilePage> {
           });
           return;
         }
-        mobileInt = int.tryParse(mobileText);
+        // You can use int.parse(mobileText) in your update logic if needed
       }
-      await Supabase.instance.client
-          .from('user')
-          .update({
-            'FirstName': _firstNameController.text.trim(),
-            'LastName': _lastNameController.text.trim(),
-            'MobileNumber': mobileInt,
-          })
-          .eq('id', userId)
-          .select();
+      // Update user data in SharedPreferences
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('first_name', _firstNameController.text.trim());
+      await prefs.setString('last_name', _lastNameController.text.trim());
+      await prefs.setString('mobile', mobileText);
+      // If you want to update email or user_type, add similar lines here
       setState(() {
         _isLoading = false;
       });

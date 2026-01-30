@@ -197,9 +197,9 @@ class _LoginPageState extends State<LoginPage> {
           _errorMessage = 'فشل تسجيل الدخول. تحقق من رقم الجوال وكلمة المرور.';
         });
       }
-    } catch (e) {
+    } catch (e, stack) {
       if (mounted) {
-        String errorMessage = 'حدث خطأ غير متوقع';
+        String errorMessage = 'حدث خطأ غير متوقع: ${e.toString()}';
         final errorString = e.toString().toLowerCase();
         if (errorString.contains('رقم الجوال غير مسجل')) {
           errorMessage = 'رقم الجوال غير مسجل';
@@ -213,6 +213,8 @@ class _LoginPageState extends State<LoginPage> {
         } else if (errorString.contains('timeout')) {
           errorMessage = 'انتهت مهلة الاتصال. يرجى المحاولة مرة أخرى';
         }
+        debugPrint('Login error: ${e.toString()}');
+        debugPrint('Stack trace: $stack');
         setState(() {
           _errorMessage = errorMessage;
         });

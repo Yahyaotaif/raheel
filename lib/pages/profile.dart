@@ -9,8 +9,8 @@ import 'package:raheel/pages/traveler_set.dart';
 import 'package:raheel/pages/privacy_policy.dart';
 import 'package:raheel/theme_constants.dart';
 import 'edit_profile.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -21,6 +21,21 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  /// Retrieves the current user from SharedPreferences session storage.
+  Future<Map<String, dynamic>?> getCurrentUserFromCustomSession() async {
+    final prefs = await SharedPreferences.getInstance();
+    final firstName = prefs.getString('first_name');
+    final lastName = prefs.getString('last_name');
+    final email = prefs.getString('email');
+    final userType = prefs.getString('user_type');
+    if (firstName == null && lastName == null && email == null && userType == null) return null;
+    return {
+      'FirstName': firstName ?? '',
+      'LastName': lastName ?? '',
+      'EmailAddress': email ?? '',
+      'user_type': userType ?? 'traveler',
+    };
+  }
   @override
   void initState() {
     super.initState();
@@ -28,17 +43,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<String?> _loadUserRoleForButton() async {
     try {
-      final authUser = await Supabase.instance.client.auth.getUser();
-      final userId = authUser.user?.id;
-      if (userId == null) return 'traveler';
-      
-      final response = await Supabase.instance.client
-          .from('user')
-          .select('user_type')
-          .eq('id', userId)
-          .single();
-      
-      final userType = response['user_type']?.toString().toLowerCase().trim();
+      // Get user info from your custom session logic
+      final user = await getCurrentUserFromCustomSession();
+      if (user == null) return 'traveler';
+      final userType = user['user_type']?.toString().toLowerCase().trim();
       return userType ?? 'traveler';
     } catch (e) {
       return 'traveler';
@@ -216,17 +224,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         FutureBuilder(
-                          future: () async {
-                            final authUser = await Supabase.instance.client.auth.getUser();
-                            final userId = authUser.user?.id;
-                            if (userId == null) return null;
-                            final response = await Supabase.instance.client
-                                .from('user')
-                                .select('FirstName, LastName')
-                                .eq('id', userId)
-                                .single();
-                            return response;
-                          }(),
+                          future: getCurrentUserFromCustomSession(),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
                               return const Text('...');
@@ -251,20 +249,21 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         const SizedBox(height: 8),
                         FutureBuilder(
-                          future: Supabase.instance.client.auth.getUser(),
+                          future: getCurrentUserFromCustomSession(),
                           builder: (context, snapshot) {
                             if (snapshot.connectionState == ConnectionState.waiting) {
                               return const Text('...');
                             }
-                            if (snapshot.hasError || snapshot.data?.user == null) {
+                            if (snapshot.hasError || snapshot.data == null) {
                               return const Text(
                                 'user@email.com',
                                 style: TextStyle(fontSize: 16, color: Colors.black54),
                               );
                             }
-                            final user = snapshot.data!.user;
+                            final data = snapshot.data as Map?;
+                            final email = (data?['EmailAddress'] ?? '').toString().trim();
                             return Text(
-                              user?.email ?? 'user@email.com',
+                              email.isNotEmpty ? email : 'user@email.com',
                               style: const TextStyle(fontSize: 16, color: Colors.black54),
                             );
                           },

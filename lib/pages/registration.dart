@@ -254,6 +254,7 @@ class _RegistrationPageState extends State<RegistrationPage>
         lastName: _driverLastNameController.text.trim(),
         userType: 'driver',
         phone: _driverPhoneController.text.trim(),
+        emailAddress: _driverEmailController.text.trim(),
         carType: _driverCarTypeController.text.trim(),
         carPlate: _driverCarPlateController.text.trim(),
       );
@@ -303,6 +304,7 @@ class _RegistrationPageState extends State<RegistrationPage>
           ),
         );
     } catch (e) {
+      debugPrint('Traveler registration error: ${e.toString()}');
       setState(() {
         if (e.toString().toLowerCase().contains('password')) {
           _errorMessage = 'كلمة المرور ضعيفة أو غير صالحة';
@@ -320,6 +322,7 @@ class _RegistrationPageState extends State<RegistrationPage>
   }
 
   Future<void> _registerTraveler() async {
+      debugPrint('Starting traveler registration');
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -367,14 +370,24 @@ class _RegistrationPageState extends State<RegistrationPage>
       return;
     }
     try {
+      debugPrint('Calling registerUser...');
       await _authService.registerUser(
         password: _travelerPasswordController.text,
         firstName: _travelerFirstNameController.text.trim(),
         lastName: _travelerLastNameController.text.trim(),
         userType: 'traveler',
         phone: _travelerPhoneController.text.trim(),
+        emailAddress: _travelerEmailController.text.trim(),
       );
-      if (!mounted) return;
+      debugPrint('registerUser completed successfully');
+      if (!mounted) {
+        debugPrint('Widget not mounted after registration');
+        return;
+      }
+      setState(() {
+        _isLoading = false;
+      });
+      debugPrint('Showing success dialog');
       showDialog(
         context: context,
         barrierDismissible: false,
@@ -419,8 +432,11 @@ class _RegistrationPageState extends State<RegistrationPage>
             ],
           ),
         );
+      debugPrint('Success dialog shown');
     } catch (e) {
+      debugPrint('Registration error: ${e.toString()}');
       setState(() {
+        _isLoading = false;
         if (e.toString().toLowerCase().contains('password')) {
           _errorMessage = 'كلمة المرور ضعيفة أو غير صالحة';
         } else if (e.toString().toLowerCase().contains('مسجل')) {
@@ -428,10 +444,6 @@ class _RegistrationPageState extends State<RegistrationPage>
         } else {
           _errorMessage = 'حدث خطأ. يرجى التحقق من البيانات والمحاولة مرة أخرى';
         }
-      });
-    } finally {
-      setState(() {
-        _isLoading = false;
       });
     }
   }
