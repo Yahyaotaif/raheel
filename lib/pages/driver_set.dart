@@ -174,12 +174,12 @@ class _DriverSetPageState extends State<DriverSetPage> {
       return;
     }
 
-    final authUser = await Supabase.instance.client.auth.getUser();
-    final driverId = authUser.user?.id;
+    final currentSession = Supabase.instance.client.auth.currentSession;
+    final driverId = currentSession?.user.id;
 
     if (driverId == null) {
       setState(() {
-        _errorMessage = 'لم يتم العثور على المستخدم';
+        _errorMessage = 'لم يتم العثور على المستخدم. يرجى تسجيل الدخول مرة أخرى.';
       });
       return;
     }

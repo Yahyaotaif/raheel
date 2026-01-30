@@ -8,7 +8,7 @@ import 'package:raheel/pages/login.dart';
 import 'package:raheel/pages/traveler_set.dart';
 import 'package:raheel/pages/privacy_policy.dart';
 import 'package:raheel/theme_constants.dart';
-import 'edit_profile.dart';
+import 'package:raheel/pages/edit_profile.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -499,18 +499,19 @@ class _ProfilePageState extends State<ProfilePage> {
                   return const SizedBox.shrink();
                 },
               ),
-            // ...existing containers...
               Spacer(),
               FutureBuilder<String?>(
                 future: _loadUserRoleForButton(),
                 builder: (context, snapshot) {
                   String buttonText = 'بحث عن رحلة';
                   String? userRole = snapshot.data;
-                  
-                  if (snapshot.connectionState == ConnectionState.done && snapshot.data != null) {
-                    buttonText = userRole == 'driver' ? 'إنشاء رحلة' : 'بحث عن رحلة';
+                  if (snapshot.connectionState == ConnectionState.done && userRole != null) {
+                    if (userRole == 'driver') {
+                      buttonText = 'إنشاء رحلة';
+                    } else {
+                      buttonText = 'بحث عن رحلة';
+                    }
                   }
-                  
                   return SizedBox(
                     height: 48,
                     child: ElevatedButton.icon(

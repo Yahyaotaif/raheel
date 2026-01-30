@@ -304,11 +304,16 @@ class _RegistrationPageState extends State<RegistrationPage>
           ),
         );
     } catch (e) {
-      debugPrint('Traveler registration error: ${e.toString()}');
+      debugPrint('Driver registration error: ${e.toString()}');
       setState(() {
-        if (e.toString().toLowerCase().contains('password')) {
+        final msg = e.toString();
+        if (msg.contains('رقم الجوال')) {
+          _errorMessage = 'رقم الجوال مستخدم بالفعل من قبل مستخدم آخر.';
+        } else if (msg.contains('البريد الإلكتروني') || msg.toLowerCase().contains('email')) {
+          _errorMessage = 'البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.';
+        } else if (msg.toLowerCase().contains('password')) {
           _errorMessage = 'كلمة المرور ضعيفة أو غير صالحة';
-        } else if (e.toString().toLowerCase().contains('مسجل')) {
+        } else if (msg.toLowerCase().contains('مسجل')) {
           _errorMessage = 'المستخدم مسجل مسبقاً';
         } else {
           _errorMessage = 'حدث خطأ. يرجى التحقق من البيانات والمحاولة مرة أخرى';
@@ -437,9 +442,14 @@ class _RegistrationPageState extends State<RegistrationPage>
       debugPrint('Registration error: ${e.toString()}');
       setState(() {
         _isLoading = false;
-        if (e.toString().toLowerCase().contains('password')) {
+        final msg = e.toString();
+        if (msg.contains('رقم الجوال')) {
+          _errorMessage = 'رقم الجوال مستخدم بالفعل من قبل مستخدم آخر.';
+        } else if (msg.contains('البريد الإلكتروني') || msg.toLowerCase().contains('email')) {
+          _errorMessage = 'البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.';
+        } else if (msg.toLowerCase().contains('password')) {
           _errorMessage = 'كلمة المرور ضعيفة أو غير صالحة';
-        } else if (e.toString().toLowerCase().contains('مسجل')) {
+        } else if (msg.toLowerCase().contains('مسجل')) {
           _errorMessage = 'المستخدم مسجل مسبقاً';
         } else {
           _errorMessage = 'حدث خطأ. يرجى التحقق من البيانات والمحاولة مرة أخرى';

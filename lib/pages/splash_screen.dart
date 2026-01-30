@@ -52,7 +52,7 @@ class _SplashScreenState extends State<SplashScreen> {
       backgroundColor: kBodyColor,
       body: AnimatedOpacity(
         opacity: _fadeOpacity,
-        duration: const Duration(milliseconds: 5000),
+        duration: const Duration(milliseconds: 1000),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -61,7 +61,7 @@ class _SplashScreenState extends State<SplashScreen> {
               width: MediaQuery.of(context).size.width,
               height: MediaQuery.of(context).size.width,
               fit: BoxFit.contain,
-              repeat: true,
+              repeat: false,
             ),
             AnimatedSlide(
               offset: _textOffset,

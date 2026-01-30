@@ -8,7 +8,7 @@
     final trimmed = mobile.trim();
     final isValid = RegExp(r'^\d{10}$').hasMatch(trimmed);
     if (!isValid) {
-      throw Exception('يرجى إدخال الرقم الصحيح المكون من 10 ارقام');
+      throw Exception('يرجى إدخال رقم الجوال الصحيح المكون من 10 أرقام');
     }
   }
 
@@ -26,6 +26,27 @@ class AuthService {
     String? carType,
     String? carPlate,
   }) async {
+    // Check for duplicate MobileNumber
+    final duplicateMobile = await _supabase
+        .from('user')
+        .select('id')
+        .eq('MobileNumber', phone)
+        .limit(1)
+        .maybeSingle();
+    if (duplicateMobile != null) {
+      throw Exception('رقم الجوال مستخدم بالفعل من قبل مستخدم آخر.');
+    }
+
+    // Check for duplicate EmailAddress
+    final duplicateEmail = await _supabase
+        .from('user')
+        .select('id')
+        .eq('EmailAddress', emailAddress)
+        .limit(1)
+        .maybeSingle();
+    if (duplicateEmail != null) {
+      throw Exception('البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.');
+    }
     // Hash the password before storing
     final hashedPassword = hashPassword(password);
     final userData = {
@@ -74,15 +95,15 @@ class AuthService {
     debugPrint('Login query result: $userQuery');
     if (userQuery == null) {
       debugPrint('No user found for MobileNumber: "$mobile"');
-      throw Exception('رقم الجوال غير مسجل');
+      throw Exception('رقم الجوال غير مسجل في النظام');
     }
     final storedHash = userQuery['Password'] as String?;
     if (storedHash == null) {
-      throw Exception('لا يوجد كلمة مرور مسجلة لهذا الرقم');
+      throw Exception('لا توجد كلمة مرور مسجلة لهذا الرقم');
     }
     final inputHash = hashPassword(password);
     if (storedHash != inputHash) {
-      throw Exception('كلمة المرور غير صحيحة');
+      throw Exception('كلمة المرور التي أدخلتها غير صحيحة');
     }
     // Return user info (without password)
     userQuery.remove('Password');

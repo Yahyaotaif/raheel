@@ -5,6 +5,7 @@ import 'package:raheel/pages/registration.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/pages/profile.dart';
 import 'package:raheel/auth/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 // Custom Logo Widget
@@ -188,9 +189,17 @@ class _LoginPageState extends State<LoginPage> {
         // Run cleanup only after successful login
         await _cleanupOldTripsStartup();
         if (!mounted) return;
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(builder: (context) => const ProfilePage()),
-        );
+          // Save user info to SharedPreferences for ProfilePage role logic
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('first_name', user['FirstName'] ?? '');
+          await prefs.setString('last_name', user['LastName'] ?? '');
+          await prefs.setString('email', user['EmailAddress'] ?? '');
+          await prefs.setString('user_type', user['user_type'] ?? 'traveler');
+          if (mounted) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const ProfilePage()),
+            );
+          }
       } else {
         if (!mounted) return;
         setState(() {
