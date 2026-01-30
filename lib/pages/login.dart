@@ -262,11 +262,11 @@ class _LoginPageState extends State<LoginPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
                         child: Image.asset(
                           'assets/logo.png',
-                          width: MediaQuery.of(context).size.width - 32,
-                          height: 200,
+                          width: MediaQuery.of(context).size.width - 8, // Increased width
+                          height: 220, // Slightly increased height for better aspect
                           fit: BoxFit.contain,
                         ),
                       ),
