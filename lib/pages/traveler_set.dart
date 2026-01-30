@@ -324,11 +324,11 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
         // Handle payment result with proper context guarding
         if (!mounted) return;
 
-        if (paymentResult == null || paymentResult['success'] != true) {
+        if (paymentResult?['success'] != true) {
           // Payment was cancelled or failed
           String paymentError = 'تم إلغاء عملية الدفع';
-          if (paymentResult != null && paymentResult['error'] != null) {
-            final error = paymentResult['error']?.toString() ?? '';
+          if (paymentResult?['error'] != null) {
+            final error = paymentResult?['error']?.toString() ?? '';
             if (error.contains('فشل') || error.contains('fail')) {
               paymentError = 'فشلت عملية الدفع. يرجى المحاولة مرة أخرى';
             }
