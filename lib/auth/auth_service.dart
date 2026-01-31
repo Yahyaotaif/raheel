@@ -21,11 +21,31 @@ class AuthService {
     required String password,
     required String firstName,
     required String lastName,
+    required String username,
     required String userType, // 'driver' or 'traveler'
     required String emailAddress,
     String? carType,
     String? carPlate,
   }) async {
+    // Validate non-empty Username and EmailAddress
+    if (username.trim().isEmpty) {
+      throw Exception('اسم المستخدم مطلوب ولا يمكن أن يكون فارغًا.');
+    }
+    if (emailAddress.trim().isEmpty) {
+      throw Exception('البريد الإلكتروني مطلوب ولا يمكن أن يكون فارغًا.');
+    }
+
+    // Check for duplicate Username
+    final duplicateUsername = await _supabase
+        .from('user')
+        .select('id')
+        .eq('Username', username)
+        .limit(1)
+        .maybeSingle();
+    if (duplicateUsername != null) {
+      throw Exception('اسم المستخدم مستخدم بالفعل من قبل مستخدم آخر.');
+    }
+
     // Check for duplicate MobileNumber
     final duplicateMobile = await _supabase
         .from('user')
@@ -47,29 +67,44 @@ class AuthService {
     if (duplicateEmail != null) {
       throw Exception('البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.');
     }
-    // Hash the password before storing
+
+    // Create user in Supabase Auth
+    final authResponse = await _supabase.auth.signUp(
+      email: emailAddress,
+      password: password,
+    );
+    if (authResponse.user == null) {
+      throw Exception('فشل إنشاء المستخدم في نظام المصادقة.');
+    }
+
+    // Hash the password before storing in your table
     final hashedPassword = hashPassword(password);
     final userData = {
       'created_at': DateTime.now().toIso8601String(),
       'FirstName': firstName,
       'LastName': lastName,
+      'Username': username,
       'MobileNumber': phone,
       'EmailAddress': emailAddress,
       'Password': hashedPassword,
       'CarType': carType,
       'CarPlate': carPlate,
       'user_type': userType,
+      'auth_id': authResponse.user!.id,
     };
     userData.removeWhere((key, value) => value == null);
     try {
-      final response = await _supabase.from('user').insert(userData);
-      debugPrint('Supabase insert response: $response');
-      // Defensive: Only throw if error is present and not null
-      if (response != null && response.error != null) {
-        throw Exception('Supabase error: ${response.error!.message}');
+      final response = await _supabase.from('user').insert(userData).select();
+      debugPrint('Supabase insert response:');
+      debugPrint(response.toString());
+      // If response is empty, treat as failure
+      if (response.isEmpty) {
+        debugPrint('Insert returned empty list');
+        throw Exception('فشل إدراج المستخدم في جدول المستخدمين.');
       }
-    } catch (e) {
+    } catch (e, stack) {
       debugPrint('Exception in registerUser: $e');
+      debugPrint('Stack trace: $stack');
       rethrow;
     }
   }
@@ -83,23 +118,22 @@ class AuthService {
     return response;
   }
 
-  // Sign in with mobile number
-  Future<Map<String, dynamic>?> signIn(String mobile, String password) async {
-      debugPrint('MobileNumber input: "$mobile" (length: [36m${mobile.length}[39m)');
-    debugPrint('Attempting login with MobileNumber: "$mobile"');
+  // Sign in with email or username
+  Future<Map<String, dynamic>?> signInWithEmailOrUsername(String identifier, String password) async {
+    debugPrint('Attempting login with identifier: "$identifier"');
     final userQuery = await _supabase
         .from('user')
-        .select('id, FirstName, LastName, MobileNumber, Password, user_type')
-        .eq('MobileNumber', mobile)
+        .select('id, FirstName, LastName, EmailAddress, Username, MobileNumber, Password, user_type')
+        .or('EmailAddress.eq.$identifier,Username.eq.$identifier')
         .maybeSingle();
     debugPrint('Login query result: $userQuery');
     if (userQuery == null) {
-      debugPrint('No user found for MobileNumber: "$mobile"');
-      throw Exception('رقم الجوال غير مسجل في النظام');
+      debugPrint('No user found for identifier: "$identifier"');
+      throw Exception('البريد الإلكتروني أو اسم المستخدم غير مسجل في النظام');
     }
     final storedHash = userQuery['Password'] as String?;
     if (storedHash == null) {
-      throw Exception('لا توجد كلمة مرور مسجلة لهذا الرقم');
+      throw Exception('لا توجد كلمة مرور مسجلة لهذا الحساب');
     }
     final inputHash = hashPassword(password);
     if (storedHash != inputHash) {

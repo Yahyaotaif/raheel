@@ -14,34 +14,24 @@ class RegistrationPage extends StatefulWidget {
 class _RegistrationPageState extends State<RegistrationPage>
     with SingleTickerProviderStateMixin {
   // Driver controllers
-  final TextEditingController _driverFirstNameController =
-      TextEditingController();
-  final TextEditingController _driverLastNameController =
-      TextEditingController();
-  final TextEditingController _driverPhoneController = TextEditingController();
-  final TextEditingController _driverEmailController = TextEditingController();
-  final TextEditingController _driverPasswordController =
-      TextEditingController();
-  final TextEditingController _driverPassword2Controller =
-      TextEditingController();
-  final TextEditingController _driverCarTypeController =
-      TextEditingController();
-  final TextEditingController _driverCarPlateController =
-      TextEditingController();
+    final TextEditingController _driverFirstNameController = TextEditingController();
+    final TextEditingController _driverLastNameController = TextEditingController();
+    final TextEditingController _driverUsernameController = TextEditingController();
+    final TextEditingController _driverPhoneController = TextEditingController();
+    final TextEditingController _driverEmailController = TextEditingController();
+    final TextEditingController _driverPasswordController = TextEditingController();
+    final TextEditingController _driverPassword2Controller = TextEditingController();
+    final TextEditingController _driverCarTypeController = TextEditingController();
+    final TextEditingController _driverCarPlateController = TextEditingController();
 
-  // Traveler controllers
-  final TextEditingController _travelerFirstNameController =
-      TextEditingController();
-  final TextEditingController _travelerLastNameController =
-      TextEditingController();
-  final TextEditingController _travelerPhoneController =
-      TextEditingController();
-  final TextEditingController _travelerEmailController =
-      TextEditingController();
-  final TextEditingController _travelerPasswordController =
-      TextEditingController();
-  final TextEditingController _travelerPassword2Controller =
-      TextEditingController();
+    // Traveler controllers
+    final TextEditingController _travelerFirstNameController = TextEditingController();
+    final TextEditingController _travelerLastNameController = TextEditingController();
+    final TextEditingController _travelerUsernameController = TextEditingController();
+    final TextEditingController _travelerPhoneController = TextEditingController();
+    final TextEditingController _travelerEmailController = TextEditingController();
+    final TextEditingController _travelerPasswordController = TextEditingController();
+    final TextEditingController _travelerPassword2Controller = TextEditingController();
 
   final AuthService _authService = AuthService();
   bool _isLoading = false;
@@ -252,6 +242,7 @@ class _RegistrationPageState extends State<RegistrationPage>
         password: _driverPasswordController.text,
         firstName: _driverFirstNameController.text.trim(),
         lastName: _driverLastNameController.text.trim(),
+        username: _driverUsernameController.text.trim(),
         userType: 'driver',
         phone: _driverPhoneController.text.trim(),
         emailAddress: _driverEmailController.text.trim(),
@@ -380,6 +371,7 @@ class _RegistrationPageState extends State<RegistrationPage>
         password: _travelerPasswordController.text,
         firstName: _travelerFirstNameController.text.trim(),
         lastName: _travelerLastNameController.text.trim(),
+        username: _travelerUsernameController.text.trim(),
         userType: 'traveler',
         phone: _travelerPhoneController.text.trim(),
         emailAddress: _travelerEmailController.text.trim(),
@@ -613,6 +605,12 @@ class _RegistrationPageState extends State<RegistrationPage>
                             'اسم العائلة ',
                             icon: Icons.person_outline,
                           ),
+                            const SizedBox(height: 16),
+                            _buildTextField(
+                              _driverUsernameController,
+                              'اسم المستخدم',
+                              icon: Icons.account_circle_outlined,
+                            ),
                           const SizedBox(height: 16),
                           _buildTextField(
                             _driverPhoneController,
@@ -788,6 +786,12 @@ class _RegistrationPageState extends State<RegistrationPage>
                             'اسم العائلة ',
                             icon: Icons.person_outline,
                           ),
+                            const SizedBox(height: 16),
+                            _buildTextField(
+                              _travelerUsernameController,
+                              'اسم المستخدم',
+                              icon: Icons.account_circle_outlined,
+                            ),
                           const SizedBox(height: 16),
                           _buildTextField(
                             _travelerPhoneController,

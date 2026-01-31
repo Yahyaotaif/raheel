@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/widgets/payment_dialog.dart';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// Convert 24-hour time string to 12-hour format with AM/PM
@@ -162,7 +163,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
     setState(() {
       _errorMessage = null;
     });
-    
+
     if (_selectedDate == null ||
         _selectedTime == null ||
         _destinationController.text.isEmpty ||
@@ -191,7 +192,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
 
     // Skip payment dialog if advertising fee is 0 (free trip creation)
     Map<String, dynamic>? paymentResult = {'success': true};
-    
+
     if (advertisingFee > 0) {
       // Show payment dialog only if there's a fee
       paymentResult = await showDialog<Map<String, dynamic>>(

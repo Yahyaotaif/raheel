@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
         debugPrint('Startup cleanup failed: $e');
       }
     }
-  final TextEditingController _mobileController = TextEditingController();
+  final TextEditingController _identifierController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
   bool _isLoading = false;
@@ -60,7 +60,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   void dispose() {
-    _mobileController.dispose();
+    _identifierController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
@@ -164,10 +164,10 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _login() async {
-    final mobile = _mobileController.text.trim();
-    if (!RegExp(r'^\d{10}$').hasMatch(mobile)) {
+    final identifier = _identifierController.text.trim();
+    if (identifier.isEmpty) {
       setState(() {
-        _errorMessage = 'يرجى إدخال رقم جوال صحيح مكون من 10 أرقام';
+        _errorMessage = 'يرجى إدخال البريد الإلكتروني أو اسم المستخدم';
       });
       return;
     }
@@ -177,8 +177,8 @@ class _LoginPageState extends State<LoginPage> {
     });
     bool shouldSetLoadingFalse = true;
     try {
-      final user = await _authService.signIn(
-        mobile,
+      final user = await _authService.signInWithEmailOrUsername(
+        identifier,
         _passwordController.text.trim(),
       );
       if (!mounted) {
@@ -189,21 +189,22 @@ class _LoginPageState extends State<LoginPage> {
         // Run cleanup only after successful login
         await _cleanupOldTripsStartup();
         if (!mounted) return;
-          // Save user info to SharedPreferences for ProfilePage role logic
-          final prefs = await SharedPreferences.getInstance();
-          await prefs.setString('first_name', user['FirstName'] ?? '');
-          await prefs.setString('last_name', user['LastName'] ?? '');
-          await prefs.setString('email', user['EmailAddress'] ?? '');
-          await prefs.setString('user_type', user['user_type'] ?? 'traveler');
-          if (mounted) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(builder: (context) => const ProfilePage()),
-            );
-          }
+        // Save user info to SharedPreferences for ProfilePage role logic
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('first_name', user['FirstName'] ?? '');
+        await prefs.setString('last_name', user['LastName'] ?? '');
+        await prefs.setString('email', user['EmailAddress'] ?? '');
+        await prefs.setString('username', user['Username'] ?? '');
+        await prefs.setString('user_type', user['user_type'] ?? 'traveler');
+        if (mounted) {
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(builder: (context) => const ProfilePage()),
+          );
+        }
       } else {
         if (!mounted) return;
         setState(() {
-          _errorMessage = 'فشل تسجيل الدخول. تحقق من رقم الجوال وكلمة المرور.';
+          _errorMessage = 'فشل تسجيل الدخول. تحقق من البريد الإلكتروني أو اسم المستخدم وكلمة المرور.';
         });
       }
     } catch (e, stack) {
@@ -295,13 +296,13 @@ class _LoginPageState extends State<LoginPage> {
                             borderRadius: BorderRadius.circular(4),
                           ),
                           child: TextField(
-                            controller: _mobileController,
-                            keyboardType: TextInputType.phone,
+                            controller: _identifierController,
+                            keyboardType: TextInputType.text,
                             decoration: const InputDecoration(
-                              prefixIcon: Icon(Icons.phone),
+                              prefixIcon: Icon(Icons.person),
                               border: OutlineInputBorder(),
-                              labelText: 'رقم الجوال',
-                              hintText: '05XXXXXXXX',
+                              labelText: 'البريد الإلكتروني أو اسم المستخدم',
+                              hintText: 'example@email.com أو اسم المستخدم',
                               filled: true,
                               fillColor: Colors.white,
                             ),
