@@ -3,6 +3,7 @@ import 'package:raheel/theme_constants.dart';
 import 'package:raheel/widgets/payment_dialog.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// Convert 24-hour time string to 12-hour format with AM/PM
 String convertTo12HourFormat(TimeOfDay time) {
@@ -31,6 +32,17 @@ class _DriverSetPageState extends State<DriverSetPage> {
   final bool _isLoading = false;
   String? _errorMessage;
   double _tripPrice = 0;
+  final _cardDecoration = BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(24),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black12,
+        blurRadius: 16,
+        offset: Offset(0, 8),
+      ),
+    ],
+  );
 
   // List of destination cities
   static const List<String> _destinationCities = [
@@ -44,6 +56,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
     'مكة',
     'أبها',
     'جيزان',
+    'الدمام',
     'الاردن',
   ];
 
@@ -175,8 +188,9 @@ class _DriverSetPageState extends State<DriverSetPage> {
       return;
     }
 
-    final currentSession = Supabase.instance.client.auth.currentSession;
-    final driverId = currentSession?.user.id;
+    // Fetch user.id (from user table) from SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    final driverId = prefs.getString('user_id');
 
     if (driverId == null) {
       setState(() {
@@ -316,17 +330,8 @@ class _DriverSetPageState extends State<DriverSetPage> {
     return Scaffold(
       backgroundColor: kBodyColor,
       appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.directions_car, color: Colors.white, size: 28),
-            SizedBox(width: 8),
-            Text('إنشاء رحلة', style: TextStyle(color: Colors.white)),
-          ],
-        ),
-        titleTextStyle: const TextStyle(fontSize: 24, color: Colors.white),
-        centerTitle: true,
         elevation: 0,
+        backgroundColor: Colors.transparent,
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -336,294 +341,261 @@ class _DriverSetPageState extends State<DriverSetPage> {
             ),
           ),
         ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: const [
+            Icon(Icons.directions_car, color: Colors.white, size: 32),
+            SizedBox(width: 12),
+            Text('إنشاء رحلة', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
+          ],
+        ),
+        centerTitle: true,
       ),
-
       body: SafeArea(
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.all(24.0),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Date & Time Card
               Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.black12, width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
+                decoration: _cardDecoration,
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                margin: const EdgeInsets.only(bottom: 24),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        side: const BorderSide(
-                          color: Colors.black54,
-                          width: 1.5,
+                    Row(
+                      children: [
+                        Icon(Icons.calendar_today, color: kAppBarColor, size: 28),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              side: BorderSide(color: kAppBarColor, width: 1.5),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              minimumSize: const Size(0, 48),
+                              padding: EdgeInsets.zero,
+                            ),
+                            onPressed: () => _pickDate(context),
+                            child: const Text('اختر التاريخ', style: TextStyle(fontSize: 18, color: Colors.black)),
+                          ),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        minimumSize: const Size(0, 48),
-                        padding: EdgeInsets.zero,
-                      ),
-                      onPressed: () => _pickDate(context),
-                      child: const Center(
-                        child: Text(
-                          'اختر التاريخ',
-                          style: TextStyle(fontSize: 18, color: Colors.black),
-                        ),
-                      ),
+                      ],
                     ),
                     const SizedBox(height: 12),
                     _selectedDate == null
-                        ? const Text(
-                            'لم يتم اختيار تاريخ',
-                            textAlign: TextAlign.center,
-                            textDirection: TextDirection.rtl,
-                          )
+                        ? const Text('لم يتم اختيار تاريخ', textAlign: TextAlign.center, textDirection: TextDirection.rtl)
                         : Column(
                             children: [
-                              const Text(
-                                'التاريخ المختار:',
-                                textAlign: TextAlign.center,
-                                textDirection: TextDirection.rtl,
-                              ),
-                              Text(
-                                '${_selectedDate!.year}/${_selectedDate!.month}/${_selectedDate!.day}',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: kAppBarColor,
-                                  fontSize: 18,
-                                ),
-                              ),
+                              const Text('التاريخ المختار:', textAlign: TextAlign.center, textDirection: TextDirection.rtl),
+                              Text('${_selectedDate!.year}/${_selectedDate!.month}/${_selectedDate!.day}',
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontWeight: FontWeight.bold, color: kAppBarColor, fontSize: 18)),
                             ],
                           ),
-                    const SizedBox(height: 24),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        side: const BorderSide(
-                          color: Colors.black54,
-                          width: 1.5,
+                    const SizedBox(height: 20),
+                    Row(
+                      children: [
+                        Icon(Icons.access_time, color: kAppBarColor, size: 28),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: OutlinedButton(
+                            style: OutlinedButton.styleFrom(
+                              backgroundColor: Colors.transparent,
+                              side: BorderSide(color: kAppBarColor, width: 1.5),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                              minimumSize: const Size(0, 48),
+                              padding: EdgeInsets.zero,
+                            ),
+                            onPressed: () => _pickTime(context),
+                            child: const Text('اختر الوقت', style: TextStyle(fontSize: 18, color: Colors.black)),
+                          ),
                         ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        minimumSize: const Size(0, 48),
-                        padding: EdgeInsets.zero,
-                      ),
-                      onPressed: () => _pickTime(context),
-                      child: const Center(
-                        child: Text(
-                          'اختر الوقت',
-                          style: TextStyle(fontSize: 18, color: Colors.black),
-                        ),
-                      ),
+                      ],
                     ),
                     const SizedBox(height: 12),
                     _selectedTime == null
-                        ? const Text(
-                            'لم يتم اختيار وقت\n(لضمان وصول إعلانك لعدد كبير من المسافرين ، يفضل أن يتم الحجز لليوم التالي  )',
-                            textAlign: TextAlign.center,
-                            textDirection: TextDirection.rtl,
-                          )
+                        ? const Text('لم يتم اختيار وقت\n(لضمان وصول إعلانك لعدد كبير من المسافرين ، يفضل أن يتم الحجز لليوم التالي  )', textAlign: TextAlign.center, textDirection: TextDirection.rtl)
                         : Column(
                             children: [
-                              const Text(
-                                'الوقت المختار:',
-                                textAlign: TextAlign.center,
-                                textDirection: TextDirection.rtl,
-                              ),
-                              Text(
-                                convertTo12HourFormat(_selectedTime!),
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: kAppBarColor,
-                                  fontSize: 18,
-                                ),
-                              ),
+                              const Text('الوقت المختار:', textAlign: TextAlign.center, textDirection: TextDirection.rtl),
+                              Text(convertTo12HourFormat(_selectedTime!),
+                                  textAlign: TextAlign.center,
+                                  style: const TextStyle(fontWeight: FontWeight.bold, color: kAppBarColor, fontSize: 18)),
                             ],
                           ),
                   ],
                 ),
               ),
-              const SizedBox(height: 24),
-              const SizedBox(height: 16),
+              // Destination & Meeting Point Card
               Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.black12, width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
+                decoration: _cardDecoration,
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                margin: const EdgeInsets.only(bottom: 24),
                 child: Directionality(
                   textDirection: TextDirection.rtl,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      DropdownButtonFormField<String>(
-                        isExpanded: true,
-                        initialValue: _selectedDestinationDropdown,
-                        decoration: const InputDecoration(
-                          labelText: 'اختر المكان',
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.white,
-                          alignLabelWithHint: true,
-                          labelStyle: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.normal,
+                      Row(
+                        children: [
+                          Icon(Icons.location_on, color: kAppBarColor, size: 28),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: DropdownButtonFormField<String>(
+                              isExpanded: true,
+                              initialValue: _selectedDestinationDropdown,
+                              decoration: InputDecoration(
+                                labelText: 'اختر المكان',
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                filled: true,
+                                fillColor: Colors.white,
+                                alignLabelWithHint: true,
+                                labelStyle: const TextStyle(fontSize: 18, color: Colors.black87, fontWeight: FontWeight.normal),
+                              ),
+                              dropdownColor: Colors.white,
+                              items: _destinationCities.map((city) {
+                                return DropdownMenuItem(
+                                  value: city,
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    city,
+                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedDestinationDropdown = value;
+                                });
+                              },
+                            ),
                           ),
-                        ),
-                        dropdownColor: Colors.white,
-                        items: _destinationCities.map((city) {
-                          return DropdownMenuItem(
-                            value: city,
-                            alignment: Alignment.centerRight,
-                            child: Text(city),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedDestinationDropdown = value;
-                          });
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: _destinationController,
-                        textDirection: TextDirection.rtl,
-                        decoration: const InputDecoration(
-                          labelText: 'حدد مكان الوصول',
-                          hintText: 'الرجاء كتابة اسم المنطقة التي ستصل إليها',
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.white,
-                          alignLabelWithHint: true,
-                          labelStyle: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      TextField(
-                        controller: _meetingPointController,
-                        textDirection: TextDirection.rtl,
-                        decoration: const InputDecoration(
-                          labelText: 'حدد مكان الإنطلاق',
-                          hintText: 'الرجاء كتابة اسم المنطقة التي ستسافر منها',
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.white,
-                          alignLabelWithHint: true,
-                          labelStyle: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      DropdownButtonFormField<String>(
-                        isExpanded: true,
-                        initialValue: _selectedPassengers,
-                        decoration: const InputDecoration(
-                          labelText: 'عدد الركاب',
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.white,
-                          alignLabelWithHint: true,
-                          labelStyle: TextStyle(
-                            fontSize: 16,
-                            color: Colors.black54,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                        dropdownColor: Colors.white,
-                        hint: const Text('اختر عدد الركاب'),
-                        items: const [
-                          DropdownMenuItem(value: '1', alignment: Alignment.centerRight, child: Text('1')),
-                          DropdownMenuItem(value: '2', alignment: Alignment.centerRight, child: Text('2')),
-                          DropdownMenuItem(value: '3', alignment: Alignment.centerRight, child: Text('3')),
-                          DropdownMenuItem(value: '4', alignment: Alignment.centerRight, child: Text('4')),
-                          DropdownMenuItem(value: '5', alignment: Alignment.centerRight, child: Text('5')),
-                          DropdownMenuItem(value: '6', alignment: Alignment.centerRight, child: Text('6')),
-                          DropdownMenuItem(value: '7', alignment: Alignment.centerRight, child: Text('7')),
-                          DropdownMenuItem(value: '8', alignment: Alignment.centerRight, child: Text('8')),
-                          DropdownMenuItem(value: '9', alignment: Alignment.centerRight, child: Text('9')),
-                          DropdownMenuItem(value: '10', alignment: Alignment.centerRight, child: Text('10')),
                         ],
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedPassengers = value;
-                          });
-                        },
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Icon(Icons.flag, color: kAppBarColor, size: 28),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _destinationController,
+                              textDirection: TextDirection.rtl,
+                              decoration: InputDecoration(
+                                labelText: 'حدد مكان الوصول',
+                                hintText: 'الرجاء كتابة اسم المنطقة التي ستصل إليها',
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                filled: true,
+                                fillColor: Colors.white,
+                                alignLabelWithHint: true,
+                                labelStyle: const TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.normal),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Icon(Icons.place, color: kAppBarColor, size: 28),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: TextField(
+                              controller: _meetingPointController,
+                              textDirection: TextDirection.rtl,
+                              decoration: InputDecoration(
+                                labelText: 'حدد مكان الإنطلاق',
+                                hintText: 'الرجاء كتابة اسم المنطقة التي ستسافر منها',
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                filled: true,
+                                fillColor: Colors.white,
+                                alignLabelWithHint: true,
+                                labelStyle: const TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.normal),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Icon(Icons.people, color: kAppBarColor, size: 28),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: DropdownButtonFormField<String>(
+                              isExpanded: true,
+                              initialValue: _selectedPassengers,
+                              decoration: InputDecoration(
+                                labelText: 'عدد الركاب',
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                filled: true,
+                                fillColor: Colors.white,
+                                alignLabelWithHint: true,
+                                labelStyle: const TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.normal),
+                              ),
+                              dropdownColor: Colors.white,
+                              hint: const Text('اختر عدد الركاب'),
+                              items: const [
+                                DropdownMenuItem(value: '1', alignment: Alignment.centerRight, child: Text('1')),
+                                DropdownMenuItem(value: '2', alignment: Alignment.centerRight, child: Text('2')),
+                                DropdownMenuItem(value: '3', alignment: Alignment.centerRight, child: Text('3')),
+                                DropdownMenuItem(value: '4', alignment: Alignment.centerRight, child: Text('4')),
+                                DropdownMenuItem(value: '5', alignment: Alignment.centerRight, child: Text('5')),
+                                DropdownMenuItem(value: '6', alignment: Alignment.centerRight, child: Text('6')),
+                                DropdownMenuItem(value: '7', alignment: Alignment.centerRight, child: Text('7')),
+                                DropdownMenuItem(value: '8', alignment: Alignment.centerRight, child: Text('8')),
+                                DropdownMenuItem(value: '9', alignment: Alignment.centerRight, child: Text('9')),
+                                DropdownMenuItem(value: '10', alignment: Alignment.centerRight, child: Text('10')),
+                              ],
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedPassengers = value;
+                                });
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
+              // Error message
               if (_errorMessage != null)
                 Padding(
                   padding: const EdgeInsets.only(bottom: 16.0),
-                  child: Text(
-                    _errorMessage!,
-                    style: const TextStyle(color: Colors.red, fontSize: 14),
-                    textAlign: TextAlign.center,
-                  ),
+                  child: Text(_errorMessage!, style: const TextStyle(color: Colors.red, fontSize: 14), textAlign: TextAlign.center),
                 ),
-              const SizedBox(height: 16),
+              // Create Trip Button
               SizedBox(
                 width: double.infinity,
-                height: 48,
+                height: 56,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
                     backgroundColor: kAppBarColor,
                     foregroundColor: Colors.white,
-                    textStyle: const TextStyle(fontSize: 18),
+                    textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    elevation: 4,
                   ),
                   onPressed: _isLoading ? null : _createTrip,
                   icon: _isLoading
                       ? const SizedBox.shrink()
-                      : const Icon(Icons.add_location_alt),
+                      : const Icon(Icons.add_location_alt, size: 28),
                   label: _isLoading
                       ? const SizedBox(
-                          width: 24,
-                          height: 24,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
+                          width: 28,
+                          height: 28,
+                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                         )
                       : const Text('إنشاء رحلة'),
                 ),
               ),
-              const SizedBox(height: 24), // Add bottom padding for button
+              const SizedBox(height: 32),
             ],
           ),
         ),

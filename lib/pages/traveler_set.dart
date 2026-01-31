@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/widgets/payment_dialog.dart';
-import 'package:raheel/widgets/trip_card.dart';
+
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:logger/logger.dart';
@@ -33,30 +33,46 @@ class TravelerSetPage extends StatefulWidget {
 }
 
 class _TravelerSetPageState extends State<TravelerSetPage> {
+    // List of destination cities
+    static const List<String> _destinationCities = [
+      'اليمن',
+      'البحرين',
+      'قطر',
+      'الامارات',
+      'الكويت',
+      'الرياض',
+      'جدة',
+      'مكة',
+      'أبها',
+      'جيزان',
+      'الدمام',
+      'الاردن',
+    ];
   DateTime? _selectedDate;
   String? _selectedTime;
   String? _selectedDestinationDropdown;
   final TextEditingController _destinationController = TextEditingController();
+  final _cardDecoration = BoxDecoration(
+    color: Colors.white,
+    borderRadius: BorderRadius.circular(24),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black12,
+        blurRadius: 16,
+        offset: Offset(0, 8),
+      ),
+    ],
+  );
   List<Map<String, dynamic>> _trips = [];
   bool _isLoadingTrips = false;
   bool _isLoadingMore = false;
   bool _hasMoreTrips = true;
   int _currentPage = 0;
   final int _pageSize = 10;
-  Timer? _refreshTimer;
+
   final ScrollController _scrollController = ScrollController();
 
-  // List of destination cities
-  static const List<String> _destinationCities = [
-    'اليمن',
-    'البحرين',
-    'قطر',
-    'الامارات',
-    'الكويت',
-    'الرياض',
-    'جدة',
-    'مكة',
-  ];
+  // Removed unused _destinationCities
 
   @override
   void initState() {
@@ -555,345 +571,276 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
         ),
       ),
       body: SafeArea(
-        child: ListView.builder(
-          controller: _scrollController,
+        child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-          itemCount:
-              1 +
-              (_selectedDate != null
-                  ? _trips.where((trip) {
-                      // Filter logic
-                      final now = DateTime.now();
-                      final today = DateTime(now.year, now.month, now.day);
-                      final selectedDateOnly = DateTime(
-                        _selectedDate!.year,
-                        _selectedDate!.month,
-                        _selectedDate!.day,
-                      );
-
-                      if (selectedDateOnly == today) {
-                        final tripTime = trip['trip_time'] as String;
-                        final timeParts = tripTime.split(':');
-                        final tripHour = int.parse(timeParts[0]);
-                        final tripMinute = int.parse(timeParts[1]);
-
-                        if (tripHour < now.hour ||
-                            (tripHour == now.hour && tripMinute < now.minute)) {
-                          return false;
-                        }
-                      }
-
-                      final bookedSeats = trip['booked_seats'] as int? ?? 0;
-                      final numPassengers = trip['num_passengers'] as int;
-                      if (bookedSeats >= numPassengers) {
-                        return false;
-                      }
-
-                      return true;
-                    }).length
-                  : 0) +
-              (_isLoadingMore ? 1 : 0) +
-              (!_hasMoreTrips && _trips.isNotEmpty ? 1 : 0),
-          itemBuilder: (context, index) {
-            // Header section with search fields
-            if (index == 0) {
-              return Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.black12, width: 1),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // Destination & Date Card
+              Container(
+                decoration: _cardDecoration,
+                padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 20),
+                margin: const EdgeInsets.only(bottom: 24),
                 child: Directionality(
                   textDirection: TextDirection.rtl,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      DropdownButtonFormField<String>(
-                        isExpanded: true,
-                        initialValue: _selectedDestinationDropdown,
-                        decoration: const InputDecoration(
-                          labelText: 'اختر المكان',
-                          border: OutlineInputBorder(),
-                          filled: true,
-                          fillColor: Colors.white,
-                        ),
-                        dropdownColor: Colors.white,
-                        items: _destinationCities.map((city) {
-                          return DropdownMenuItem(
-                            value: city,
-                            alignment: Alignment.centerRight,
-                            child: Text(city),
-                          );
-                        }).toList(),
-                        onChanged: (value) {
-                          setState(() {
-                            _selectedDestinationDropdown = value;
-                            _selectedTime = null;
-                            _trips = [];
-                            _currentPage = 0;
-                            _hasMoreTrips = true;
-                          });
-                          // Refresh trips if date is already selected
-                          if (_selectedDate != null) {
-                            _fetchTripsForDate(_selectedDate!);
-                          }
-                        },
+                      Row(
+                        children: [
+                          Icon(Icons.location_on, color: kAppBarColor, size: 28),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: DropdownButtonFormField<String>(
+                              isExpanded: true,
+                              initialValue: _selectedDestinationDropdown,
+                              decoration: InputDecoration(
+                                labelText: 'اختر المكان',
+                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                                filled: true,
+                                fillColor: Colors.white,
+                                alignLabelWithHint: true,
+                                labelStyle: const TextStyle(fontSize: 18, color: Colors.black87, fontWeight: FontWeight.normal),
+                              ),
+                              dropdownColor: Colors.white,
+                              items: _destinationCities.map((city) {
+                                return DropdownMenuItem(
+                                  value: city,
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    city,
+                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black),
+                                  ),
+                                );
+                              }).toList(),
+                              onChanged: (value) {
+                                setState(() {
+                                  _selectedDestinationDropdown = value;
+                                  _selectedTime = null;
+                                  _trips = [];
+                                  _currentPage = 0;
+                                  _hasMoreTrips = true;
+                                });
+                                // Refresh trips if date is already selected
+                                if (_selectedDate != null) {
+                                  _fetchTripsForDate(_selectedDate!);
+                                }
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 24),
-                      OutlinedButton(
-                      style: OutlinedButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        side: const BorderSide(
-                          color: Colors.black54,
-                          width: 1.5,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        minimumSize: const Size(0, 48),
-                        padding: EdgeInsets.zero,
-                      ),
-                      onPressed: () => _pickDate(context),
-                      child: const Center(
-                        child: Text(
-                          'اختر التاريخ',
-                          style: TextStyle(fontSize: 18, color: Colors.black),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    _selectedDate == null
-                        ? const Text(
-                            'لم يتم اختيار تاريخ',
-                            textAlign: TextAlign.center,
-                            textDirection: TextDirection.rtl,
-                          )
-                        : Column(
-                            children: [
-                              const Text(
-                                'التاريخ المختار:',
-                                textAlign: TextAlign.center,
-                                textDirection: TextDirection.rtl,
+                      Row(
+                        children: [
+                          Icon(Icons.calendar_today, color: kAppBarColor, size: 28),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: OutlinedButton(
+                              style: OutlinedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                side: BorderSide(color: kAppBarColor, width: 1.5),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                minimumSize: const Size(0, 48),
+                                padding: EdgeInsets.zero,
                               ),
-                              Text(
-                                '${_selectedDate!.year}/${_selectedDate!.month}/${_selectedDate!.day}',
-                                textAlign: TextAlign.center,
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: kAppBarColor,
-                                  fontSize: 18,
-                                ),
+                              onPressed: () => _pickDate(context),
+                              child: const Text('اختر التاريخ', style: TextStyle(fontSize: 18, color: Colors.black)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 12),
+                      _selectedDate == null
+                          ? const Text('لم يتم اختيار تاريخ', textAlign: TextAlign.center, textDirection: TextDirection.rtl)
+                          : Column(
+                              children: [
+                                const Text('التاريخ المختار:', textAlign: TextAlign.center, textDirection: TextDirection.rtl),
+                                Text('${_selectedDate!.year}/${_selectedDate!.month}/${_selectedDate!.day}',
+                                    textAlign: TextAlign.center,
+                                    style: const TextStyle(fontWeight: FontWeight.bold, color: kAppBarColor, fontSize: 18)),
+                              ],
+                            ),
+                      const SizedBox(height: 20),
+                      if (_selectedDate != null)
+                        Center(
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              backgroundColor: kAppBarColor,
+                              foregroundColor: Colors.white,
+                              textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                              elevation: 4,
+                            ),
+                            onPressed: _isLoadingTrips ? null : () => _fetchTripsForDate(_selectedDate!),
+                            icon: _isLoadingTrips
+                                ? const SizedBox.shrink()
+                                : const Icon(Icons.search, size: 28),
+                            label: _isLoadingTrips
+                                ? const SizedBox(
+                                    width: 28,
+                                    height: 28,
+                                    child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
+                                  )
+                                : const Text('بحث عن الرحلات'),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+              // Trip cards
+              if (_selectedDate != null && !_isLoadingTrips && _trips.isNotEmpty) ...[
+                const Text(
+                  'الرحلات المتاحة:',
+                  textAlign: TextAlign.right,
+                  textDirection: TextDirection.rtl,
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                ),
+                const SizedBox(height: 12),
+                ..._trips.map((trip) {
+                  final time = trip['trip_time'] as String;
+                  final destination = trip['destination'] as String;
+                  final destinationDescription = trip['destination_description'] as String?;
+                  final meetingPoint = trip['meeting_point_description'] as String?;
+                  final numPassengers = trip['num_passengers'] as int;
+                  final bookedSeats = trip['booked_seats'] as int? ?? 0;
+                  final isSelected = _selectedTime == time;
+                  final availableSeats = numPassengers - bookedSeats;
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _selectedTime = isSelected ? null : time;
+                        });
+                      },
+                      child: Directionality(
+                        textDirection: TextDirection.rtl,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: isSelected ? Colors.white : null,
+                            gradient: !isSelected
+                                ? LinearGradient(
+                                    colors: [Colors.white, Colors.grey.shade100],
+                                    begin: Alignment.topRight,
+                                    end: Alignment.bottomLeft,
+                                  )
+                                : null,
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: isSelected ? kAppBarColor : Colors.grey.shade300,
+                              width: 2.5,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                blurRadius: 12,
+                                offset: Offset(0, 6),
                               ),
                             ],
                           ),
-                    const SizedBox(height: 24),
-                    if (_selectedDate != null)
-                      Center(
-                        child: SizedBox(
-                          width: 200,
-                          height: 40,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              backgroundColor: kAppBarColor,
-                              foregroundColor: Colors.white,
-                              textStyle: const TextStyle(fontSize: 14),
-                            ),
-                            onPressed: () => _fetchTripsForDate(_selectedDate!),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
-                                Icon(Icons.search, size: 18),
-                                SizedBox(width: 6),
-                                Text('بحث'),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 18),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Icon(Icons.location_on, color: kAppBarColor, size: 28),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        '$destination (${convertTo12HourFormatFromString(time)})',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 20,
+                                          color: isSelected ? kAppBarColor : Colors.black87,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                    if (isSelected)
+                                      Icon(Icons.check_circle, color: kAppBarColor, size: 28),
+                                  ],
+                                ),
+                                const SizedBox(height: 10),
+                                if (destinationDescription != null && destinationDescription.isNotEmpty)
+                                  Row(
+                                    children: [
+                                      Icon(Icons.flag, color: Colors.grey.shade600, size: 20),
+                                      const SizedBox(width: 6),
+                                      Expanded(
+                                        child: Text('الوصول: $destinationDescription', style: TextStyle(fontSize: 16, color: Colors.black87)),
+                                      ),
+                                    ],
+                                  ),
+                                if (meetingPoint != null && meetingPoint.isNotEmpty)
+                                  Row(
+                                    children: [
+                                      Icon(Icons.place, color: Colors.grey.shade600, size: 20),
+                                      const SizedBox(width: 6),
+                                      Expanded(
+                                        child: Text('الانطلاق: $meetingPoint', style: TextStyle(fontSize: 16, color: Colors.black87)),
+                                      ),
+                                    ],
+                                  ),
+                                const SizedBox(height: 8),
+                                Row(
+                                  children: [
+                                    Icon(Icons.event_seat, color: Colors.grey.shade600, size: 20),
+                                    const SizedBox(width: 6),
+                                    Text('المقاعد المتاحة: $availableSeats', style: TextStyle(fontSize: 16, color: Colors.black87)),
+                                  ],
+                                ),
                               ],
                             ),
                           ),
                         ),
                       ),
-                    if (_selectedDate != null) const SizedBox(height: 12),
-                    if (_selectedDate != null && _isLoadingTrips)
-                      const Center(child: CircularProgressIndicator()),
-                    if (_selectedDate != null &&
-                        !_isLoadingTrips &&
-                        _trips.isEmpty)
-                      const Text(
-                        'لا توجد رحلات متاحة في هذا التاريخ',
-                        textAlign: TextAlign.center,
-                        textDirection: TextDirection.rtl,
-                      ),
-                    if (_selectedDate != null &&
-                        !_isLoadingTrips &&
-                        _trips.isNotEmpty)
-                      const Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'الرحلات المتاحة:',
-                            textAlign: TextAlign.right,
-                            textDirection: TextDirection.rtl,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
-                          ),
-                          SizedBox(height: 12),
-                        ],
-                      ),
-                    ],
+                    ),
+                  );
+                }),
+              ],
+              // Booking Button
+              SafeArea(
+                child: AnimatedPadding(
+                  duration: const Duration(milliseconds: 150),
+                  curve: Curves.easeOut,
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 12,
+                    left: 24,
+                    right: 24,
                   ),
-                ),
-              );
-            }
-
-            // Trip cards
-            if (_selectedDate != null && !_isLoadingTrips) {
-              final filteredTrips = _trips.where((trip) {
-                final now = DateTime.now();
-                final today = DateTime(now.year, now.month, now.day);
-                final selectedDateOnly = DateTime(
-                  _selectedDate!.year,
-                  _selectedDate!.month,
-                  _selectedDate!.day,
-                );
-
-                if (selectedDateOnly == today) {
-                  final tripTime = trip['trip_time'] as String;
-                  final timeParts = tripTime.split(':');
-                  final tripHour = int.parse(timeParts[0]);
-                  final tripMinute = int.parse(timeParts[1]);
-
-                  if (tripHour < now.hour ||
-                      (tripHour == now.hour && tripMinute < now.minute)) {
-                    return false;
-                  }
-                }
-
-                final bookedSeats = trip['booked_seats'] as int? ?? 0;
-                final numPassengers = trip['num_passengers'] as int;
-                if (bookedSeats >= numPassengers) {
-                  return false;
-                }
-
-                return true;
-              }).toList();
-
-              final tripIndex = index - 1;
-
-              if (tripIndex < filteredTrips.length) {
-                final trip = filteredTrips[tripIndex];
-                final time = trip['trip_time'];
-                final destination = trip['destination'] as String;
-                final destinationDescription =
-                    trip['destination_description'] as String?;
-                final meetingPoint = trip['meeting_point_description'] as String?;
-                final numPassengers = trip['num_passengers'] as int;
-                final price = (trip['price'] ?? 0).toDouble();
-                final driverName = trip['driver_name'] ?? 'سائق';
-                final bookedSeats = trip['booked_seats'] as int? ?? 0;
-                final isSelected = _selectedTime == time;
-
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 8.0),
-                  child: TripCard(
-                    tripTime: time,
-                    destination: destination,
-                    destinationDescription: destinationDescription,
-                    meetingPoint: meetingPoint,
-                    numPassengers: numPassengers,
-                    bookedSeats: bookedSeats,
-                    price: price,
-                    driverName: driverName,
-                    isSelected: isSelected,
-                    onTap: () {
-                      setState(() {
-                        _selectedTime = isSelected ? null : time;
-                      });
-                    },
-                  ),
-                );
-              }
-
-              // Loading more indicator
-              if (_isLoadingMore && tripIndex == filteredTrips.length) {
-                return const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Center(child: CircularProgressIndicator()),
-                );
-              }
-
-              // No more trips message
-              if (!_hasMoreTrips && tripIndex == filteredTrips.length) {
-                return const Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Text(
-                    'لا توجد مزيد من الرحلات',
-                    textAlign: TextAlign.center,
-                    textDirection: TextDirection.rtl,
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontStyle: FontStyle.italic,
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 48,
+                    child: ElevatedButton.icon(
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        backgroundColor: kAppBarColor,
+                        foregroundColor: Colors.white,
+                        textStyle: const TextStyle(fontSize: 18),
+                      ),
+                      onPressed: _selectedTime == null
+                          ? null
+                          : () {
+                              _bookTripWithPayment();
+                            },
+                      icon: const Icon(Icons.event_seat),
+                      label: const Text('احجز الرحلة'),
                     ),
                   ),
-                );
-              }
-            }
-
-            return const SizedBox.shrink();
-          },
-        ),
-      ),
-      bottomNavigationBar: SafeArea(
-        child: AnimatedPadding(
-          duration: const Duration(milliseconds: 150),
-          curve: Curves.easeOut,
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom + 12,
-            left: 24,
-            right: 24,
-          ),
-          child: SizedBox(
-            width: double.infinity,
-            height: 48,
-            child: ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
                 ),
-                backgroundColor: kAppBarColor,
-                foregroundColor: Colors.white,
-                textStyle: const TextStyle(fontSize: 18),
               ),
-              onPressed: _selectedTime == null
-                  ? null
-                  : () {
-                      _bookTripWithPayment();
-                    },
-              icon: const Icon(Icons.event_seat),
-              label: const Text('احجز الرحلة'),
-            ),
+            ],
           ),
         ),
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    _scrollController.removeListener(_onScroll);
-    _scrollController.dispose();
-    _refreshTimer?.cancel();
-    super.dispose();
   }
 }
