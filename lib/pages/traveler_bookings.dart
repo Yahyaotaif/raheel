@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class TravelerBookingsPage extends StatefulWidget {
   const TravelerBookingsPage({super.key});
@@ -42,8 +43,9 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
     });
 
     try {
-      final authUser = await Supabase.instance.client.auth.getUser();
-      final travelerId = authUser.user?.id;
+      // Use user.id from SharedPreferences for traveler_id
+      final prefs = await SharedPreferences.getInstance();
+      final travelerId = prefs.getString('user_id');
 
       if (travelerId == null) {
         throw Exception('لم يتم العثور على المستخدم');
