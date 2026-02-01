@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class DriverBookingsPage extends StatefulWidget {
   const DriverBookingsPage({super.key});
@@ -44,8 +45,9 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
     });
 
     try {
-      final authUser = await Supabase.instance.client.auth.getUser();
-      final driverId = authUser.user?.id;
+      // Use user.id from SharedPreferences for driver_id
+      final prefs = await SharedPreferences.getInstance();
+      final driverId = prefs.getString('user_id');
 
       if (driverId == null) {
         throw Exception('لم يتم العثور على المستخدم');
@@ -165,12 +167,13 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
     }
   }
 
-  String _withLeadingZero(String phone) {
-    return phone.startsWith('0') ? phone : '0$phone';
+  // Show phone number as stored in the user table
+  String _asStored(String phone) {
+    return phone;
   }
 
   Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(scheme: 'tel', path: _withLeadingZero(phoneNumber));
+    final Uri launchUri = Uri(scheme: 'tel', path: _asStored(phoneNumber));
     try {
       await launchUrl(launchUri);
     } catch (e) {
@@ -549,9 +552,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                                       textDirection: TextDirection.rtl,
                                       children: [
                                         Text(
-                                          _withLeadingZero(
-                                            booking['traveler_phone'].toString(),
-                                          ),
+                                          booking['traveler_phone'] ?? '',
                                           style: const TextStyle(
                                             fontSize: 15,
                                             color: kAppBarColor,

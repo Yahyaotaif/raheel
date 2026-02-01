@@ -196,6 +196,10 @@ class _LoginPageState extends State<LoginPage> {
         await prefs.setString('email', user['EmailAddress'] ?? '');
         await prefs.setString('username', user['Username'] ?? '');
         await prefs.setString('user_type', user['user_type'] ?? 'traveler');
+        // Store user.id (UUID from user table) for use as driver_id
+        if (user['id'] != null) {
+          await prefs.setString('user_id', user['id']);
+        }
         if (mounted) {
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => const ProfilePage()),
@@ -209,12 +213,16 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e, stack) {
       if (mounted) {
-        String errorMessage = 'حدث خطأ غير متوقع: ${e.toString()}';
+        String errorMessage = 'حدث خطأ غير متوقع.';
         final errorString = e.toString().toLowerCase();
-        if (errorString.contains('رقم الجوال غير مسجل')) {
-          errorMessage = 'رقم الجوال غير مسجل';
-        } else if (errorString.contains('كلمة المرور غير صحيحة')) {
-          errorMessage = 'كلمة المرور غير صحيحة';
+        if (errorString.contains('البريد الإلكتروني أو اسم المستخدم غير مسجل')) {
+          errorMessage = 'البريد الإلكتروني أو اسم المستخدم غير صحيح.';
+        } else if (errorString.contains('كلمة المرور التي أدخلتها غير صحيحة') || errorString.contains('كلمة المرور غير صحيحة')) {
+          errorMessage = 'كلمة المرور غير صحيحة.';
+        } else if (errorString.contains('رقم الجوال غير مسجل')) {
+          errorMessage = 'رقم الجوال غير مسجل.';
+        } else if (errorString.contains('لا توجد كلمة مرور مسجلة')) {
+          errorMessage = 'لا توجد كلمة مرور مسجلة لهذا الحساب.';
         } else if (errorString.contains('socketexception') || 
             errorString.contains('failed host lookup') ||
             errorString.contains('network') ||
@@ -223,7 +231,7 @@ class _LoginPageState extends State<LoginPage> {
         } else if (errorString.contains('timeout')) {
           errorMessage = 'انتهت مهلة الاتصال. يرجى المحاولة مرة أخرى';
         }
-        debugPrint('Login error: ${e.toString()}');
+        debugPrint('Login error: \\${e.toString()}');
         debugPrint('Stack trace: $stack');
         setState(() {
           _errorMessage = errorMessage;

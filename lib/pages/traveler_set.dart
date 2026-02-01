@@ -237,8 +237,10 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
 
   Future<void> _bookTripWithPayment() async {
     try {
+      logger.d('=== Starting booking process ===');
       // Get current traveler info
       final authUser = await Supabase.instance.client.auth.getUser();
+      logger.d('Got auth user: ${authUser.user?.id}');
 
       if (!mounted) return;
 
@@ -255,22 +257,56 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
         return;
       }
 
-      // Get traveler details
+      // Get traveler details - use maybeSingle() to handle missing records gracefully
+      logger.d('Querying user table for auth ID: $travelerId');
+      
       final travelerResponse = await Supabase.instance.client
           .from('user')
-          .select('FirstName, LastName, MobileNumber')
-          .eq('id', travelerId)
-          .single();
+          .select('id, FirstName, LastName, MobileNumber, EmailAddress')
+          .eq('auth_id', travelerId)
+          .maybeSingle();
+
+      logger.d('Got traveler details: $travelerResponse');
+
+      if (travelerResponse == null) {
+        if (!mounted) return;
+        logger.e('User record not found in database for ID: $travelerId');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'لم يتم العثور على بيانات المسافر في قاعدة البيانات.\nمعرف المستخدم: ${travelerId.substring(0, 8)}...\nيرجى التواصل مع الدعم الفني',
+              textDirection: TextDirection.rtl,
+            ),
+            backgroundColor: Colors.red,
+            duration: const Duration(seconds: 6),
+          ),
+        );
+        return;
+      }
 
       if (!mounted) return;
+      final databaseUserId = travelerResponse['id']; // Database ID (UUID)
       final firstName = travelerResponse['FirstName'];
       final lastName = travelerResponse['LastName'];
       final phone = travelerResponse['MobileNumber'];
+
+      if (databaseUserId == null || firstName == null || lastName == null || phone == null) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('بيانات ملفك الشخصي غير مكتملة. يرجى تحديث اسمك ورقم الجوال'),
+            backgroundColor: Colors.red,
+          ),
+        );
+        return;
+      }
 
       // Find the selected trip to get driver info and price
       final selectedTrip = _trips.firstWhere(
         (trip) => trip['trip_time'] == _selectedTime,
       );
+
+      logger.d('Found selected trip: ${selectedTrip['id']}');
 
       final tripId = selectedTrip['id'];
       final driverId = selectedTrip['driver_id'];
@@ -362,10 +398,12 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
       // Payment successful (or skipped if free), proceed with booking
       try {
         // Call the Supabase RPC function that atomically validates and inserts
+        logger.d('Attempting to book trip with params: tripId=$tripId, driverId=$driverId, databaseUserId=$databaseUserId');
+        
         final bookingResult = await Supabase.instance.client.rpc(
           'book_trip',
           params: {
-            'p_traveler_id': travelerId,
+            'p_traveler_id': databaseUserId, // Use database ID, not auth ID
             'p_driver_id': driverId,
             'p_trip_id': tripId,
             'p_trip_date': _selectedDate!.toIso8601String().split('T')[0],
@@ -374,21 +412,28 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
           },
         );
 
+        logger.d('Booking result: $bookingResult');
+
         // Check if booking was successful
         if (bookingResult != null && bookingResult['success'] == true) {
           // Booking successful, send email to driver
           try {
-            await _sendEmailToDriver(
-              driverEmail: (await Supabase.instance.client
-                  .from('user')
-                  .select('EmailAddress')
-                  .eq('id', driverId)
-                  .single())['EmailAddress'],
-              travelerName: '$firstName $lastName',
-              travelerPhone: phone.toString(),
-            );
+            final driverData = await Supabase.instance.client
+                .from('user')
+                .select('EmailAddress')
+                .eq('id', driverId)
+                .maybeSingle();
+            
+            if (driverData != null && driverData['EmailAddress'] != null) {
+              await _sendEmailToDriver(
+                driverEmail: driverData['EmailAddress'],
+                travelerName: '$firstName $lastName',
+                travelerPhone: phone.toString(),
+              );
+            }
           } catch (e) {
             // Email failed but booking was successful
+            logger.d('Email sending error (non-fatal): $e');
           }
 
           if (!mounted) return;
@@ -480,11 +525,13 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
         }
       } catch (e) {
         if (!mounted) return;
+        logger.e('Booking RPC error: $e');
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
+          SnackBar(
             content: Text(
-              'حدث خطأ أثناء عملية الحجز. يرجى المحاولة مرة أخرى',
+              'خطأ التفاصيل: $e',
               textDirection: TextDirection.rtl,
+              maxLines: 3,
             ),
             backgroundColor: Colors.red,
           ),
@@ -493,13 +540,18 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
     } catch (e) {
       if (!mounted) return;
 
+      logger.e('=== OUTER CATCH ERROR ===: $e');
+      logger.e('Stack trace: ${StackTrace.current}');
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى',
+            'خطأ: ${e.toString()}',
             textDirection: TextDirection.rtl,
+            maxLines: 5,
           ),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 5),
         ),
       );
     }
