@@ -8,6 +8,9 @@ import 'package:raheel/auth/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:provider/provider.dart';
+import 'package:raheel/providers/language_provider.dart';
+import 'package:raheel/l10n/app_localizations.dart';
 // Custom Logo Widget
 class RaheelLogo extends StatelessWidget {
   const RaheelLogo({super.key});
@@ -17,20 +20,6 @@ class RaheelLogo extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: const [
-            Text(
-              'توكلنا على الله',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                fontFamily: 'QTSHoby',
-              ),
-            ),
-          ],
-        ),
       ],
     );
   }
@@ -167,7 +156,7 @@ class _LoginPageState extends State<LoginPage> {
     final identifier = _identifierController.text.trim();
     if (identifier.isEmpty) {
       setState(() {
-        _errorMessage = 'يرجى إدخال البريد الإلكتروني أو اسم المستخدم';
+        _errorMessage = AppLocalizations.of(context).enterEmailOrUsername;
       });
       return;
     }
@@ -209,7 +198,7 @@ class _LoginPageState extends State<LoginPage> {
       } else {
         if (!mounted) return;
         setState(() {
-          _errorMessage = 'فشل تسجيل الدخول. تحقق من البريد الإلكتروني أو اسم المستخدم وكلمة المرور.';
+          _errorMessage = AppLocalizations.of(context).loginFailed;
         });
       }
     } catch (e, stack) {
@@ -258,6 +247,30 @@ class _LoginPageState extends State<LoginPage> {
         centerTitle: true,
         elevation: 10,
         shadowColor: Colors.black,
+        actions: [
+          Consumer<LanguageProvider>(
+            builder: (context, languageProvider, _) {
+              return TextButton.icon(
+                onPressed: () {
+                  languageProvider.toggleLanguage();
+                },
+                icon: Icon(
+                  languageProvider.languageCode == 'ar'
+                      ? Icons.language
+                      : Icons.language_outlined,
+                  color: Colors.white,
+                ),
+                label: Text(
+                  AppLocalizations.of(context).language,
+                  style: const TextStyle(color: Colors.white),
+                ),
+                style: TextButton.styleFrom(
+                  foregroundColor: Colors.white,
+                ),
+              );
+            },
+          ),
+        ],
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -307,11 +320,11 @@ class _LoginPageState extends State<LoginPage> {
                           child: TextField(
                             controller: _identifierController,
                             keyboardType: TextInputType.text,
-                            decoration: const InputDecoration(
-                              prefixIcon: Icon(Icons.person),
-                              border: OutlineInputBorder(),
-                              labelText: 'البريد الإلكتروني أو اسم المستخدم',
-                              hintText: 'ادخل البريد الإلكتروني أو اسم المستخدم',
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(Icons.person),
+                              border: const OutlineInputBorder(),
+                              labelText: AppLocalizations.of(context).emailOrUsername,
+                              hintText: AppLocalizations.of(context).enterEmailOrUsername,
                               filled: true,
                               fillColor: Colors.white,
                             ),
@@ -334,10 +347,10 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           child: TextField(
                             controller: _passwordController,
-                            decoration: const InputDecoration(
-                              prefixIcon: Icon(Icons.lock),
-                              border: OutlineInputBorder(),
-                              labelText: 'كلمة المرور',
+                            decoration: InputDecoration(
+                              prefixIcon: const Icon(Icons.lock),
+                              border: const OutlineInputBorder(),
+                              labelText: AppLocalizations.of(context).password,
                               filled: true,
                               fillColor: Colors.white,
                             ),
@@ -380,10 +393,10 @@ class _LoginPageState extends State<LoginPage> {
                                 )
                               : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
-                                  children: const [
-                                    Icon(Icons.login, size: 20),
-                                    SizedBox(width: 8),
-                                    Text('الدخول'),
+                                  children: [
+                                    const Icon(Icons.login, size: 20),
+                                    const SizedBox(width: 8),
+                                    Text(AppLocalizations.of(context).login),
                                   ],
                                 ),
                         ),
@@ -399,16 +412,16 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
-                          children: const [
-                            Icon(
+                          children: [
+                            const Icon(
                               Icons.person_add,
                               size: 18,
                               color: Color.fromARGB(255, 119, 135, 149),
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Text(
-                              'التسجيل كمستخدم جديد',
-                              style: TextStyle(
+                              'لديك حساب؟ سجل الآن',
+                              style: const TextStyle(
                                 fontSize: 16,
                                 fontFamily: 'Noto Naskh Arabic',
                                 color: Color.fromARGB(255, 119, 135, 149),
@@ -437,16 +450,16 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
-                        children: const [
-                          Icon(
+                        children: [
+                          const Icon(
                             Icons.help_outline,
                             size: 18,
                             color: Color.fromARGB(255, 119, 135, 149),
                           ),
-                          SizedBox(width: 8),
+                          const SizedBox(width: 8),
                           Text(
-                            'نسيت اسم المستخدم أو كلمة المرور؟',
-                            style: TextStyle(
+                            AppLocalizations.of(builderContext).forgotPassword,
+                            style: const TextStyle(
                               fontSize: 16,
                               fontFamily: 'Noto Naskh Arabic',
                               color: Color.fromARGB(255, 119, 135, 149),

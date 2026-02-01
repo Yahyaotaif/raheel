@@ -4,9 +4,12 @@ import 'package:raheel/pages/splash_screen.dart';
 import 'package:raheel/pages/login.dart';
 import 'package:raheel/pages/reset_password_handler.dart';
 import 'package:raheel/pages/profile.dart';
+import 'package:raheel/providers/language_provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:app_links/app_links.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:provider/provider.dart';
+import 'package:raheel/l10n/app_localizations.dart';
 import 'dart:async';
 
 void main() async {
@@ -19,6 +22,10 @@ void main() async {
   runZonedGuarded(
     () async {
       WidgetsFlutterBinding.ensureInitialized();
+
+      // Initialize language provider
+      final languageProvider = LanguageProvider();
+      await languageProvider.init();
 
       // Set system UI overlay style
       SystemChrome.setSystemUIOverlayStyle(
@@ -44,7 +51,7 @@ void main() async {
         // Continue - app can work offline
       }
 
-      runApp(const MainApp());
+      runApp(MainApp(languageProvider: languageProvider));
     },
     (error, stack) {
       debugPrint('Zone Error: $error');
@@ -54,7 +61,9 @@ void main() async {
 }
 
 class MainApp extends StatefulWidget {
-  const MainApp({super.key});
+  final LanguageProvider languageProvider;
+
+  const MainApp({super.key, required this.languageProvider});
 
   @override
   State<MainApp> createState() => _MainAppState();
@@ -264,23 +273,33 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      navigatorKey: _navigatorKey,
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          systemOverlayStyle: SystemUiOverlayStyle(
-            systemNavigationBarColor: Color.fromARGB(255, 234, 235, 235),
-            systemNavigationBarIconBrightness: Brightness.dark,
-          ),
-        ),
+    return ChangeNotifierProvider<LanguageProvider>.value(
+      value: widget.languageProvider,
+      child: Consumer<LanguageProvider>(
+        builder: (context, languageProvider, _) {
+          return MaterialApp(
+            debugShowCheckedModeBanner: false,
+            navigatorKey: _navigatorKey,
+            localizationsDelegates: AppLocalizations.localizationsDelegates,
+            supportedLocales: AppLocalizations.supportedLocales,
+            locale: languageProvider.locale,
+            theme: ThemeData(
+              appBarTheme: const AppBarTheme(
+                systemOverlayStyle: SystemUiOverlayStyle(
+                  systemNavigationBarColor: Color.fromARGB(255, 234, 235, 235),
+                  systemNavigationBarIconBrightness: Brightness.dark,
+                ),
+              ),
+            ),
+            home: SplashScreen(),
+            routes: {
+              '/login': (context) => const LoginPage(),
+              '/profile': (context) => const ProfilePage(),
+              '/reset-password': (context) => const ResetPasswordHandler(),
+            },
+          );
+        },
       ),
-      home: SplashScreen(),
-      routes: {
-        '/login': (context) => const LoginPage(),
-        '/profile': (context) => const ProfilePage(),
-        '/reset-password': (context) => const ResetPasswordHandler(),
-      },
     );
   }
 }

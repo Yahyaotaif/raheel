@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/widgets/payment_dialog.dart';
+import 'package:raheel/l10n/app_localizations.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -625,12 +626,15 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
       resizeToAvoidBottomInset: true,
       backgroundColor: kBodyColor,
       appBar: AppBar(
-        title: const Row(
+        title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.search, color: Colors.white, size: 28),
-            SizedBox(width: 8),
-            Text('بحث عن رحلة', style: TextStyle(color: Colors.white)),
+            const Icon(Icons.search, color: Colors.white, size: 28),
+            const SizedBox(width: 8),
+            Text(
+              AppLocalizations.of(context).searchTrip,
+              style: const TextStyle(color: Colors.white),
+            ),
           ],
         ),
         titleTextStyle: const TextStyle(fontSize: 24, color: Colors.white),
@@ -672,7 +676,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                               isExpanded: true,
                               initialValue: _selectedDestinationDropdown,
                               decoration: InputDecoration(
-                                labelText: 'اختر المكان',
+                                labelText: AppLocalizations.of(context).destination,
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
                                 fillColor: Colors.white,
@@ -722,17 +726,17 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                                 padding: EdgeInsets.zero,
                               ),
                               onPressed: () => _pickDate(context),
-                              child: const Text('اختر التاريخ', style: TextStyle(fontSize: 18, color: Colors.black)),
+                              child: Text(AppLocalizations.of(context).selectDate, style: const TextStyle(fontSize: 18, color: Colors.black)),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 12),
                       _selectedDate == null
-                          ? const Text('لم يتم اختيار تاريخ', textAlign: TextAlign.center, textDirection: TextDirection.rtl)
+                          ? Text(AppLocalizations.of(context).noDateSelected, textAlign: TextAlign.center, textDirection: TextDirection.rtl)
                           : Column(
                               children: [
-                                const Text('التاريخ المختار:', textAlign: TextAlign.center, textDirection: TextDirection.rtl),
+                                Text('${AppLocalizations.of(context).selectedDate}:', textAlign: TextAlign.center, textDirection: TextDirection.rtl),
                                 Text('${_selectedDate!.year}/${_selectedDate!.month}/${_selectedDate!.day}',
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(fontWeight: FontWeight.bold, color: kAppBarColor, fontSize: 18)),
@@ -759,7 +763,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                                     height: 28,
                                     child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                                   )
-                                : const Text('بحث عن الرحلات'),
+                                : Text(AppLocalizations.of(context).searchTrips),
                           ),
                         ),
                     ],
@@ -908,7 +912,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                               _bookTripWithPayment();
                             },
                       icon: const Icon(Icons.event_seat),
-                      label: const Text('احجز الرحلة'),
+                      label: Text(AppLocalizations.of(context).bookTrip),
                     ),
                   ),
                 ),

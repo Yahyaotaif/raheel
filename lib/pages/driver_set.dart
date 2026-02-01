@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/widgets/payment_dialog.dart';
+import 'package:raheel/l10n/app_localizations.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -343,10 +344,10 @@ class _DriverSetPageState extends State<DriverSetPage> {
         ),
         title: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.directions_car, color: Colors.white, size: 32),
-            SizedBox(width: 12),
-            Text('إنشاء رحلة', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
+          children: [
+            const Icon(Icons.drive_eta, color: Colors.white, size: 28),
+            const SizedBox(width: 8),
+            Text(AppLocalizations.of(context).createNewTrip, style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
           ],
         ),
         centerTitle: true,
@@ -380,17 +381,17 @@ class _DriverSetPageState extends State<DriverSetPage> {
                               padding: EdgeInsets.zero,
                             ),
                             onPressed: () => _pickDate(context),
-                            child: const Text('اختر التاريخ', style: TextStyle(fontSize: 18, color: Colors.black)),
+                            child: Text(AppLocalizations.of(context).selectDate, style: const TextStyle(fontSize: 18, color: Colors.black)),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 12),
                     _selectedDate == null
-                        ? const Text('لم يتم اختيار تاريخ', textAlign: TextAlign.center, textDirection: TextDirection.rtl)
+                        ? Text(AppLocalizations.of(context).noDateSelected, textAlign: TextAlign.center, textDirection: TextDirection.rtl)
                         : Column(
                             children: [
-                              const Text('التاريخ المختار:', textAlign: TextAlign.center, textDirection: TextDirection.rtl),
+                              Text('${AppLocalizations.of(context).selectedDate}:', textAlign: TextAlign.center, textDirection: TextDirection.rtl),
                               Text('${_selectedDate!.year}/${_selectedDate!.month}/${_selectedDate!.day}',
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontWeight: FontWeight.bold, color: kAppBarColor, fontSize: 18)),
@@ -411,17 +412,17 @@ class _DriverSetPageState extends State<DriverSetPage> {
                               padding: EdgeInsets.zero,
                             ),
                             onPressed: () => _pickTime(context),
-                            child: const Text('اختر الوقت', style: TextStyle(fontSize: 18, color: Colors.black)),
+                            child: Text(AppLocalizations.of(context).selectTime, style: const TextStyle(fontSize: 18, color: Colors.black)),
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: 12),
                     _selectedTime == null
-                        ? const Text('لم يتم اختيار وقت\n(لضمان وصول إعلانك لعدد كبير من المسافرين ، يفضل أن يتم الحجز لليوم التالي  )', textAlign: TextAlign.center, textDirection: TextDirection.rtl)
+                        ? Text(AppLocalizations.of(context).selectTime, textAlign: TextAlign.center, textDirection: TextDirection.rtl)
                         : Column(
                             children: [
-                              const Text('الوقت المختار:', textAlign: TextAlign.center, textDirection: TextDirection.rtl),
+                              Text('${AppLocalizations.of(context).selectTime}:', textAlign: TextAlign.center, textDirection: TextDirection.rtl),
                               Text(convertTo12HourFormat(_selectedTime!),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(fontWeight: FontWeight.bold, color: kAppBarColor, fontSize: 18)),
@@ -449,7 +450,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
                               isExpanded: true,
                               initialValue: _selectedDestinationDropdown,
                               decoration: InputDecoration(
-                                labelText: 'اختر المكان',
+                                labelText: AppLocalizations.of(context).destination,
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
                                 fillColor: Colors.white,
@@ -486,8 +487,8 @@ class _DriverSetPageState extends State<DriverSetPage> {
                               controller: _destinationController,
                               textDirection: TextDirection.rtl,
                               decoration: InputDecoration(
-                                labelText: 'حدد مكان الوصول',
-                                hintText: 'الرجاء كتابة اسم المنطقة التي ستصل إليها',
+                                labelText: AppLocalizations.of(context).meetingPoint,
+                                hintText: AppLocalizations.of(context).meetingPoint,
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
                                 fillColor: Colors.white,
@@ -508,8 +509,8 @@ class _DriverSetPageState extends State<DriverSetPage> {
                               controller: _meetingPointController,
                               textDirection: TextDirection.rtl,
                               decoration: InputDecoration(
-                                labelText: 'حدد مكان الإنطلاق',
-                                hintText: 'الرجاء كتابة اسم المنطقة التي ستسافر منها',
+                                labelText: AppLocalizations.of(context).meetingPoint,
+                                hintText: AppLocalizations.of(context).meetingPoint,
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
                                 fillColor: Colors.white,
@@ -530,7 +531,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
                               isExpanded: true,
                               initialValue: _selectedPassengers,
                               decoration: InputDecoration(
-                                labelText: 'عدد الركاب',
+                                labelText: AppLocalizations.of(context).numberOfSeats,
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
                                 fillColor: Colors.white,
@@ -538,7 +539,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
                                 labelStyle: const TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.normal),
                               ),
                               dropdownColor: Colors.white,
-                              hint: const Text('اختر عدد الركاب'),
+                              hint: Text(AppLocalizations.of(context).numberOfSeats),
                               items: const [
                                 DropdownMenuItem(value: '1', alignment: Alignment.centerRight, child: Text('1')),
                                 DropdownMenuItem(value: '2', alignment: Alignment.centerRight, child: Text('2')),
@@ -592,7 +593,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
                           height: 28,
                           child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
                         )
-                      : const Text('إنشاء رحلة'),
+                      : Text(AppLocalizations.of(context).createNewTrip),
                 ),
               ),
               const SizedBox(height: 32),

@@ -9,10 +9,16 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:raheel/main.dart';
+import 'package:raheel/providers/language_provider.dart';
 
 void main() {
   testWidgets('Splash screen shows رحيل text', (WidgetTester tester) async {
-    await tester.pumpWidget(const MainApp());
+    final languageProvider = LanguageProvider();
+    await languageProvider.init();
+    
+    await tester.pumpWidget(
+      MainApp(languageProvider: languageProvider),
+    );
     // The splash screen should show the app name text
     expect(find.text('رحيل'), findsOneWidget);
   });

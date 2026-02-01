@@ -11,6 +11,7 @@ import 'package:raheel/theme_constants.dart';
 import 'package:raheel/pages/edit_profile.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:raheel/l10n/app_localizations.dart';
 
 
 class ProfilePage extends StatefulWidget {
@@ -154,10 +155,10 @@ class _ProfilePageState extends State<ProfilePage> {
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.person, color: Colors.white, size: 28),
-            SizedBox(width: 8),
-            Text('الملف الشخصي', style: TextStyle(color: Colors.white)),
+          children: [
+            const Icon(Icons.person, color: Colors.white, size: 28),
+            const SizedBox(width: 8),
+            Text(AppLocalizations.of(context).profile, style: const TextStyle(color: Colors.white)),
           ],
         ),
         titleTextStyle: const TextStyle(
@@ -305,15 +306,15 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Container(
                         padding: const EdgeInsets.all(16),
                         child: Row(
-                          children: const [
-                            Icon(Icons.privacy_tip_outlined, color: Colors.black54),
-                            SizedBox(width: 12),
+                          children: [
+                            const Icon(Icons.privacy_tip_outlined, color: Colors.black54),
+                            const SizedBox(width: 12),
                             Text(
-                              'سياسة الخصوصية',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                              AppLocalizations.of(context).privacyPolicy,
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                             ),
-                            Spacer(),
-                            Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                            const Spacer(),
+                            const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
                           ],
                         ),
                       ),
@@ -332,15 +333,15 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Row(
-                          children: const [
-                            Icon(Icons.lock_outline, color: Colors.black54),
-                            SizedBox(width: 12),
+                          children: [
+                            const Icon(Icons.lock_outline, color: Colors.black54),
+                            const SizedBox(width: 12),
                             Text(
-                              'تغيير كلمة المرور',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                              AppLocalizations.of(context).changePassword,
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                             ),
-                            Spacer(),
-                            Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                            const Spacer(),
+                            const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
                           ],
                         ),
                       ),
@@ -358,15 +359,15 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Row(
-                          children: const [
-                            Icon(Icons.edit, color: Colors.black54),
-                            SizedBox(width: 12),
+                          children: [
+                            const Icon(Icons.edit, color: Colors.black54),
+                            const SizedBox(width: 12),
                             Text(
-                              'تعديل ملفك',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                              AppLocalizations.of(context).editProfile,
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                             ),
-                            Spacer(),
-                            Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                            const Spacer(),
+                            const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
                           ],
                         ),
                       ),
@@ -379,14 +380,14 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Padding(
                         padding: const EdgeInsets.all(16),
                         child: Row(
-                          children: const [
-                            Icon(Icons.help_outline, color: Colors.black54),
-                            SizedBox(width: 12),
+                          children: [
+                            const Icon(Icons.help_outline, color: Colors.black54),
+                            const SizedBox(width: 12),
                             Text(
-                              'المساعدة والدعم',
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                              AppLocalizations.of(context).helpAndSupport,
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
                           ],
                         ),
@@ -429,15 +430,15 @@ class _ProfilePageState extends State<ProfilePage> {
                             ],
                           ),
                           child: Row(
-                            children: const [
-                              Icon(Icons.calendar_today, color: Colors.black54),
-                              SizedBox(width: 12),
+                            children: [
+                              const Icon(Icons.calendar_today, color: Colors.black54),
+                              const SizedBox(width: 12),
                               Text(
-                                'إدارة الحجوزات',
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                AppLocalizations.of(context).manageBookings,
+                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                               ),
-                              Spacer(),
-                              Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                              const Spacer(),
+                              const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
                             ],
                           ),
                         ),
@@ -481,15 +482,15 @@ class _ProfilePageState extends State<ProfilePage> {
                             ],
                           ),
                           child: Row(
-                            children: const [
-                              Icon(Icons.bookmark, color: Colors.black54),
-                              SizedBox(width: 12),
+                            children: [
+                              const Icon(Icons.bookmark, color: Colors.black54),
+                              const SizedBox(width: 12),
                               Text(
-                                'إدارة حجوزاتك',
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                AppLocalizations.of(context).myTrips,
+                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                               ),
-                              Spacer(),
-                              Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                              const Spacer(),
+                              const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
                             ],
                           ),
                         ),
@@ -507,9 +508,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   String? userRole = snapshot.data;
                   if (snapshot.connectionState == ConnectionState.done && userRole != null) {
                     if (userRole == 'driver') {
-                      buttonText = 'إنشاء رحلة';
+                      buttonText = AppLocalizations.of(context).createTrip;
                     } else {
-                      buttonText = 'بحث عن رحلة';
+                      buttonText = AppLocalizations.of(context).searchTrip;
                     }
                   }
                   return SizedBox(
@@ -565,7 +566,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     );
                   },
                   icon: const Icon(Icons.logout),
-                  label: const Text('خروج'),
+                  label: Text(AppLocalizations.of(context).logout),
                 ),
               ),
             ],

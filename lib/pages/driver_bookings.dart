@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
+import 'package:raheel/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -197,10 +198,13 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.directions_car, color: Colors.white, size: 28),
-            SizedBox(width: 8),
-            Text('طلبات الحجز', style: TextStyle(color: Colors.white)),
+          children: [
+            const Icon(Icons.directions_car, color: Colors.white, size: 28),
+            const SizedBox(width: 8),
+            Text(
+              AppLocalizations.of(context).manageBookings,
+              style: const TextStyle(color: Colors.white),
+            ),
           ],
         ),
         elevation: 0,
