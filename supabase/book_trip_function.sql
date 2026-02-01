@@ -1,7 +1,7 @@
 -- Create the book_trip RPC function with atomic capacity validation
 -- This function ensures only one booking per available seat by checking capacity atomically
 
--- First, drop the old function if it exists
+-- First, drop any old overloads if they exist
 DROP FUNCTION IF EXISTS book_trip(UUID, UUID, BIGINT, TEXT, TEXT, NUMERIC);
 
 CREATE OR REPLACE FUNCTION book_trip(
@@ -20,8 +20,7 @@ AS $$
 DECLARE
   v_num_passengers INT;
   v_booked_count INT;
-  v_booking_id BIGINT;
-  v_existing_booking_id BIGINT;
+  v_existing_booking_count INT;
   v_traveler_first_name TEXT;
   v_traveler_last_name TEXT;
   v_traveler_phone INT;
@@ -31,7 +30,7 @@ BEGIN
   SELECT "FirstName", "LastName", "MobileNumber", "EmailAddress"
   INTO v_traveler_first_name, v_traveler_last_name, v_traveler_phone, v_traveler_email
   FROM "user"
-  WHERE id = p_traveler_id;
+  WHERE auth_id = p_traveler_id;
   
   -- Check if traveler exists
   IF v_traveler_first_name IS NULL THEN
@@ -50,22 +49,27 @@ BEGIN
   END IF;
   
   -- Check if traveler already booked this trip (status is not 'completed')
-  SELECT id INTO v_existing_booking_id
+  SELECT COUNT(*) INTO v_existing_booking_count
   FROM bookings
-  WHERE trip_id = p_trip_id AND traveler_id = p_traveler_id 
-  AND (status IS NULL OR status != 'completed')
-  LIMIT 1;
+  WHERE trip_id = p_trip_id 
+  AND traveler_id = p_traveler_id 
+  AND (status IS NULL OR status != 'completed');
   
-  IF v_existing_booking_id IS NOT NULL THEN
+  IF v_existing_booking_count > 0 THEN
     RETURN jsonb_build_object('success', false, 'error', 'Already booked this trip');
   END IF;
   
-  -- Count current bookings for this trip (excluding completed bookings)
+  -- Count current bookings for this trip (only count non-cancelled bookings)
+  -- Include bookings with status: NULL (new), 'pending', or 'confirmed'
   SELECT COUNT(*) INTO v_booked_count
   FROM bookings
-  WHERE trip_id = p_trip_id AND (status IS NULL OR status != 'completed');
+  WHERE trip_id = p_trip_id 
+  AND (status IS NULL OR status IN ('pending', 'confirmed', 'waiting'));
   
-  -- Check if there's capacity
+  -- Debug logging (will appear in Postgres logs)
+  RAISE NOTICE 'Trip ID: %, Capacity: %, Current bookings: %', p_trip_id, v_num_passengers, v_booked_count;
+  
+  -- Check if there's capacity (strict inequality: must have at least one free seat)
   IF v_booked_count >= v_num_passengers THEN
     RETURN jsonb_build_object('success', false, 'error', 'No seats available');
   END IF;
@@ -98,13 +102,13 @@ BEGIN
     v_traveler_email,
     'pending',
     NOW()
-  )
-  RETURNING id INTO v_booking_id;
-  
-  -- Return success with booking ID
+  );
+
+  -- Return success confirmation
   RETURN jsonb_build_object(
     'success', true,
-    'booking_id', v_booking_id,
+    'trip_id', p_trip_id,
+    'traveler_id', p_traveler_id,
     'message', 'Booking created successfully'
   );
   

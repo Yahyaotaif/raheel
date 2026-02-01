@@ -185,9 +185,9 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
 
         // Count how many travelers have booked this trip (all bookings)
         final bookingResponse = await Supabase.instance.client
-            .from('bookings')
-            .select('id')
-            .eq('trip_id', tripId);
+          .from('bookings')
+          .select('trip_id')
+          .eq('trip_id', tripId);
 
         final bookedSeats = (bookingResponse as List).length;
 
@@ -260,9 +260,9 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
       // Get traveler details - use maybeSingle() to handle missing records gracefully
       logger.d('Querying user table for auth ID: $travelerId');
       
-      final travelerResponse = await Supabase.instance.client
+        final travelerResponse = await Supabase.instance.client
           .from('user')
-          .select('id, FirstName, LastName, MobileNumber, EmailAddress')
+          .select('auth_id, FirstName, LastName, MobileNumber, EmailAddress')
           .eq('auth_id', travelerId)
           .maybeSingle();
 
@@ -285,7 +285,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
       }
 
       if (!mounted) return;
-      final databaseUserId = travelerResponse['id']; // Database ID (UUID)
+      final databaseUserId = travelerResponse['auth_id']; // Auth ID (UUID)
       final firstName = travelerResponse['FirstName'];
       final lastName = travelerResponse['LastName'];
       final phone = travelerResponse['MobileNumber'];
@@ -321,9 +321,9 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
       // This prevents travelers from paying when trip might already be full
       try {
         final bookingCount = await Supabase.instance.client
-            .from('bookings')
-            .select('id')
-            .eq('trip_id', tripId);
+          .from('bookings')
+          .select('trip_id')
+          .eq('trip_id', tripId);
 
         final currentBookedSeats = (bookingCount as List).length;
 
@@ -403,7 +403,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
         final bookingResult = await Supabase.instance.client.rpc(
           'book_trip',
           params: {
-            'p_traveler_id': databaseUserId, // Use database ID, not auth ID
+            'p_traveler_id': databaseUserId, // Auth ID (primary key)
             'p_driver_id': driverId,
             'p_trip_id': tripId,
             'p_trip_date': _selectedDate!.toIso8601String().split('T')[0],
@@ -419,10 +419,10 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
           // Booking successful, send email to driver
           try {
             final driverData = await Supabase.instance.client
-                .from('user')
-                .select('EmailAddress')
-                .eq('id', driverId)
-                .maybeSingle();
+              .from('user')
+              .select('EmailAddress')
+              .eq('auth_id', driverId)
+              .maybeSingle();
             
             if (driverData != null && driverData['EmailAddress'] != null) {
               await _sendEmailToDriver(
@@ -498,19 +498,27 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
           if (!mounted) return;
 
           final errorMessage = bookingResult?['error'] ?? 'حدث خطأ في الحجز';
-          String userMessage =
-              'عذراً، انتهت المقاعد المتاحة في هذه الرحلة. تم حجزها من قبل مسافر آخر في نفس اللحظة.';
+          final fullError = bookingResult.toString();
+          logger.e('Booking error details: $errorMessage');
+          logger.e('Full booking result: $fullError');
+          
+          String userMessage = errorMessage.toString();
 
           // Customize message based on specific error
-          if (errorMessage.contains('Already booked') ||
-              errorMessage.contains('already')) {
+          if (errorMessage.toString().contains('Already booked') ||
+              errorMessage.toString().contains('already')) {
             userMessage = 'عذراً، أنت قد حجزت هذه الرحلة بالفعل';
-          } else if (errorMessage.contains('not found') ||
-              errorMessage.contains('متاحة')) {
+          } else if (errorMessage.toString().contains('not found') ||
+              errorMessage.toString().contains('متاحة')) {
             userMessage = 'عذراً، هذه الرحلة لم تعد متاحة';
-          } else if (errorMessage.contains('full') ||
-              errorMessage.contains('مقاعد')) {
-            userMessage = 'عذراً، لا توجد مقاعد متاحة في هذه الرحلة';
+          } else if (errorMessage.toString().contains('No seats available') ||
+              errorMessage.toString().contains('full') ||
+              errorMessage.toString().contains('مقاعد')) {
+            userMessage = 'عذراً، انتهت المقاعد المتاحة في هذه الرحلة. تم حجزها من قبل مسافر آخر في نفس اللحظة.';
+          } else if (errorMessage.toString().contains('Traveler data not found')) {
+            userMessage = 'عذراً، بيانات المسافر غير صحيحة. يرجى تسجيل الدخول مرة أخرى.';
+          } else if (errorMessage.toString().contains('Trip not found')) {
+            userMessage = 'عذراً، الرحلة غير موجودة أو تم حذفها.';
           }
 
           ScaffoldMessenger.of(context).showSnackBar(
@@ -526,14 +534,30 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
       } catch (e) {
         if (!mounted) return;
         logger.e('Booking RPC error: $e');
+        logger.e('Error type: ${e.runtimeType}');
+        logger.e('Error string: ${e.toString()}');
+        
+        // Show detailed error for debugging
+        String errorDetail = 'حدث خطأ في النظام';
+        if (e.toString().contains('Traveler data not found')) {
+          errorDetail = 'بيانات المسافر غير موجودة. يرجى تسجيل الدخول مرة أخرى.';
+        } else if (e.toString().contains('Trip not found')) {
+          errorDetail = 'الرحلة غير موجودة أو تم حذفها.';
+        } else if (e.toString().contains('No seats available')) {
+          errorDetail = 'لا توجد مقاعد متاحة في هذه الرحلة.';
+        } else if (e.toString().contains('Already booked')) {
+          errorDetail = 'أنت قد حجزت هذه الرحلة بالفعل.';
+        }
+        
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'خطأ التفاصيل: $e',
+              errorDetail,
               textDirection: TextDirection.rtl,
               maxLines: 3,
             ),
             backgroundColor: Colors.red,
+            duration: const Duration(seconds: 5),
           ),
         );
       }

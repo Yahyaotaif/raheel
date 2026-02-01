@@ -45,9 +45,9 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
     });
 
     try {
-      // Use user.id from SharedPreferences for driver_id
+      // Use auth_id from SharedPreferences for driver_id
       final prefs = await SharedPreferences.getInstance();
-      final driverId = prefs.getString('user_id');
+      final driverId = prefs.getString('auth_id') ?? prefs.getString('user_id');
 
       if (driverId == null) {
         throw Exception('لم يتم العثور على المستخدم');

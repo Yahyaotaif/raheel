@@ -234,11 +234,16 @@ class _MainAppState extends State<MainApp> {
           uri.host == 'reset-password') {
         // Extract access token from query parameters if present
         final accessToken = uri.queryParameters['access_token'];
+        final refreshToken = uri.queryParameters['refresh_token'];
         final tokenType = uri.queryParameters['type'];
 
         _navigatorKey.currentState?.pushReplacementNamed(
           '/reset-password',
-          arguments: {'access_token': accessToken, 'type': tokenType},
+          arguments: {
+            'access_token': accessToken,
+            'refresh_token': refreshToken,
+            'type': tokenType,
+          },
         );
       }
     } catch (e) {

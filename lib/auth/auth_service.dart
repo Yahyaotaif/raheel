@@ -37,8 +37,8 @@ class AuthService {
 
     // Check for duplicate Username
     final duplicateUsername = await _supabase
-        .from('user')
-        .select('id')
+      .from('user')
+      .select('auth_id')
         .eq('Username', username)
         .limit(1)
         .maybeSingle();
@@ -48,8 +48,8 @@ class AuthService {
 
     // Check for duplicate MobileNumber
     final duplicateMobile = await _supabase
-        .from('user')
-        .select('id')
+      .from('user')
+      .select('auth_id')
         .eq('MobileNumber', phone)
         .limit(1)
         .maybeSingle();
@@ -59,8 +59,8 @@ class AuthService {
 
     // Check for duplicate EmailAddress
     final duplicateEmail = await _supabase
-        .from('user')
-        .select('id')
+      .from('user')
+      .select('auth_id')
         .eq('EmailAddress', emailAddress)
         .limit(1)
         .maybeSingle();
@@ -94,14 +94,21 @@ class AuthService {
     };
     userData.removeWhere((key, value) => value == null);
     try {
-      final response = await _supabase.from('user').insert(userData).select();
-      debugPrint('Supabase insert response:');
-      debugPrint(response.toString());
-      // If response is empty, treat as failure
-      if (response.isEmpty) {
-        debugPrint('Insert returned empty list');
-        throw Exception('فشل إدراج المستخدم في جدول المستخدمين.');
-      }
+      await _supabase.rpc(
+        'create_user_profile',
+        params: {
+          'p_auth_id': authResponse.user!.id,
+          'p_first_name': firstName,
+          'p_last_name': lastName,
+          'p_username': username,
+          'p_mobile': phone,
+          'p_email': emailAddress,
+          'p_password': hashedPassword,
+          'p_car_type': carType,
+          'p_car_plate': carPlate,
+          'p_user_type': userType,
+        },
+      );
     } catch (e, stack) {
       debugPrint('Exception in registerUser: $e');
       debugPrint('Stack trace: $stack');
@@ -122,8 +129,8 @@ class AuthService {
   Future<Map<String, dynamic>?> signInWithEmailOrUsername(String identifier, String password) async {
     debugPrint('Attempting login with identifier: "$identifier"');
     final userQuery = await _supabase
-        .from('user')
-        .select('id, FirstName, LastName, EmailAddress, Username, MobileNumber, Password, user_type')
+      .from('user')
+      .select('auth_id, FirstName, LastName, EmailAddress, Username, MobileNumber, Password, user_type')
         .or('EmailAddress.eq.$identifier,Username.eq.$identifier')
         .maybeSingle();
     debugPrint('Login query result: $userQuery');
@@ -136,8 +143,41 @@ class AuthService {
       throw Exception('لا توجد كلمة مرور مسجلة لهذا الحساب');
     }
     final inputHash = hashPassword(password);
+    final email = userQuery['EmailAddress'] as String?;
     if (storedHash != inputHash) {
-      throw Exception('كلمة المرور التي أدخلتها غير صحيحة');
+      // Fallback: try Supabase Auth (in case password was reset there)
+      if (email != null && email.isNotEmpty) {
+        try {
+          await _supabase.auth.signInWithPassword(
+            email: email,
+            password: password,
+          );
+          // Sync hashed password in custom user table
+          await _supabase
+              .from('user')
+              .update({'Password': inputHash})
+              .eq('EmailAddress', email);
+          debugPrint('Password synced from Supabase Auth for user: $email');
+        } catch (e) {
+          debugPrint('Supabase Auth fallback failed: $e');
+          throw Exception('كلمة المرور غير صحيحة');
+        }
+      } else {
+        throw Exception('كلمة المرور غير صحيحة');
+      }
+    } else {
+      // Ensure Supabase Auth session exists for RLS-protected writes
+      if (email != null && email.isNotEmpty) {
+        try {
+          await _supabase.auth.signInWithPassword(
+            email: email,
+            password: password,
+          );
+        } catch (e) {
+          debugPrint('Supabase Auth sign-in failed after hash match: $e');
+          throw Exception('تعذر تسجيل الدخول. يرجى المحاولة مرة أخرى');
+        }
+      }
     }
     // Return user info (without password)
     userQuery.remove('Password');

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
+import 'package:raheel/auth/password_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ResetPasswordHandler extends StatefulWidget {
@@ -16,6 +17,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
   String? _errorMessage;
   bool _isInitialized = false;
   String? _accessToken;
+  String? _refreshToken;
 
   @override
   void initState() {
@@ -28,10 +30,16 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
       // Get arguments from navigation (access token from deep link)
       final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       _accessToken = args?['access_token'] as String?;
+      _refreshToken = args?['refresh_token'] as String?;
       final tokenType = args?['type'] as String?;
 
       // Check if we have a recovery token from deep link
       if (_accessToken != null && tokenType == 'recovery') {
+        if (_refreshToken != null) {
+          await Supabase.instance.client.auth.setSession(
+            _refreshToken!,
+          );
+        }
         setState(() {
           _isInitialized = true;
         });
@@ -91,16 +99,63 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
     });
 
     try {
-      // If we have a recovery token from deep link, use Supabase REST API
-      if (_accessToken != null) {
-        await Supabase.instance.client.auth.updateUser(
-          UserAttributes(password: newPassword),
+      // Ensure we have a valid session for recovery flows
+      User? sessionUser;
+      if (_refreshToken != null) {
+        final sessionResponse =
+            await Supabase.instance.client.auth.setSession(_refreshToken!);
+        sessionUser = sessionResponse.user;
+      }
+
+      // Update password in Supabase Auth
+      final updateResponse = await Supabase.instance.client.auth.updateUser(
+        UserAttributes(password: newPassword),
+      );
+
+      // Keep custom user table in sync (app login uses hashed password)
+        final authUserId = updateResponse.user?.id ??
+          sessionUser?.id ??
+          Supabase.instance.client.auth.currentUser?.id;
+        final authEmail = updateResponse.user?.email ??
+          sessionUser?.email ??
+          Supabase.instance.client.auth.currentUser?.email;
+
+      final hashedPassword = hashPassword(newPassword);
+      
+      debugPrint('Attempting to update password in user table for auth_id: $authUserId');
+      
+      try {
+        await Supabase.instance.client
+            .from('user')
+            .update({'Password': hashedPassword})
+            .eq('auth_id', authUserId!)
+            .select();
+        
+        debugPrint('Password successfully updated in user table');
+      } catch (e) {
+        debugPrint('Direct password update failed: $e');
+        if (authEmail == null || authEmail.isEmpty) {
+          throw Exception('تعذر تحديث كلمة المرور لعدم توفر البريد الإلكتروني');
+        }
+        debugPrint('Falling back to RPC sync_user_password for email: $authEmail');
+        final result = await Supabase.instance.client.rpc(
+          'sync_user_password',
+          params: {
+            'user_auth_id': authUserId,
+            'user_email': authEmail,
+            'hashed_password': hashedPassword,
+          },
         );
-      } else {
-        // Use regular session-based update
-        await Supabase.instance.client.auth.updateUser(
-          UserAttributes(password: newPassword),
-        );
+        if (result is List && result.isNotEmpty) {
+          final success = result[0]['success'] as bool?;
+          final message = result[0]['message'] as String?;
+          if (success != true) {
+            throw Exception('فشل تحديث كلمة المرور: $message');
+          }
+          debugPrint('Password successfully synced via RPC');
+        } else {
+          throw Exception('لم يتم الحصول على رد من خادم الدالة');
+        }
       }
 
       if (!mounted) return;
@@ -122,10 +177,27 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
       if (!mounted) return;
       Navigator.of(context).pushReplacementNamed('/login');
     } catch (e) {
+      debugPrint('Reset password error: ${e.toString()}');
+      final errorString = e.toString().toLowerCase();
+      final message = errorString.contains('same_password')
+          ? 'كلمة المرور الجديدة يجب أن تكون مختلفة عن كلمة المرور القديمة'
+          : 'خطأ أثناء تحديث كلمة المرور: ${e.toString()}';
       setState(() {
         _isLoading = false;
-        _errorMessage = 'خطأ: ${e.toString()}';
+        _errorMessage = message;
       });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              message,
+              textDirection: TextDirection.rtl,
+              maxLines: 3,
+            ),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
     }
   }
 

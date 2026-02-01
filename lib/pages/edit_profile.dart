@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 
 class EditProfilePage extends StatefulWidget {
@@ -14,15 +15,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
   /// Retrieves the current user from SharedPreferences session storage.
   Future<Map<String, dynamic>?> getCurrentUserFromCustomSession() async {
     final prefs = await SharedPreferences.getInstance();
-    final id = prefs.getInt('user_id');
+    final authId = prefs.getString('auth_id') ?? prefs.getString('user_id') ?? prefs.getInt('user_id')?.toString();
     final firstName = prefs.getString('first_name');
     final lastName = prefs.getString('last_name');
     final email = prefs.getString('email');
     final mobile = prefs.getString('mobile');
     final userType = prefs.getString('user_type');
-    if (id == null) return null;
+    if (authId == null) return null;
     return {
-      'id': id,
+      'auth_id': authId,
       'FirstName': firstName ?? '',
       'LastName': lastName ?? '',
       'EmailAddress': email ?? '',
@@ -61,8 +62,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
     });
     try {
       final user = await getCurrentUserFromCustomSession();
-      final userId = user?['id'];
-      if (userId == null) {
+      final authId = user?['auth_id'];
+      if (authId == null) {
         setState(() {
           _errorMessage = 'لم يتم العثور على المستخدم.';
           _isLoading = false;
@@ -79,14 +80,25 @@ class _EditProfilePageState extends State<EditProfilePage> {
           });
           return;
         }
-        // You can use int.parse(mobileText) in your update logic if needed
       }
+      
+      // Update Supabase database
+      final supabase = Supabase.instance.client;
+      await supabase
+          .from('user')
+          .update({
+            'FirstName': _firstNameController.text.trim(),
+            'LastName': _lastNameController.text.trim(),
+            'MobileNumber': mobileText,
+          })
+          .eq('auth_id', authId);
+      
       // Update user data in SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('first_name', _firstNameController.text.trim());
       await prefs.setString('last_name', _lastNameController.text.trim());
       await prefs.setString('mobile', mobileText);
-      // If you want to update email or user_type, add similar lines here
+      
       setState(() {
         _isLoading = false;
       });

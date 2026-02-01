@@ -196,9 +196,10 @@ class _LoginPageState extends State<LoginPage> {
         await prefs.setString('email', user['EmailAddress'] ?? '');
         await prefs.setString('username', user['Username'] ?? '');
         await prefs.setString('user_type', user['user_type'] ?? 'traveler');
-        // Store user.id (UUID from user table) for use as driver_id
-        if (user['id'] != null) {
-          await prefs.setString('user_id', user['id']);
+        // Store auth_id (UUID from Supabase Auth) for use as driver_id/traveler_id
+        if (user['auth_id'] != null) {
+          await prefs.setString('auth_id', user['auth_id']);
+          await prefs.setString('user_id', user['auth_id']);
         }
         if (mounted) {
           Navigator.of(context).pushReplacement(

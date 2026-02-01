@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
+import 'package:raheel/auth/password_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ChangePasswordPage extends StatelessWidget {
@@ -176,8 +177,9 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                         }
                         try {
                           final authUser = await Supabase.instance.client.auth.getUser();
-                          final userId = authUser.user?.id;
-                          if (userId == null) {
+                          final authUserId = authUser.user?.id;
+                          final authEmail = authUser.user?.email;
+                          if (authUserId == null && authEmail == null) {
                             setState(() {
                               errorMessage = 'لم يتم العثور على المستخدم.';
                               isLoading = false;
@@ -195,12 +197,44 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                             });
                             return;
                           }
-                          // Optionally update your user table as well
-                          await Supabase.instance.client
-                              .from('user')
-                              .update({'Password': newPassword, 'Password2': newPassword})
-                              .eq('id', userId)
-                              .select();
+                          // Update your user table with hashed password directly
+                          final hashedPassword = hashPassword(newPassword);
+                          
+                          debugPrint('Attempting to update password in user table for auth_id: $authUserId');
+                          
+                          try {
+                            await Supabase.instance.client
+                                .from('user')
+                                .update({'Password': hashedPassword})
+                                .eq('auth_id', authUserId!)
+                                .select();
+                            
+                            debugPrint('Password successfully updated in user table');
+                          } catch (e) {
+                            debugPrint('Direct password update failed: $e');
+                            if (authEmail == null || authEmail.isEmpty) {
+                              throw Exception('تعذر تحديث كلمة المرور لعدم توفر البريد الإلكتروني');
+                            }
+                            debugPrint('Falling back to RPC sync_user_password for email: $authEmail');
+                            final result = await Supabase.instance.client.rpc(
+                              'sync_user_password',
+                              params: {
+                                'user_auth_id': authUserId,
+                                'user_email': authEmail,
+                                'hashed_password': hashedPassword,
+                              },
+                            );
+                            if (result is List && result.isNotEmpty) {
+                              final success = result[0]['success'] as bool?;
+                              final message = result[0]['message'] as String?;
+                              if (success != true) {
+                                throw Exception('فشل تحديث كلمة المرور: $message');
+                              }
+                              debugPrint('Password successfully synced via RPC');
+                            } else {
+                              throw Exception('لم يتم الحصول على رد من خادم الدالة');
+                            }
+                          }
                           setState(() {
                             isLoading = false;
                           });
@@ -215,8 +249,12 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                             Navigator.of(context).pop();
                           }
                         } catch (e) {
+                          final errorString = e.toString().toLowerCase();
+                          final message = errorString.contains('same_password')
+                              ? 'كلمة المرور الجديدة يجب أن تكون مختلفة عن كلمة المرور القديمة'
+                              : 'خطأ أثناء تغيير كلمة المرور: ${e.toString()}';
                           setState(() {
-                            errorMessage = 'حدث خطأ غير متوقع.';
+                            errorMessage = message;
                             isLoading = false;
                           });
                         }

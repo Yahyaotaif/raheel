@@ -190,7 +190,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
 
     // Fetch user.id (from user table) from SharedPreferences
     final prefs = await SharedPreferences.getInstance();
-    final driverId = prefs.getString('user_id');
+    final driverId = prefs.getString('auth_id') ?? prefs.getString('user_id');
 
     if (driverId == null) {
       setState(() {

@@ -17,22 +17,22 @@ CREATE POLICY "Users can create their own profile"
 ON public.user
 FOR INSERT
 TO authenticated, anon
-WITH CHECK (id = auth.uid());
+WITH CHECK (auth_id = auth.uid());
 
 -- Policy: Users can view their own profile only
 CREATE POLICY "Users can view their own profile"
 ON public.user
 FOR SELECT
 TO authenticated
-USING (auth.uid() = id);
+USING (auth.uid() = auth_id);
 
 -- Policy: Users can update their own profile only
 CREATE POLICY "Users can update their own profile"
 ON public.user
 FOR UPDATE
 TO authenticated
-USING (auth.uid() = id)
-WITH CHECK (auth.uid() = id);
+USING (auth.uid() = auth_id)
+WITH CHECK (auth.uid() = auth_id);
 
 -- Policy: Users cannot delete their own profile (optional security measure)
 -- Uncomment if you want to prevent profile deletion

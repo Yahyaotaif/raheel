@@ -43,9 +43,9 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
     });
 
     try {
-      // Use user.id from SharedPreferences for traveler_id
+      // Use auth_id from SharedPreferences for traveler_id
       final prefs = await SharedPreferences.getInstance();
-      final travelerId = prefs.getString('user_id');
+      final travelerId = prefs.getString('auth_id') ?? prefs.getString('user_id');
 
       if (travelerId == null) {
         throw Exception('لم يتم العثور على المستخدم');
@@ -65,10 +65,10 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
       List<Map<String, dynamic>> enrichedBookings = [];
       for (var booking in response) {
         try {
-          final driverResponse = await Supabase.instance.client
+            final driverResponse = await Supabase.instance.client
               .from('user')
               .select('FirstName, LastName, MobileNumber')
-              .eq('id', booking['driver_id'])
+              .eq('auth_id', booking['driver_id'])
               .single();
 
           enrichedBookings.add({
