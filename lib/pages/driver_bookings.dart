@@ -539,7 +539,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                                 InkWell(
                                   onTap: () {
                                     final phoneNumber =
-                                      booking['traveler_phone'].toString();
+                                      '0${booking['traveler_phone'].toString()}';
                                     _makePhoneCall(phoneNumber);
                                   },
                                   borderRadius: BorderRadius.circular(8),
@@ -552,7 +552,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                                       textDirection: TextDirection.rtl,
                                       children: [
                                         Text(
-                                          booking['traveler_phone'] ?? '',
+                                          '0${booking['traveler_phone'] ?? ''}',
                                           style: const TextStyle(
                                             fontSize: 15,
                                             color: kAppBarColor,

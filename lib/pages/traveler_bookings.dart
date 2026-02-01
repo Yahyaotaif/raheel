@@ -263,7 +263,7 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
                                             onTap: () {
                                               final phoneNumber = driver['MobileNumber']?.toString() ?? '';
                                               if (phoneNumber.isNotEmpty) {
-                                                _makePhoneCall('0$phoneNumber');
+                                                _makePhoneCall(phoneNumber);
                                               }
                                             },
                                             borderRadius: BorderRadius.circular(8),
@@ -276,7 +276,7 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
                                                 textDirection: TextDirection.rtl,
                                                 children: [
                                                   Text(
-                                                    '0${driver['MobileNumber']?.toString() ?? ''}',
+                                                    driver['MobileNumber']?.toString() ?? '',
                                                     textDirection: TextDirection.rtl,
                                                     style: const TextStyle(
                                                       fontSize: 15,
