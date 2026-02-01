@@ -41,6 +41,14 @@ class _RegistrationPageState extends State<RegistrationPage>
   bool _travelerAcceptedPolicy = false;
   late TabController _tabController;
 
+    static const String _usernameErrorText =
+      'اسم المستخدم يجب أن يكون بين 4 و 8 أحرف أو أرقام فقط';
+    static const String _emailErrorText = 'يرجى إدخال بريد إلكتروني صحيح ';
+    static const String _phoneErrorText = 'رقم الجوال يجب أن يكون مكونًا من 10 أرقام';
+    static const String _passwordErrorText =
+      'يجب أن تحتوي كلمة المرور على أربع حروف كبيرة وأربع حروف صغيرة ورقم';
+    static const String _confirmPasswordErrorText = 'كلمتا المرور غير متطابقتين';
+
   @override
   void initState() {
     super.initState();
@@ -203,12 +211,21 @@ class _RegistrationPageState extends State<RegistrationPage>
       });
       return;
     }
+    // Validate username: 4-8 alphanumeric characters
+    final username = _driverUsernameController.text.trim();
+    if (!RegExp(r'^[a-zA-Z0-9]{4,8}$').hasMatch(username)) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = _usernameErrorText;
+      });
+      return;
+    }
     // Validate email address: must contain '@' and '.'
     final email = _driverEmailController.text.trim();
     if (!email.contains('@') || !email.contains('.')) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'يرجى إدخال بريد إلكتروني صحيح ';
+        _errorMessage = _emailErrorText;
       });
       return;
     }
@@ -217,7 +234,7 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'رقم الجوال يجب أن يكون مكونًا من 10 أرقام';
+        _errorMessage = _phoneErrorText;
       });
       return;
     }
@@ -226,14 +243,14 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!RegExp(r'^(?=(?:.*[A-Z]){4,})(?=(?:.*[a-z]){4,})(?=.*\d)').hasMatch(password)) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'يجب أن تحتوي كلمة المرور على أربع حروف كبيرة وأربع حروف صغيرة ورقم';
+        _errorMessage = _passwordErrorText;
       });
       return;
     }
     if (_driverPasswordController.text != _driverPassword2Controller.text) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'كلمتا المرور غير متطابقتين';
+        _errorMessage = _confirmPasswordErrorText;
       });
       return;
     }
@@ -297,14 +314,16 @@ class _RegistrationPageState extends State<RegistrationPage>
     } catch (e) {
       debugPrint('Driver registration error: ${e.toString()}');
       setState(() {
-        final msg = e.toString();
-        if (msg.contains('رقم الجوال')) {
+        final msg = e.toString().toLowerCase();
+        if (msg.contains('already registered') || msg.contains('already exists') || msg.contains('user already')) {
+          _errorMessage = 'هذا الحساب مسجل بالفعل. يرجى تسجيل الدخول أو استخدام بيانات أخرى';
+        } else if (msg.contains('رقم الجوال')) {
           _errorMessage = 'رقم الجوال مستخدم بالفعل من قبل مستخدم آخر.';
-        } else if (msg.contains('البريد الإلكتروني') || msg.toLowerCase().contains('email')) {
+        } else if (msg.contains('البريد الإلكتروني') || msg.contains('email')) {
           _errorMessage = 'البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.';
-        } else if (msg.toLowerCase().contains('password')) {
+        } else if (msg.contains('password')) {
           _errorMessage = 'كلمة المرور ضعيفة أو غير صالحة';
-        } else if (msg.toLowerCase().contains('مسجل')) {
+        } else if (msg.contains('مسجل')) {
           _errorMessage = 'المستخدم مسجل مسبقاً';
         } else {
           _errorMessage = 'حدث خطأ. يرجى التحقق من البيانات والمحاولة مرة أخرى';
@@ -331,12 +350,21 @@ class _RegistrationPageState extends State<RegistrationPage>
       });
       return;
     }
+    // Validate username: 4-8 alphanumeric characters
+    final username = _travelerUsernameController.text.trim();
+    if (!RegExp(r'^[a-zA-Z0-9]{4,8}$').hasMatch(username)) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = _usernameErrorText;
+      });
+      return;
+    }
     // Validate email address: must contain '@' and '.'
     final email = _travelerEmailController.text.trim();
     if (!email.contains('@') || !email.contains('.')) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'يرجى إدخال بريد إلكتروني صحيح ';
+        _errorMessage = _emailErrorText;
       });
       return;
     }
@@ -345,7 +373,7 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'رقم الجوال يجب أن يكون مكونًا من 10 أرقام';
+        _errorMessage = _phoneErrorText;
       });
       return;
     }
@@ -354,14 +382,14 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!RegExp(r'^(?=(?:.*[A-Z]){4,})(?=(?:.*[a-z]){4,})(?=.*\d)').hasMatch(password)) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'يجب أن تحتوي كلمة المرور على أربع حروف كبيرة وأربع حروف صغيرة ورقم';
+        _errorMessage = _passwordErrorText;
       });
       return;
     }
     if (_travelerPasswordController.text != _travelerPassword2Controller.text) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'كلمتا المرور غير متطابقتين';
+        _errorMessage = _confirmPasswordErrorText;
       });
       return;
     }
@@ -434,14 +462,16 @@ class _RegistrationPageState extends State<RegistrationPage>
       debugPrint('Registration error: ${e.toString()}');
       setState(() {
         _isLoading = false;
-        final msg = e.toString();
-        if (msg.contains('رقم الجوال')) {
+        final msg = e.toString().toLowerCase();
+        if (msg.contains('already registered') || msg.contains('already exists') || msg.contains('user already')) {
+          _errorMessage = 'هذا الحساب مسجل بالفعل. يرجى تسجيل الدخول أو استخدام بيانات أخرى';
+        } else if (msg.contains('رقم الجوال')) {
           _errorMessage = 'رقم الجوال مستخدم بالفعل من قبل مستخدم آخر.';
-        } else if (msg.contains('البريد الإلكتروني') || msg.toLowerCase().contains('email')) {
+        } else if (msg.contains('البريد الإلكتروني') || msg.contains('email')) {
           _errorMessage = 'البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.';
-        } else if (msg.toLowerCase().contains('password')) {
+        } else if (msg.contains('password')) {
           _errorMessage = 'كلمة المرور ضعيفة أو غير صالحة';
-        } else if (msg.toLowerCase().contains('مسجل')) {
+        } else if (msg.contains('مسجل')) {
           _errorMessage = 'المستخدم مسجل مسبقاً';
         } else {
           _errorMessage = 'حدث خطأ. يرجى التحقق من البيانات والمحاولة مرة أخرى';
@@ -454,21 +484,25 @@ class _RegistrationPageState extends State<RegistrationPage>
     final phone = value.trim();
 
     if (phone.isEmpty) {
-      setState(() {
-        _errorMessage = null;
-      });
+      if (_errorMessage == _phoneErrorText) {
+        setState(() {
+          _errorMessage = null;
+        });
+      }
       return;
     }
 
     // Just check if it's exactly 10 digits
     if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
       setState(() {
-        _errorMessage = 'رقم الجوال يجب أن يكون مكونًا من 10 أرقام';
+        _errorMessage = _phoneErrorText;
       });
     } else {
-      setState(() {
-        _errorMessage = null;
-      });
+      if (_errorMessage == _phoneErrorText) {
+        setState(() {
+          _errorMessage = null;
+        });
+      }
     }
   }
 
@@ -610,6 +644,22 @@ class _RegistrationPageState extends State<RegistrationPage>
                               _driverUsernameController,
                               'اسم المستخدم',
                               icon: Icons.account_circle_outlined,
+                              onChanged: (value) {
+                                final trimmed = value.trim();
+                                if (trimmed.isEmpty) {
+                                  if (_errorMessage == _usernameErrorText) {
+                                    setState(() => _errorMessage = null);
+                                  }
+                                  return;
+                                }
+                                if (RegExp(r'^[a-zA-Z0-9]{4,8}$').hasMatch(trimmed)) {
+                                  if (_errorMessage == _usernameErrorText) {
+                                    setState(() => _errorMessage = null);
+                                  }
+                                } else {
+                                  setState(() => _errorMessage = _usernameErrorText);
+                                }
+                              },
                             ),
                           const SizedBox(height: 16),
                           _buildTextField(
@@ -623,6 +673,22 @@ class _RegistrationPageState extends State<RegistrationPage>
                           _buildTextField(
                             _driverEmailController,
                             'الايميل الالكتروني',
+                            onChanged: (value) {
+                              final trimmed = value.trim();
+                              if (trimmed.isEmpty) {
+                                if (_errorMessage == _emailErrorText) {
+                                  setState(() => _errorMessage = null);
+                                }
+                                return;
+                              }
+                              if (trimmed.contains('@') && trimmed.contains('.')) {
+                                if (_errorMessage == _emailErrorText) {
+                                  setState(() => _errorMessage = null);
+                                }
+                              } else {
+                                setState(() => _errorMessage = _emailErrorText);
+                              }
+                            },
                             icon: Icons.email_outlined,
                           ),
                           const SizedBox(height: 16),
@@ -631,6 +697,21 @@ class _RegistrationPageState extends State<RegistrationPage>
                             'كلمة المرور',
                             obscureText: true,
                             hint: 'اربع حروف كبيرة واربع حروف صغيرة ورقم',
+                            onChanged: (value) {
+                              if (value.isEmpty) {
+                                if (_errorMessage == _passwordErrorText) {
+                                  setState(() => _errorMessage = null);
+                                }
+                                return;
+                              }
+                              if (RegExp(r'^(?=(?:.*[A-Z]){4,})(?=(?:.*[a-z]){4,})(?=.*\d)').hasMatch(value)) {
+                                if (_errorMessage == _passwordErrorText) {
+                                  setState(() => _errorMessage = null);
+                                }
+                              } else {
+                                setState(() => _errorMessage = _passwordErrorText);
+                              }
+                            },
                             icon: Icons.lock_outline,
                           ),
                           const SizedBox(height: 16),
@@ -638,6 +719,21 @@ class _RegistrationPageState extends State<RegistrationPage>
                             _driverPassword2Controller,
                             'إعادة كلمة المرور',
                             obscureText: true,
+                            onChanged: (value) {
+                              if (value.isEmpty) {
+                                if (_errorMessage == _confirmPasswordErrorText) {
+                                  setState(() => _errorMessage = null);
+                                }
+                                return;
+                              }
+                              if (value == _driverPasswordController.text) {
+                                if (_errorMessage == _confirmPasswordErrorText) {
+                                  setState(() => _errorMessage = null);
+                                }
+                              } else {
+                                setState(() => _errorMessage = _confirmPasswordErrorText);
+                              }
+                            },
                             icon: Icons.lock_reset,
                           ),
                           const SizedBox(height: 16),
@@ -791,6 +887,22 @@ class _RegistrationPageState extends State<RegistrationPage>
                               _travelerUsernameController,
                               'اسم المستخدم',
                               icon: Icons.account_circle_outlined,
+                              onChanged: (value) {
+                                final trimmed = value.trim();
+                                if (trimmed.isEmpty) {
+                                  if (_errorMessage == _usernameErrorText) {
+                                    setState(() => _errorMessage = null);
+                                  }
+                                  return;
+                                }
+                                if (RegExp(r'^[a-zA-Z0-9]{4,8}$').hasMatch(trimmed)) {
+                                  if (_errorMessage == _usernameErrorText) {
+                                    setState(() => _errorMessage = null);
+                                  }
+                                } else {
+                                  setState(() => _errorMessage = _usernameErrorText);
+                                }
+                              },
                             ),
                           const SizedBox(height: 16),
                           _buildTextField(
@@ -804,6 +916,22 @@ class _RegistrationPageState extends State<RegistrationPage>
                           _buildTextField(
                             _travelerEmailController,
                             'الايميل الالكتروني',
+                            onChanged: (value) {
+                              final trimmed = value.trim();
+                              if (trimmed.isEmpty) {
+                                if (_errorMessage == _emailErrorText) {
+                                  setState(() => _errorMessage = null);
+                                }
+                                return;
+                              }
+                              if (trimmed.contains('@') && trimmed.contains('.')) {
+                                if (_errorMessage == _emailErrorText) {
+                                  setState(() => _errorMessage = null);
+                                }
+                              } else {
+                                setState(() => _errorMessage = _emailErrorText);
+                              }
+                            },
                             icon: Icons.email_outlined,
                           ),
                           const SizedBox(height: 16),
@@ -812,6 +940,21 @@ class _RegistrationPageState extends State<RegistrationPage>
                             'كلمة المرور',
                             obscureText: true,
                             hint: 'اربع حروف كبيرة واربع حروف صغيرة ورقم',
+                            onChanged: (value) {
+                              if (value.isEmpty) {
+                                if (_errorMessage == _passwordErrorText) {
+                                  setState(() => _errorMessage = null);
+                                }
+                                return;
+                              }
+                              if (RegExp(r'^(?=(?:.*[A-Z]){4,})(?=(?:.*[a-z]){4,})(?=.*\d)').hasMatch(value)) {
+                                if (_errorMessage == _passwordErrorText) {
+                                  setState(() => _errorMessage = null);
+                                }
+                              } else {
+                                setState(() => _errorMessage = _passwordErrorText);
+                              }
+                            },
                             icon: Icons.lock_outline,
                           ),
                           const SizedBox(height: 16),
@@ -819,6 +962,21 @@ class _RegistrationPageState extends State<RegistrationPage>
                             _travelerPassword2Controller,
                             'إعادة كلمة المرور',
                             obscureText: true,
+                            onChanged: (value) {
+                              if (value.isEmpty) {
+                                if (_errorMessage == _confirmPasswordErrorText) {
+                                  setState(() => _errorMessage = null);
+                                }
+                                return;
+                              }
+                              if (value == _travelerPasswordController.text) {
+                                if (_errorMessage == _confirmPasswordErrorText) {
+                                  setState(() => _errorMessage = null);
+                                }
+                              } else {
+                                setState(() => _errorMessage = _confirmPasswordErrorText);
+                              }
+                            },
                             icon: Icons.lock_reset,
                           ),
                           const SizedBox(height: 16),
