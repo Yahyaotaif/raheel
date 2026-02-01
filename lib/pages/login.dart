@@ -311,7 +311,7 @@ class _LoginPageState extends State<LoginPage> {
                               prefixIcon: Icon(Icons.person),
                               border: OutlineInputBorder(),
                               labelText: 'البريد الإلكتروني أو اسم المستخدم',
-                              hintText: 'example@email.com أو اسم المستخدم',
+                              hintText: 'ادخل البريد الإلكتروني أو اسم المستخدم',
                               filled: true,
                               fillColor: Colors.white,
                             ),
