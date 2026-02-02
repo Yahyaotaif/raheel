@@ -187,6 +187,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailCopied => 'Email copied';
 
   @override
+  String get emailUsAt => 'You can email us at';
+
+  @override
+  String get ok => 'OK';
+
+  @override
   String get selectDate => 'Select Date';
 
   @override
@@ -202,7 +208,49 @@ class AppLocalizationsEn extends AppLocalizations {
   String get destination => 'Destination';
 
   @override
+  String get destinationYemen => 'Yemen';
+
+  @override
+  String get destinationBahrain => 'Bahrain';
+
+  @override
+  String get destinationQatar => 'Qatar';
+
+  @override
+  String get destinationUae => 'United Arab Emirates';
+
+  @override
+  String get destinationKuwait => 'Kuwait';
+
+  @override
+  String get destinationRiyadh => 'Riyadh';
+
+  @override
+  String get destinationJeddah => 'Jeddah';
+
+  @override
+  String get destinationMakkah => 'Makkah';
+
+  @override
+  String get destinationAbha => 'Abha';
+
+  @override
+  String get destinationJizan => 'Jizan';
+
+  @override
+  String get destinationDammam => 'Dammam';
+
+  @override
+  String get destinationJordan => 'Jordan';
+
+  @override
   String get meetingPoint => 'Meeting Point';
+
+  @override
+  String get startingPoint => 'Starting Point';
+
+  @override
+  String get departurePlace => 'Departure Place';
 
   @override
   String get passengers => 'Passengers';
@@ -299,6 +347,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tripDetails => 'Trip Details';
 
   @override
+  String get tripInfo => 'Trip Information';
+
+  @override
   String get driverName => 'Driver Name';
 
   @override
@@ -309,4 +360,83 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get reportIssue => 'Report Issue';
+
+  @override
+  String get arrivalPlace => 'Arrival Place';
+
+  @override
+  String get bookings => 'Bookings';
+
+  @override
+  String get newBookingRequest => 'New Booking Request';
+
+  @override
+  String get noTripsOrBookings => 'No trips or bookings currently';
+
+  @override
+  String get errorLoadingTrips => 'Error loading trip data. Please try again';
+
+  @override
+  String get tripDeletedSuccess => 'Trip deleted successfully';
+
+  @override
+  String get travelerDeleted => 'Traveler deleted';
+
+  @override
+  String get cannotOpenPhone => 'Cannot open phone app';
+
+  @override
+  String get confirmDeleteTrip => 'Confirm Delete Trip';
+
+  @override
+  String get deleteTrip => 'Delete Trip';
+
+  @override
+  String get deleteThisTrip =>
+      'Do you want to delete this trip? All associated bookings will be deleted';
+
+  @override
+  String get confirmDelete => 'Confirm Delete';
+
+  @override
+  String get deleteTraveler => 'Do you want to delete this traveler?';
+
+  @override
+  String get contactDone => 'Contact Done';
+
+  @override
+  String get tripInfoLabel => 'Trip Information';
+
+  @override
+  String get tripDetailsLabel => 'Trip Details';
+
+  @override
+  String get date => 'Date';
+
+  @override
+  String get time => 'Time';
+
+  @override
+  String get availableSeatsLabel => 'Available Seats';
+
+  @override
+  String get departingFrom => 'Departing From';
+
+  @override
+  String get driverInfo => 'Driver Information';
+
+  @override
+  String get driverInfoNotAvailable => 'Driver information not available';
+
+  @override
+  String get deleteDriver => 'Do you want to delete this driver?';
+
+  @override
+  String get no => 'No';
+
+  @override
+  String get yes => 'Yes';
+
+  @override
+  String get userNotFound => 'User not found';
 }

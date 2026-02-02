@@ -45,22 +45,6 @@ class _DriverSetPageState extends State<DriverSetPage> {
     ],
   );
 
-  // List of destination cities
-  static const List<String> _destinationCities = [
-    'اليمن',
-    'البحرين',
-    'قطر',
-    'الامارات',
-    'الكويت',
-    'الرياض',
-    'جدة',
-    'مكة',
-    'أبها',
-    'جيزان',
-    'الدمام',
-    'الاردن',
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -328,6 +312,21 @@ class _DriverSetPageState extends State<DriverSetPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    final destinations = <String>[
+      l10n.destinationYemen,
+      l10n.destinationBahrain,
+      l10n.destinationQatar,
+      l10n.destinationUae,
+      l10n.destinationKuwait,
+      l10n.destinationRiyadh,
+      l10n.destinationJeddah,
+      l10n.destinationMakkah,
+      l10n.destinationAbha,
+      l10n.destinationJizan,
+      l10n.destinationDammam,
+      l10n.destinationJordan,
+    ];
     return Scaffold(
       backgroundColor: kBodyColor,
       appBar: AppBar(
@@ -458,7 +457,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
                                 labelStyle: const TextStyle(fontSize: 18, color: Colors.black87, fontWeight: FontWeight.normal),
                               ),
                               dropdownColor: Colors.white,
-                              items: _destinationCities.map((city) {
+                              items: destinations.map((city) {
                                 return DropdownMenuItem(
                                   value: city,
                                   alignment: Alignment.centerRight,
@@ -487,8 +486,8 @@ class _DriverSetPageState extends State<DriverSetPage> {
                               controller: _destinationController,
                               textDirection: TextDirection.rtl,
                               decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context).meetingPoint,
-                                hintText: AppLocalizations.of(context).meetingPoint,
+                                labelText: AppLocalizations.of(context).arrivalPlace,
+                                hintText: AppLocalizations.of(context).arrivalPlace,
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
                                 fillColor: Colors.white,
@@ -509,8 +508,8 @@ class _DriverSetPageState extends State<DriverSetPage> {
                               controller: _meetingPointController,
                               textDirection: TextDirection.rtl,
                               decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context).meetingPoint,
-                                hintText: AppLocalizations.of(context).meetingPoint,
+                                labelText: AppLocalizations.of(context).departurePlace,
+                                hintText: AppLocalizations.of(context).departurePlace,
                                 border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
                                 filled: true,
                                 fillColor: Colors.white,

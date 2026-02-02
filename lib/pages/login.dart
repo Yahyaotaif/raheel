@@ -55,10 +55,14 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> _sendHelpEmail() async {
+    final subject =
+        '${AppLocalizations.of(context).requestHelp} - ${AppLocalizations.of(context).appTitle}';
     final Uri emailUri = Uri(
       scheme: 'mailto',
       path: 'raheelcorp@outlook.com',
-      query: 'subject=طلب مساعدة - Raheel App',
+      queryParameters: {
+        'subject': subject,
+      },
     );
     
     try {
@@ -84,18 +88,18 @@ class _LoginPageState extends State<LoginPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text(
-          'تواصل معنا',
+        title: Text(
+          AppLocalizations.of(context).contactUs,
           textAlign: TextAlign.center,
-          style: TextStyle(fontFamily: 'Noto Naskh Arabic'),
+          style: const TextStyle(fontFamily: 'Noto Naskh Arabic'),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text(
-              'يمكنك مراسلتنا على',
+            Text(
+              AppLocalizations.of(context).emailUsAt,
               textAlign: TextAlign.center,
-              style: TextStyle(fontFamily: 'Noto Naskh Arabic', fontSize: 16),
+              style: const TextStyle(fontFamily: 'Noto Naskh Arabic', fontSize: 16),
             ),
             const SizedBox(height: 12),
             Container(
@@ -125,17 +129,17 @@ class _LoginPageState extends State<LoginPage> {
                       await Clipboard.setData(const ClipboardData(text: emailAddress));
                       if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
+                        SnackBar(
                           content: Text(
-                            'تم نسخ البريد الإلكتروني',
+                            AppLocalizations.of(context).emailCopied,
                             textAlign: TextAlign.center,
-                            style: TextStyle(fontFamily: 'Noto Naskh Arabic'),
+                            style: const TextStyle(fontFamily: 'Noto Naskh Arabic'),
                           ),
-                          duration: Duration(seconds: 2),
+                          duration: const Duration(seconds: 2),
                         ),
                       );
                     },
-                    tooltip: 'نسخ',
+                    tooltip: AppLocalizations.of(context).copyEmail,
                   ),
                 ],
               ),
@@ -145,7 +149,10 @@ class _LoginPageState extends State<LoginPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
-            child: const Text('حسناً', style: TextStyle(fontFamily: 'Noto Naskh Arabic')),
+            child: Text(
+              AppLocalizations.of(context).ok,
+              style: const TextStyle(fontFamily: 'Noto Naskh Arabic'),
+            ),
           ),
         ],
       ),
@@ -420,7 +427,7 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                             const SizedBox(width: 8),
                             Text(
-                              'لديك حساب؟ سجل الآن',
+                              '${AppLocalizations.of(context).dontHaveAccount} ${AppLocalizations.of(context).registerNow}',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontFamily: 'Noto Naskh Arabic',
@@ -475,16 +482,16 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: _sendHelpEmail,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      Icon(
+                    children: [
+                      const Icon(
                         Icons.support_agent,
                         size: 18,
                         color: Color.fromARGB(255, 119, 135, 149),
                       ),
-                      SizedBox(width: 8),
+                      const SizedBox(width: 8),
                       Text(
-                        'طلب المساعدة',
-                        style: TextStyle(
+                        AppLocalizations.of(context).requestHelp,
+                        style: const TextStyle(
                           fontSize: 16,
                           fontFamily: 'Noto Naskh Arabic',
                           color: Color.fromARGB(255, 119, 135, 149),

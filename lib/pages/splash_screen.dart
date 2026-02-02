@@ -14,8 +14,9 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   double _textOpacity = 0.0;
-  Offset _textOffset = const Offset(0, -0.5);
+  Offset _textOffset = Offset.zero;
   double _fadeOpacity = 1.0;
+  Offset _carrOffset = const Offset(-4, 0);
   @override
   void initState() {
     super.initState();
@@ -30,6 +31,13 @@ class _SplashScreenState extends State<SplashScreen> {
         setState(() {
           _textOpacity = 1.0;
           _textOffset = Offset.zero;
+        });
+      }
+    });
+    Future.delayed(const Duration(milliseconds: 1500), () {
+      if (mounted) {
+        setState(() {
+          _carrOffset = const Offset(3, 0);
         });
       }
     });
@@ -50,53 +58,67 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBodyColor,
-      body: AnimatedOpacity(
-        opacity: _fadeOpacity,
-        duration: const Duration(milliseconds: 1000),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Lottie.asset(
-              'assets/lottie/earth_tag.json',
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.width,
-              fit: BoxFit.contain,
-              repeat: false,
-            ),
-            AnimatedSlide(
-              offset: _textOffset,
-              duration: const Duration(milliseconds: 4000),
-              curve: Curves.easeOut,
-              child: AnimatedOpacity(
-                opacity: _textOpacity,
+      body: Center(
+        child: AnimatedOpacity(
+          opacity: _fadeOpacity,
+          duration: const Duration(milliseconds: 1000),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              AnimatedSlide(
+                offset: _textOffset,
                 duration: const Duration(milliseconds: 4000),
-                child: Column(
-                  children: [
-                    const Text(
-                      'رحيل',
-                      style: TextStyle(
-                        fontFamily: 'lama',
-                        fontSize: 90,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black87,
-                        letterSpacing: 2,
+                curve: Curves.easeOut,
+                child: AnimatedOpacity(
+                  opacity: _textOpacity,
+                  duration: const Duration(milliseconds: 4000),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Text(
+                        'رحيل',
+                        style: TextStyle(
+                          fontFamily: 'typokar',
+                          fontSize: 90,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                          letterSpacing: 2,
+                        ),
                       ),
-                    ),
-                    // No SizedBox here for zero gap
-                    const Text(
-                      'رحلتك معنا مؤكدة بإذن الله ',
-                      style: TextStyle(
-                        fontSize: 18,
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w500,
+                      const SizedBox(height: 30),
+                      const Text(
+                        'رحلتك معنا مؤكدة بإذن الله ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.black54,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+                      Transform.translate(
+                        offset: const Offset(0, -30),
+                        child: AnimatedSlide(
+                          offset: _carrOffset,
+                          duration: const Duration(milliseconds: 6000),
+                          curve: Curves.easeInOut,
+                          child: Lottie.asset(
+                            'assets/lottie/carr.json',
+                            width: 100,
+                            height: 100,
+                            fit: BoxFit.contain,
+                            repeat: true,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

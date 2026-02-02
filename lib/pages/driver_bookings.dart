@@ -83,9 +83,11 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
     } catch (e) {
       if (!mounted) return;
 
+      final errorMsg = AppLocalizations.of(context).errorLoadingTrips;
+      if (!mounted) return;
+
       setState(() {
-        _errorMessage =
-            'حدث خطأ في تحميل بيانات الرحلة. يرجى المحاولة مرة أخرى';
+        _errorMessage = errorMsg;
         _isLoading = false;
       });
     }
@@ -113,11 +115,14 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
 
       if (!mounted) return;
 
+      final successMsg = AppLocalizations.of(context).tripDeletedSuccess;
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('تم حذف الرحلة بنجاح'),
+        SnackBar(
+          content: Text(successMsg),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
 
@@ -125,9 +130,12 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
     } catch (e) {
       if (!mounted) return;
 
+      final errorMsg = AppLocalizations.of(context).error;
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('خطأ: ${e.toString()}'),
+          content: Text('$errorMsg: ${e.toString()}'),
           backgroundColor: Colors.red,
         ),
       );
@@ -149,19 +157,25 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
 
       if (!mounted) return;
 
+      final travelerDeletedMsg = AppLocalizations.of(context).travelerDeleted;
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('تم حذف المسافر'),
+        SnackBar(
+          content: Text(travelerDeletedMsg),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
     } catch (e) {
       if (!mounted) return;
 
+      final errorMsg = AppLocalizations.of(context).error;
+      if (!mounted) return;
+
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('خطأ: ${e.toString()}'),
+          content: Text('$errorMsg: ${e.toString()}'),
           backgroundColor: Colors.red,
         ),
       );
@@ -175,14 +189,15 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
 
   Future<void> _makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(scheme: 'tel', path: _asStored(phoneNumber));
+    final cannotOpenMsg = AppLocalizations.of(context).cannotOpenPhone;
     try {
       await launchUrl(launchUri);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
+        SnackBar(
           content: Text(
-            'لا يمكن فتح تطبيق الهاتف',
+            cannotOpenMsg,
             textDirection: TextDirection.rtl,
           ),
           backgroundColor: Colors.red,
@@ -223,12 +238,12 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
           ? const Center(child: CircularProgressIndicator())
           : _errorMessage != null
           ? Center(
-              child: Text('خطأ: $_errorMessage', textAlign: TextAlign.center),
+              child: Text(_errorMessage!, textAlign: TextAlign.center),
             )
           : _bookings.isEmpty && _trips.isEmpty
-          ? const Center(
+          ? Center(
               child: Text(
-                'لا توجد رحلات أو طلبات حجز حالياً',
+                AppLocalizations.of(context).noTripsOrBookings,
                 textDirection: TextDirection.rtl,
               ),
             )
@@ -297,18 +312,18 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                                   showDialog(
                                     context: context,
                                     builder: (context) => AlertDialog(
-                                      title: const Text(
-                                        'تأكيد حذف الرحلة',
+                                      title: Text(
+                                        AppLocalizations.of(context).confirmDeleteTrip,
                                         textAlign: TextAlign.center,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                           color: Colors.red,
                                           fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                       content: Directionality(
                                         textDirection: TextDirection.rtl,
-                                        child: const Text(
-                                          'هل تريد حذف هذه الرحلة؟ سيتم حذف جميع الحجوزات المتعلقة بها',
+                                        child: Text(
+                                          AppLocalizations.of(context).deleteThisTrip,
                                           textAlign: TextAlign.center,
                                         ),
                                       ),
@@ -330,16 +345,16 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                                             Navigator.pop(context);
                                             _deleteTrip(trip['id'].toString());
                                           },
-                                          child: const Text('حذف'),
+                                          child: Text(AppLocalizations.of(context).deleteTrip),
                                         ),
                                       ],
                                     ),
                                   );
                                 },
                               ),
-                              const Text(
-                                'معلومات الرحلة',
-                                style: TextStyle(
+                              Text(
+                                AppLocalizations.of(context).tripInfoLabel,
+                                style: const TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                   color: kAppBarColor,
@@ -357,7 +372,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'مكان الوصول: ${trip['destination_description'] ?? 'غير محدد'}',
+                            '${AppLocalizations.of(context).departingFrom}: ${trip['destination_description'] ?? 'غير محدد'}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -365,7 +380,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'التاريخ: ${trip['trip_date']}',
+                            '${AppLocalizations.of(context).date}: ${trip['trip_date']}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -373,7 +388,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'الوقت: ${trip['trip_time']}',
+                            '${AppLocalizations.of(context).time}: ${trip['trip_time']}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -381,7 +396,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'عدد المقاعد المتاحة: ${trip['num_passengers']}',
+                            '${AppLocalizations.of(context).availableSeatsLabel}: ${trip['num_passengers']}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -434,7 +449,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                             child: Text(
-                              'الحجوزات (${tripBookings.length})',
+                              '${AppLocalizations.of(context).bookings} (${tripBookings.length})',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -497,7 +512,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                             ),
                           ),
                           child: Text(
-                            hasExpired ? '' : 'طلب حجز جديد',
+                            hasExpired ? '' : AppLocalizations.of(context).newBookingRequest,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: hasExpired ? Colors.green : statusColor,
@@ -586,7 +601,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                                   textDirection: TextDirection.rtl,
                                   children: [
                                     Text(
-                                      'تفاصيل الرحلة',
+                                      AppLocalizations.of(context).tripDetailsLabel,
                                       style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 13,
@@ -594,7 +609,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                                     ),
                                     const SizedBox(height: 8),
                                     Text(
-                                      'التاريخ: ${booking['trip_date']}',
+                                      '${AppLocalizations.of(context).date}: ${booking['trip_date']}',
                                       style: const TextStyle(fontSize: 13),
                                     ),
                                   ],
@@ -622,10 +637,10 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                                             showDialog(
                                               context: context,
                                               builder: (context) => AlertDialog(
-                                                title: const Text(
-                                                  'تأكيد الحذف',
+                                                title: Text(
+                                                  AppLocalizations.of(context).confirmDelete,
                                                   textAlign: TextAlign.center,
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Colors.red,
                                                     fontWeight: FontWeight.bold,
                                                   ),
@@ -633,8 +648,8 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                                                 content: Directionality(
                                                   textDirection:
                                                       TextDirection.rtl,
-                                                  child: const Text(
-                                                    'هل تريد حذف هذا المسافر؟',
+                                                  child: Text(
+                                                    AppLocalizations.of(context).deleteTraveler,
                                                     textAlign: TextAlign.center,
                                                   ),
                                                 ),
@@ -668,7 +683,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                                               ),
                                             );
                                           },
-                                    child: const Text('تم التواصل'),
+                                    child: Text(AppLocalizations.of(context).contactDone),
                                   ),
                                 ],
                               ),

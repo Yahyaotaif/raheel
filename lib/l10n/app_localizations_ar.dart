@@ -187,6 +187,12 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emailCopied => 'تم نسخ البريد الإلكتروني';
 
   @override
+  String get emailUsAt => 'يمكنك مراسلتنا على';
+
+  @override
+  String get ok => 'حسناً';
+
+  @override
   String get selectDate => 'اختر التاريخ';
 
   @override
@@ -202,7 +208,49 @@ class AppLocalizationsAr extends AppLocalizations {
   String get destination => 'الوجهة';
 
   @override
+  String get destinationYemen => 'اليمن';
+
+  @override
+  String get destinationBahrain => 'البحرين';
+
+  @override
+  String get destinationQatar => 'قطر';
+
+  @override
+  String get destinationUae => 'الامارات';
+
+  @override
+  String get destinationKuwait => 'الكويت';
+
+  @override
+  String get destinationRiyadh => 'الرياض';
+
+  @override
+  String get destinationJeddah => 'جدة';
+
+  @override
+  String get destinationMakkah => 'مكة';
+
+  @override
+  String get destinationAbha => 'أبها';
+
+  @override
+  String get destinationJizan => 'جيزان';
+
+  @override
+  String get destinationDammam => 'الدمام';
+
+  @override
+  String get destinationJordan => 'الاردن';
+
+  @override
   String get meetingPoint => 'نقطة الالتقاء';
+
+  @override
+  String get startingPoint => 'نقطة الانطلاق';
+
+  @override
+  String get departurePlace => 'حدد مكان الانطلاق';
 
   @override
   String get passengers => 'الركاب';
@@ -299,6 +347,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tripDetails => 'تفاصيل الرحلة';
 
   @override
+  String get tripInfo => 'معلومات الرحلة';
+
+  @override
   String get driverName => 'اسم السائق';
 
   @override
@@ -309,4 +360,84 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get reportIssue => 'الإبلاغ عن مشكلة';
+
+  @override
+  String get arrivalPlace => 'مكان الوصول';
+
+  @override
+  String get bookings => 'الحجوزات';
+
+  @override
+  String get newBookingRequest => 'طلب حجز جديد';
+
+  @override
+  String get noTripsOrBookings => 'لا توجد رحلات أو طلبات حجز حالياً';
+
+  @override
+  String get errorLoadingTrips =>
+      'حدث خطأ في تحميل بيانات الرحلة. يرجى المحاولة مرة أخرى';
+
+  @override
+  String get tripDeletedSuccess => 'تم حذف الرحلة بنجاح';
+
+  @override
+  String get travelerDeleted => 'تم حذف المسافر';
+
+  @override
+  String get cannotOpenPhone => 'لا يمكن فتح تطبيق الهاتف';
+
+  @override
+  String get confirmDeleteTrip => 'تأكيد حذف الرحلة';
+
+  @override
+  String get deleteTrip => 'حذف';
+
+  @override
+  String get deleteThisTrip =>
+      'هل تريد حذف هذه الرحلة؟ سيتم حذف جميع الحجوزات المتعلقة بها';
+
+  @override
+  String get confirmDelete => 'تأكيد الحذف';
+
+  @override
+  String get deleteTraveler => 'هل تريد حذف هذا المسافر؟';
+
+  @override
+  String get contactDone => 'تم التواصل';
+
+  @override
+  String get tripInfoLabel => 'معلومات الرحلة';
+
+  @override
+  String get tripDetailsLabel => 'تفاصيل الرحلة';
+
+  @override
+  String get date => 'التاريخ';
+
+  @override
+  String get time => 'الوقت';
+
+  @override
+  String get availableSeatsLabel => 'عدد المقاعد المتاحة';
+
+  @override
+  String get departingFrom => 'الانطلاق من';
+
+  @override
+  String get driverInfo => 'معلومات السائق';
+
+  @override
+  String get driverInfoNotAvailable => 'معلومات السائق غير متوفرة';
+
+  @override
+  String get deleteDriver => 'هل تريد حذف هذا السائق؟';
+
+  @override
+  String get no => 'لا';
+
+  @override
+  String get yes => 'نعم';
+
+  @override
+  String get userNotFound => 'لم يتم العثور على المستخدم';
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
+import 'package:raheel/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -43,12 +44,15 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
     });
 
     try {
+      // Get localized strings before async operations
+      final userNotFoundMsg = AppLocalizations.of(context).userNotFound;
+      
       // Use auth_id from SharedPreferences for traveler_id
       final prefs = await SharedPreferences.getInstance();
       final travelerId = prefs.getString('auth_id') ?? prefs.getString('user_id');
 
       if (travelerId == null) {
-        throw Exception('لم يتم العثور على المستخدم');
+        throw Exception(userNotFoundMsg);
       }
 
       // Fetch bookings for the current traveler
@@ -100,6 +104,9 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
 
   Future<void> _deleteBooking(dynamic bookingId) async {
     try {
+      // Get localized strings before async operations
+      final travelerDeletedMsg = AppLocalizations.of(context).travelerDeleted;
+      
       // Mark booking as completed instead of deleting
       await Supabase.instance.client
           .from('bookings')
@@ -114,18 +121,20 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('تم حذف السائق'),
+        SnackBar(
+          content: Text(travelerDeletedMsg),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 2),
+          duration: const Duration(seconds: 2),
         ),
       );
     } catch (e) {
       if (!mounted) return;
 
+      // Get error message inside mounted check
+      final errorMsg = AppLocalizations.of(context).error;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('خطأ: ${e.toString()}'),
+          content: Text('$errorMsg: ${e.toString()}'),
           backgroundColor: Colors.red,
         ),
       );
@@ -137,13 +146,15 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
       scheme: 'tel',
       path: phoneNumber,
     );
+    // Get localized string before async operation
+    final cannotOpenMsg = AppLocalizations.of(context).cannotOpenPhone;
     try {
       await launchUrl(launchUri);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('لا يمكن فتح تطبيق الهاتف: ${e.toString()}'),
+          content: Text(cannotOpenMsg),
           backgroundColor: Colors.red,
         ),
       );
@@ -157,10 +168,10 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.event, color: Colors.white, size: 28),
-            SizedBox(width: 8),
-            Text('حجوزاتك', style: TextStyle(color: Colors.white)),
+          children: [
+            const Icon(Icons.event, color: Colors.white, size: 28),
+            const SizedBox(width: 8),
+            Text(AppLocalizations.of(context).bookings, style: const TextStyle(color: Colors.white)),
           ],
         ),
         elevation: 0,
@@ -170,7 +181,7 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
             gradient: LinearGradient(
               colors: [
                 kAppBarColor,
-                Color.fromARGB(255, 85, 135, 105),
+                const Color.fromARGB(255, 85, 135, 105),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -185,14 +196,14 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
           : _errorMessage != null
               ? Center(
                   child: Text(
-                    'خطأ: $_errorMessage',
+                    _errorMessage!,
                     textAlign: TextAlign.center,
                   ),
                 )
               : _bookings.isEmpty
-                  ? const Center(
+                  ? Center(
                       child: Text(
-                        'لا توجد حجوزات حالياً',
+                        AppLocalizations.of(context).noTripsOrBookings,
                         textDirection: TextDirection.rtl,
                       ),
                     )
@@ -232,7 +243,7 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
                                         textDirection: TextDirection.rtl,
                                         children: [
                                           Text(
-                                            'معلومات السائق',
+                                            AppLocalizations.of(context).driverInfo,
                                             style: const TextStyle(
                                               fontSize: 14,
                                               fontWeight: FontWeight.bold,
@@ -295,9 +306,9 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
                                       ),
                                     ),
                                   ] else
-                                    const Text(
-                                      'معلومات السائق غير متوفرة',
-                                      style: TextStyle(
+                                    Text(
+                                      AppLocalizations.of(context).driverInfoNotAvailable,
+                                      style: const TextStyle(
                                         fontSize: 14,
                                         color: Colors.grey,
                                       ),
@@ -325,10 +336,10 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
                                                   context: context,
                                                   builder: (context) =>
                                                       AlertDialog(
-                                                    title: const Text(
-                                                      'تأكيد الحذف',
+                                                    title: Text(
+                                                      AppLocalizations.of(context).confirmDelete,
                                                       textAlign: TextAlign.center,
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                         color: Colors.red,
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -337,8 +348,8 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
                                                     content: Directionality(
                                                       textDirection:
                                                           TextDirection.rtl,
-                                                      child: const Text(
-                                                        'هل تريد حذف هذا السائق؟',
+                                                      child: Text(
+                                                        AppLocalizations.of(context).deleteDriver,
                                                         textAlign:
                                                             TextAlign.center,
                                                       ),
@@ -350,7 +361,7 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
                                                         onPressed: () =>
                                                             Navigator.pop(
                                                                 context),
-                                                        child: const Text('لا'),
+                                                        child: Text(AppLocalizations.of(context).no),
                                                       ),
                                                       ElevatedButton(
                                                         style:
@@ -368,14 +379,13 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
                                                           _deleteBooking(
                                                               booking['id']);
                                                         },
-                                                        child: const Text(
-                                                            'نعم'),
+                                                        child: Text(AppLocalizations.of(context).yes),
                                                       ),
                                                     ],
                                                   ),
                                                 );
                                               },
-                                        child: const Text('تم التواصل'),
+                                        child: Text(AppLocalizations.of(context).contactDone),
                                       ),
                                     ],
                                   ),
