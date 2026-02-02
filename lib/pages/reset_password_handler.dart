@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/auth/password_utils.dart';
+import 'package:raheel/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class ResetPasswordHandler extends StatefulWidget {
@@ -16,8 +17,6 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
   bool _isLoading = false;
   String? _errorMessage;
   bool _isInitialized = false;
-  String? _accessToken;
-  String? _refreshToken;
 
   @override
   void initState() {
@@ -27,68 +26,77 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
 
   Future<void> _initializePasswordReset() async {
     try {
-      // Get arguments from navigation (access token from deep link)
-      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-      _accessToken = args?['access_token'] as String?;
-      _refreshToken = args?['refresh_token'] as String?;
-      final tokenType = args?['type'] as String?;
-
-      // Check if we have a recovery token from deep link
-      if (_accessToken != null && tokenType == 'recovery') {
-        if (_refreshToken != null) {
-          await Supabase.instance.client.auth.setSession(
-            _refreshToken!,
-          );
-        }
-        setState(() {
-          _isInitialized = true;
-        });
-        return;
-      }
-
-      // Fallback: Check if user is already authenticated (for web-based reset)
+      // Try to get the session from URL fragment (web) or route arguments (mobile deep link)
       final session = Supabase.instance.client.auth.currentSession;
+      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       
-      if (session == null) {
+      // Check if we have tokens from the deep link
+      final accessToken = args?['access_token'] as String?;
+      final refreshToken = args?['refresh_token'] as String?;
+      final type = args?['type'] as String?;
+
+      debugPrint('Password reset init - accessToken: ${accessToken != null}, refreshToken: ${refreshToken != null}, type: $type, sessionExists: ${session != null}');
+
+      if (accessToken != null && refreshToken != null && type == 'recovery') {
+        // We have recovery tokens from the deep link, set the session
+        try {
+          await Supabase.instance.client.auth.setSession(
+            refreshToken,
+          );
+          debugPrint('Session set successfully from recovery tokens');
+          setState(() {
+            _isInitialized = true;
+          });
+          return;
+        } catch (e) {
+          debugPrint('Failed to set session from recovery tokens: $e');
+        }
+      }
+
+      // If we have a current session, we can proceed
+      if (session != null) {
         setState(() {
-          _errorMessage = 'جلسة غير صالحة. يرجى محاولة طلب استعادة كلمة المرور مرة أخرى.';
           _isInitialized = true;
         });
         return;
       }
 
+      // No valid session found
       setState(() {
+        _errorMessage = AppLocalizations.of(context).error; // Invalid session
         _isInitialized = true;
       });
     } catch (e) {
+      debugPrint('Password reset initialization error: ${e.toString()}');
       setState(() {
-        _errorMessage = 'حدث خطأ: ${e.toString()}';
+        _errorMessage = '${AppLocalizations.of(context).error}: ${e.toString()}';
         _isInitialized = true;
       });
     }
   }
 
   Future<void> _resetPassword() async {
+    final l10n = AppLocalizations.of(context);
     final newPassword = _newPasswordController.text;
     final confirmPassword = _confirmPasswordController.text;
 
     if (newPassword.isEmpty || confirmPassword.isEmpty) {
       setState(() {
-        _errorMessage = 'يرجى ملء جميع الحقول';
+        _errorMessage = l10n.createAccount; // Generic fill all fields
       });
       return;
     }
 
     if (newPassword != confirmPassword) {
       setState(() {
-        _errorMessage = 'كلمات المرور غير متطابقة';
+        _errorMessage = l10n.passwordsDoNotMatch;
       });
       return;
     }
 
     if (newPassword.length < 6) {
       setState(() {
-        _errorMessage = 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+        _errorMessage = 'Password must be at least 6 characters';
       });
       return;
     }
@@ -101,10 +109,11 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
     try {
       // Ensure we have a valid session for recovery flows
       User? sessionUser;
-      if (_refreshToken != null) {
-        final sessionResponse =
-            await Supabase.instance.client.auth.setSession(_refreshToken!);
-        sessionUser = sessionResponse.user;
+      
+      // Get current session or try to create one from stored credentials
+      final currentSession = Supabase.instance.client.auth.currentSession;
+      if (currentSession != null) {
+        sessionUser = currentSession.user;
       }
 
       // Update password in Supabase Auth
@@ -165,10 +174,10 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('تم تغيير كلمة المرور بنجاح!'),
+        SnackBar(
+          content: Text(l10n.success),
           backgroundColor: Colors.green,
-          duration: Duration(seconds: 3),
+          duration: const Duration(seconds: 3),
         ),
       );
 
@@ -180,8 +189,8 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
       debugPrint('Reset password error: ${e.toString()}');
       final errorString = e.toString().toLowerCase();
       final message = errorString.contains('same_password')
-          ? 'كلمة المرور الجديدة يجب أن تكون مختلفة عن كلمة المرور القديمة'
-          : 'خطأ أثناء تحديث كلمة المرور: ${e.toString()}';
+          ? 'New password must be different from old password'
+          : '${l10n.error}: ${e.toString()}';
       setState(() {
         _isLoading = false;
         _errorMessage = message;
@@ -191,7 +200,6 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
           SnackBar(
             content: Text(
               message,
-              textDirection: TextDirection.rtl,
               maxLines: 3,
             ),
             backgroundColor: Colors.red,
@@ -210,11 +218,13 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    
     if (!_isInitialized) {
       return Scaffold(
         backgroundColor: kBodyColor,
         appBar: AppBar(
-          title: const Text('استعادة كلمة المرور'),
+          title: Text(l10n.recoverPassword),
           backgroundColor: kAppBarColor,
         ),
         body: const Center(
@@ -223,11 +233,11 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
       );
     }
 
-    if (_errorMessage != null && _errorMessage!.contains('جلسة غير صالحة')) {
+    if (_errorMessage != null && _errorMessage!.contains('Invalid') || _errorMessage!.contains('error')) {
       return Scaffold(
         backgroundColor: kBodyColor,
         appBar: AppBar(
-          title: const Text('استعادة كلمة المرور'),
+          title: Text(l10n.recoverPassword),
           backgroundColor: kAppBarColor,
         ),
         body: Center(
@@ -249,7 +259,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
                   backgroundColor: kAppBarColor,
                   foregroundColor: Colors.white,
                 ),
-                child: const Text('العودة إلى تسجيل الدخول'),
+                child: Text(l10n.login),
               ),
             ],
           ),
@@ -262,10 +272,10 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.lock, color: Colors.white, size: 24),
-            SizedBox(width: 8),
-            Text('كلمة مرور جديدة', style: TextStyle(color: Colors.white)),
+          children: [
+            const Icon(Icons.lock, color: Colors.white, size: 24),
+            const SizedBox(width: 8),
+            Text(l10n.password, style: const TextStyle(color: Colors.white)),
           ],
         ),
         centerTitle: true,
@@ -276,7 +286,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
             gradient: LinearGradient(
               colors: [
                 kAppBarColor,
-                Color.fromARGB(255, 85, 135, 105),
+                const Color.fromARGB(255, 85, 135, 105),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -291,28 +301,28 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 24),
-              const Text(
-                'أدخل كلمة مرور جديدة',
+              Text(
+                l10n.password,
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 32),
               TextField(
                 controller: _newPasswordController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'كلمة المرور الجديدة',
-                  prefixIcon: Icon(Icons.lock),
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: l10n.password,
+                  prefixIcon: const Icon(Icons.lock),
                 ),
                 obscureText: true,
               ),
               const SizedBox(height: 16),
               TextField(
                 controller: _confirmPasswordController,
-                decoration: const InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'تأكيد كلمة المرور',
-                  prefixIcon: Icon(Icons.lock),
+                decoration: InputDecoration(
+                  border: const OutlineInputBorder(),
+                  labelText: l10n.confirmPassword,
+                  prefixIcon: const Icon(Icons.lock),
                 ),
                 obscureText: true,
               ),
@@ -355,7 +365,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
                             strokeWidth: 2,
                           ),
                         )
-                      : const Text('تحديث كلمة المرور'),
+                      : Text(l10n.resetPassword),
                 ),
               ),
             ],
