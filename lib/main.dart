@@ -235,25 +235,31 @@ class _MainAppState extends State<MainApp> {
   void _handleDeepLink(Uri uri) {
     try {
       debugPrint('Deep link received: $uri');
+      debugPrint('Scheme: ${uri.scheme}, Host: ${uri.host}');
+      debugPrint('Query params: ${uri.queryParameters}');
 
-      // Check if it's a password reset link from the web page
-      // Note: AndroidManifest uses com.raheelcorp.raheel scheme
+      // Check if it's a password reset link from Supabase
+      // Supabase sends recovery links with type=recovery and a token parameter
       if ((uri.scheme == 'com.raheelcorp.raheel' ||
               uri.scheme == 'com.example.raheel') &&
           uri.host == 'reset-password') {
-        // Extract access token from query parameters if present
-        final accessToken = uri.queryParameters['access_token'];
-        final refreshToken = uri.queryParameters['refresh_token'];
+        
         final tokenType = uri.queryParameters['type'];
+        final token = uri.queryParameters['token'];
+        
+        debugPrint('Token type: $tokenType, Token exists: ${token != null}');
 
-        _navigatorKey.currentState?.pushReplacementNamed(
-          '/reset-password',
-          arguments: {
-            'access_token': accessToken,
-            'refresh_token': refreshToken,
-            'type': tokenType,
-          },
-        );
+        if (tokenType == 'recovery' && token != null) {
+          // Supabase sends a single token that contains both access and refresh tokens
+          // We'll pass it to the reset handler
+          _navigatorKey.currentState?.pushReplacementNamed(
+            '/reset-password',
+            arguments: {
+              'token': token,
+              'type': tokenType,
+            },
+          );
+        }
       }
     } catch (e) {
       debugPrint('Error handling deep link: $e');

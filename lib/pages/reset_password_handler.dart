@@ -26,35 +26,48 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
 
   Future<void> _initializePasswordReset() async {
     try {
-      // Try to get the session from URL fragment (web) or route arguments (mobile deep link)
-      final session = Supabase.instance.client.auth.currentSession;
+      // Get the token from route arguments (passed from deep link handler)
       final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-      
-      // Check if we have tokens from the deep link
-      final accessToken = args?['access_token'] as String?;
-      final refreshToken = args?['refresh_token'] as String?;
+      final token = args?['token'] as String?;
       final type = args?['type'] as String?;
 
-      debugPrint('Password reset init - accessToken: ${accessToken != null}, refreshToken: ${refreshToken != null}, type: $type, sessionExists: ${session != null}');
+      debugPrint('Password reset init - token: ${token != null}, type: $type');
 
-      if (accessToken != null && refreshToken != null && type == 'recovery') {
-        // We have recovery tokens from the deep link, set the session
+      if (token != null && type == 'recovery') {
+        // Supabase sends a token that we need to verify
+        // The token will be used by Supabase to authenticate the session
         try {
-          await Supabase.instance.client.auth.setSession(
-            refreshToken,
+          // Verify the recovery token with Supabase
+          await Supabase.instance.client.auth.verifyOTP(
+            email: '',
+            token: token,
+            type: OtpType.recovery,
           );
-          debugPrint('Session set successfully from recovery tokens');
+          debugPrint('OTP verification successful');
           setState(() {
             _isInitialized = true;
           });
           return;
         } catch (e) {
-          debugPrint('Failed to set session from recovery tokens: $e');
+          debugPrint('Token verification failed: $e');
+          // Try using the token directly as a session token
+          try {
+            await Supabase.instance.client.auth.setSession(token);
+            debugPrint('Session set successfully from token');
+            setState(() {
+              _isInitialized = true;
+            });
+            return;
+          } catch (e2) {
+            debugPrint('Failed to set session from token: $e2');
+          }
         }
       }
 
-      // If we have a current session, we can proceed
+      // Check if user is already authenticated
+      final session = Supabase.instance.client.auth.currentSession;
       if (session != null) {
+        debugPrint('User already has valid session');
         setState(() {
           _isInitialized = true;
         });
@@ -62,14 +75,15 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
       }
 
       // No valid session found
+      debugPrint('No valid session found');
       setState(() {
-        _errorMessage = AppLocalizations.of(context).error; // Invalid session
+        _errorMessage = 'Invalid or expired password reset link. Please request a new one.';
         _isInitialized = true;
       });
     } catch (e) {
       debugPrint('Password reset initialization error: ${e.toString()}');
       setState(() {
-        _errorMessage = '${AppLocalizations.of(context).error}: ${e.toString()}';
+        _errorMessage = 'Error: ${e.toString()}';
         _isInitialized = true;
       });
     }
