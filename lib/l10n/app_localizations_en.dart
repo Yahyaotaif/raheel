@@ -439,4 +439,116 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get userNotFound => 'User not found';
+
+  @override
+  String get selectAccountType => 'Select Account Type';
+
+  @override
+  String get driver => 'Driver';
+
+  @override
+  String get passenger => 'Passenger';
+
+  @override
+  String get vehicleDriver => 'Vehicle Driver';
+
+  @override
+  String get traveler => 'Traveler';
+
+  @override
+  String get carPlateNumber => 'Car Plate Number';
+
+  @override
+  String get acceptPrivacyPolicy => 'I agree to the Privacy Policy';
+
+  @override
+  String get view => 'View';
+
+  @override
+  String get mustAcceptPrivacyPolicy =>
+      'You must agree to the Privacy Policy before creating an account';
+
+  @override
+  String get usernameValidation =>
+      'Username must be 4-8 alphanumeric characters only';
+
+  @override
+  String get emailValidation => 'Please enter a valid email address';
+
+  @override
+  String get phoneValidation => 'Phone number must be exactly 10 digits';
+
+  @override
+  String get passwordValidation =>
+      'Password must contain four uppercase letters, four lowercase letters and a number';
+
+  @override
+  String get passwordsDoNotMatch => 'Passwords do not match';
+
+  @override
+  String get registrationSuccess => 'Registered Successfully';
+
+  @override
+  String get accountCreatedSuccess =>
+      'Your account has been created successfully! Please login using your credentials.';
+
+  @override
+  String get accountAlreadyExists =>
+      'This account is already registered. Please login or use different credentials';
+
+  @override
+  String get phoneAlreadyUsed =>
+      'Phone number is already used by another user.';
+
+  @override
+  String get emailAlreadyUsed => 'Email is already used by another user.';
+
+  @override
+  String get weakPassword => 'Password is weak or invalid';
+
+  @override
+  String get userAlreadyRegistered => 'User already registered';
+
+  @override
+  String get errorOccurred =>
+      'An error occurred. Please check your data and try again';
+
+  @override
+  String get mobileNumber => 'Mobile Number';
+
+  @override
+  String get emailAddress => 'Email Address';
+
+  @override
+  String get reEnterPassword => 'Re-enter Password';
+
+  @override
+  String get passwordHint => 'Four uppercase, four lowercase and a number';
+
+  @override
+  String get recoverPassword => 'Recover Password';
+
+  @override
+  String get enterEmailToRecover =>
+      'Enter your email to receive a password recovery link';
+
+  @override
+  String get pleaseEnterEmail => 'Please enter an email address';
+
+  @override
+  String get pleaseEnterValidEmail => 'Please enter a valid email address';
+
+  @override
+  String get resetLinkSent => 'Recovery link sent if account exists';
+
+  @override
+  String get rateLimitError => 'You can request again after 15 seconds';
+
+  @override
+  String errorOccurredMessage(Object message) {
+    return 'An error occurred: $message';
+  }
+
+  @override
+  String get send => 'Send';
 }

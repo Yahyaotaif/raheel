@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/pages/privacy_policy.dart';
+import 'package:raheel/l10n/app_localizations.dart';
 
 import 'package:raheel/auth/auth_service.dart';
 
@@ -41,14 +42,6 @@ class _RegistrationPageState extends State<RegistrationPage>
   bool _travelerAcceptedPolicy = false;
   late TabController _tabController;
 
-    static const String _usernameErrorText =
-      'اسم المستخدم يجب أن يكون بين 4 و 8 أحرف أو أرقام فقط';
-    static const String _emailErrorText = 'يرجى إدخال بريد إلكتروني صحيح ';
-    static const String _phoneErrorText = 'رقم الجوال يجب أن يكون مكونًا من 10 أرقام';
-    static const String _passwordErrorText =
-      'يجب أن تحتوي كلمة المرور على أربع حروف كبيرة وأربع حروف صغيرة ورقم';
-    static const String _confirmPasswordErrorText = 'كلمتا المرور غير متطابقتين';
-
   @override
   void initState() {
     super.initState();
@@ -81,6 +74,7 @@ class _RegistrationPageState extends State<RegistrationPage>
   }
 
   void _showUserTypeSelectionDialog() {
+    final l10n = AppLocalizations.of(context);
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -112,9 +106,9 @@ class _RegistrationPageState extends State<RegistrationPage>
                   color: kAppBarColor,
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'اختر نوع الحساب',
-                  style: TextStyle(
+                Text(
+                  l10n.selectAccountType,
+                  style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
                     color: kAppBarColor,
@@ -141,12 +135,12 @@ class _RegistrationPageState extends State<RegistrationPage>
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.drive_eta, size: 28),
-                        SizedBox(width: 12),
+                      children: [
+                        const Icon(Icons.drive_eta, size: 28),
+                        const SizedBox(width: 12),
                         Text(
-                          'سائق',
-                          style: TextStyle(
+                          l10n.driver,
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -175,12 +169,12 @@ class _RegistrationPageState extends State<RegistrationPage>
                     },
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.person, size: 28),
-                        SizedBox(width: 12),
+                      children: [
+                        const Icon(Icons.person, size: 28),
+                        const SizedBox(width: 12),
                         Text(
-                          'راكب',
-                          style: TextStyle(
+                          l10n.passenger,
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
@@ -198,6 +192,7 @@ class _RegistrationPageState extends State<RegistrationPage>
   }
 
   Future<void> _registerDriver() async {
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -207,7 +202,7 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!_driverAcceptedPolicy) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'يجب الموافقة على سياسة الخصوصية قبل إنشاء الحساب';
+        _errorMessage = l10n.mustAcceptPrivacyPolicy;
       });
       return;
     }
@@ -216,7 +211,7 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!RegExp(r'^[a-zA-Z0-9]{4,8}$').hasMatch(username)) {
       setState(() {
         _isLoading = false;
-        _errorMessage = _usernameErrorText;
+        _errorMessage = l10n.usernameValidation;
       });
       return;
     }
@@ -225,7 +220,7 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!email.contains('@') || !email.contains('.')) {
       setState(() {
         _isLoading = false;
-        _errorMessage = _emailErrorText;
+        _errorMessage = l10n.emailValidation;
       });
       return;
     }
@@ -234,7 +229,7 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
       setState(() {
         _isLoading = false;
-        _errorMessage = _phoneErrorText;
+        _errorMessage = l10n.phoneValidation;
       });
       return;
     }
@@ -243,14 +238,14 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!RegExp(r'^(?=(?:.*[A-Z]){4,})(?=(?:.*[a-z]){4,})(?=.*\d)').hasMatch(password)) {
       setState(() {
         _isLoading = false;
-        _errorMessage = _passwordErrorText;
+        _errorMessage = l10n.passwordValidation;
       });
       return;
     }
     if (_driverPasswordController.text != _driverPassword2Controller.text) {
       setState(() {
         _isLoading = false;
-        _errorMessage = _confirmPasswordErrorText;
+        _errorMessage = l10n.passwordsDoNotMatch;
       });
       return;
     }
@@ -272,10 +267,10 @@ class _RegistrationPageState extends State<RegistrationPage>
         barrierDismissible: false,
         builder: (context) => AlertDialog(
           backgroundColor: kBodyColor,
-          title: const Text(
-            'تم التسجيل بنجاح',
+          title: Text(
+            l10n.registrationSuccess,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: kAppBarColor,
               fontWeight: FontWeight.bold,
             ),
@@ -284,14 +279,14 @@ class _RegistrationPageState extends State<RegistrationPage>
             textDirection: TextDirection.rtl,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
-                  SizedBox(height: 16),
+                children: [
+                  const SizedBox(height: 16),
                   Text(
-                    'تم إنشاء حسابك بنجاح! يرجى تسجيل الدخول باستخدام بيانات اعتمادك.',
+                    l10n.accountCreatedSuccess,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
@@ -306,7 +301,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                   Navigator.of(context).pop();
                   Navigator.of(context).pushReplacementNamed('/login');
                 },
-                child: const Text('تسجيل الدخول'),
+                child: Text(l10n.login),
               ),
             ],
           ),
@@ -316,17 +311,17 @@ class _RegistrationPageState extends State<RegistrationPage>
       setState(() {
         final msg = e.toString().toLowerCase();
         if (msg.contains('already registered') || msg.contains('already exists') || msg.contains('user already')) {
-          _errorMessage = 'هذا الحساب مسجل بالفعل. يرجى تسجيل الدخول أو استخدام بيانات أخرى';
+          _errorMessage = l10n.accountAlreadyExists;
         } else if (msg.contains('رقم الجوال')) {
-          _errorMessage = 'رقم الجوال مستخدم بالفعل من قبل مستخدم آخر.';
+          _errorMessage = l10n.phoneAlreadyUsed;
         } else if (msg.contains('البريد الإلكتروني') || msg.contains('email')) {
-          _errorMessage = 'البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.';
+          _errorMessage = l10n.emailAlreadyUsed;
         } else if (msg.contains('password')) {
-          _errorMessage = 'كلمة المرور ضعيفة أو غير صالحة';
+          _errorMessage = l10n.weakPassword;
         } else if (msg.contains('مسجل')) {
-          _errorMessage = 'المستخدم مسجل مسبقاً';
+          _errorMessage = l10n.userAlreadyRegistered;
         } else {
-          _errorMessage = 'حدث خطأ. يرجى التحقق من البيانات والمحاولة مرة أخرى';
+          _errorMessage = l10n.errorOccurred;
         }
       });
     } finally {
@@ -338,6 +333,7 @@ class _RegistrationPageState extends State<RegistrationPage>
 
   Future<void> _registerTraveler() async {
       debugPrint('Starting traveler registration');
+    final l10n = AppLocalizations.of(context);
     setState(() {
       _isLoading = true;
       _errorMessage = null;
@@ -346,7 +342,7 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!_travelerAcceptedPolicy) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'يجب الموافقة على سياسة الخصوصية قبل إنشاء الحساب';
+        _errorMessage = l10n.mustAcceptPrivacyPolicy;
       });
       return;
     }
@@ -355,7 +351,7 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!RegExp(r'^[a-zA-Z0-9]{4,8}$').hasMatch(username)) {
       setState(() {
         _isLoading = false;
-        _errorMessage = _usernameErrorText;
+        _errorMessage = l10n.usernameValidation;
       });
       return;
     }
@@ -364,7 +360,7 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!email.contains('@') || !email.contains('.')) {
       setState(() {
         _isLoading = false;
-        _errorMessage = _emailErrorText;
+        _errorMessage = l10n.emailValidation;
       });
       return;
     }
@@ -373,7 +369,7 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
       setState(() {
         _isLoading = false;
-        _errorMessage = _phoneErrorText;
+        _errorMessage = l10n.phoneValidation;
       });
       return;
     }
@@ -382,14 +378,14 @@ class _RegistrationPageState extends State<RegistrationPage>
     if (!RegExp(r'^(?=(?:.*[A-Z]){4,})(?=(?:.*[a-z]){4,})(?=.*\d)').hasMatch(password)) {
       setState(() {
         _isLoading = false;
-        _errorMessage = _passwordErrorText;
+        _errorMessage = l10n.passwordValidation;
       });
       return;
     }
     if (_travelerPasswordController.text != _travelerPassword2Controller.text) {
       setState(() {
         _isLoading = false;
-        _errorMessage = _confirmPasswordErrorText;
+        _errorMessage = l10n.passwordsDoNotMatch;
       });
       return;
     }
@@ -418,10 +414,10 @@ class _RegistrationPageState extends State<RegistrationPage>
         barrierDismissible: false,
         builder: (context) => AlertDialog(
           backgroundColor: kBodyColor,
-          title: const Text(
-            'تم التسجيل بنجاح',
+          title: Text(
+            l10n.registrationSuccess,
             textAlign: TextAlign.center,
-            style: TextStyle(
+            style: const TextStyle(
               color: kAppBarColor,
               fontWeight: FontWeight.bold,
             ),
@@ -430,14 +426,14 @@ class _RegistrationPageState extends State<RegistrationPage>
             textDirection: TextDirection.rtl,
               child: Column(
                 mainAxisSize: MainAxisSize.min,
-                children: const [
-                  SizedBox(height: 16),
+                children: [
+                  const SizedBox(height: 16),
                   Text(
-                    'تم إنشاء حسابك بنجاح! يرجى تسجيل الدخول باستخدام بيانات اعتمادك.',
+                    l10n.accountCreatedSuccess,
                     textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16),
                   ),
-                  SizedBox(height: 24),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
@@ -452,7 +448,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                   Navigator.of(context).pop();
                   Navigator.of(context).pushReplacementNamed('/login');
                 },
-                child: const Text('تسجيل الدخول'),
+                child: Text(l10n.login),
               ),
             ],
           ),
@@ -464,27 +460,28 @@ class _RegistrationPageState extends State<RegistrationPage>
         _isLoading = false;
         final msg = e.toString().toLowerCase();
         if (msg.contains('already registered') || msg.contains('already exists') || msg.contains('user already')) {
-          _errorMessage = 'هذا الحساب مسجل بالفعل. يرجى تسجيل الدخول أو استخدام بيانات أخرى';
+          _errorMessage = l10n.accountAlreadyExists;
         } else if (msg.contains('رقم الجوال')) {
-          _errorMessage = 'رقم الجوال مستخدم بالفعل من قبل مستخدم آخر.';
+          _errorMessage = l10n.phoneAlreadyUsed;
         } else if (msg.contains('البريد الإلكتروني') || msg.contains('email')) {
-          _errorMessage = 'البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.';
+          _errorMessage = l10n.emailAlreadyUsed;
         } else if (msg.contains('password')) {
-          _errorMessage = 'كلمة المرور ضعيفة أو غير صالحة';
+          _errorMessage = l10n.weakPassword;
         } else if (msg.contains('مسجل')) {
-          _errorMessage = 'المستخدم مسجل مسبقاً';
+          _errorMessage = l10n.userAlreadyRegistered;
         } else {
-          _errorMessage = 'حدث خطأ. يرجى التحقق من البيانات والمحاولة مرة أخرى';
+          _errorMessage = l10n.errorOccurred;
         }
       });
     }
   }
 
   void _validatePhoneInput(String value, bool isDriver) {
+    final l10n = AppLocalizations.of(context);
     final phone = value.trim();
 
     if (phone.isEmpty) {
-      if (_errorMessage == _phoneErrorText) {
+      if (_errorMessage == l10n.phoneValidation) {
         setState(() {
           _errorMessage = null;
         });
@@ -495,10 +492,10 @@ class _RegistrationPageState extends State<RegistrationPage>
     // Just check if it's exactly 10 digits
     if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
       setState(() {
-        _errorMessage = _phoneErrorText;
+        _errorMessage = l10n.phoneValidation;
       });
     } else {
-      if (_errorMessage == _phoneErrorText) {
+      if (_errorMessage == l10n.phoneValidation) {
         setState(() {
           _errorMessage = null;
         });
@@ -553,17 +550,18 @@ class _RegistrationPageState extends State<RegistrationPage>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: kBodyColor,
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.person_add, color: Colors.white, size: 28),
-            SizedBox(width: 8),
+          children: [
+            const Icon(Icons.person_add, color: Colors.white, size: 28),
+            const SizedBox(width: 8),
             Text(
-              'إنشاء حساب جديد',
-              style: TextStyle(
+              l10n.createAccount,
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -618,8 +616,8 @@ class _RegistrationPageState extends State<RegistrationPage>
                           Align(
                             alignment: Alignment.topRight,
                             child: Text(
-                              'قائد مركبة',
-                              style: TextStyle(
+                              l10n.vehicleDriver,
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: kAppBarColor,
@@ -630,41 +628,41 @@ class _RegistrationPageState extends State<RegistrationPage>
                           const SizedBox(height: 16),
                           _buildTextField(
                             _driverFirstNameController,
-                            'الاسم الاول',
+                            l10n.firstName,
                             icon: Icons.person_outline,
                           ),
                           const SizedBox(height: 16),
                           _buildTextField(
                             _driverLastNameController,
-                            'اسم العائلة ',
+                            l10n.lastName,
                             icon: Icons.person_outline,
                           ),
                             const SizedBox(height: 16),
                             _buildTextField(
                               _driverUsernameController,
-                              'اسم المستخدم',
+                              l10n.username,
                               icon: Icons.account_circle_outlined,
                               onChanged: (value) {
                                 final trimmed = value.trim();
                                 if (trimmed.isEmpty) {
-                                  if (_errorMessage == _usernameErrorText) {
+                                  if (_errorMessage == l10n.usernameValidation) {
                                     setState(() => _errorMessage = null);
                                   }
                                   return;
                                 }
                                 if (RegExp(r'^[a-zA-Z0-9]{4,8}$').hasMatch(trimmed)) {
-                                  if (_errorMessage == _usernameErrorText) {
+                                  if (_errorMessage == l10n.usernameValidation) {
                                     setState(() => _errorMessage = null);
                                   }
                                 } else {
-                                  setState(() => _errorMessage = _usernameErrorText);
+                                  setState(() => _errorMessage = l10n.usernameValidation);
                                 }
                               },
                             ),
                           const SizedBox(height: 16),
                           _buildTextField(
                             _driverPhoneController,
-                            'رقم الجوال',
+                            l10n.mobileNumber,
                             onChanged: (value) =>
                                 _validatePhoneInput(value, true),
                             icon: Icons.phone_iphone,
@@ -672,21 +670,21 @@ class _RegistrationPageState extends State<RegistrationPage>
                           const SizedBox(height: 16),
                           _buildTextField(
                             _driverEmailController,
-                            'الايميل الالكتروني',
+                            l10n.emailAddress,
                             onChanged: (value) {
                               final trimmed = value.trim();
                               if (trimmed.isEmpty) {
-                                if (_errorMessage == _emailErrorText) {
+                                if (_errorMessage == l10n.emailValidation) {
                                   setState(() => _errorMessage = null);
                                 }
                                 return;
                               }
                               if (trimmed.contains('@') && trimmed.contains('.')) {
-                                if (_errorMessage == _emailErrorText) {
+                                if (_errorMessage == l10n.emailValidation) {
                                   setState(() => _errorMessage = null);
                                 }
                               } else {
-                                setState(() => _errorMessage = _emailErrorText);
+                                setState(() => _errorMessage = l10n.emailValidation);
                               }
                             },
                             icon: Icons.email_outlined,
@@ -694,22 +692,22 @@ class _RegistrationPageState extends State<RegistrationPage>
                           const SizedBox(height: 16),
                           _buildTextField(
                             _driverPasswordController,
-                            'كلمة المرور',
+                            l10n.password,
                             obscureText: true,
-                            hint: 'اربع حروف كبيرة واربع حروف صغيرة ورقم',
+                            hint: l10n.passwordHint,
                             onChanged: (value) {
                               if (value.isEmpty) {
-                                if (_errorMessage == _passwordErrorText) {
+                                if (_errorMessage == l10n.passwordValidation) {
                                   setState(() => _errorMessage = null);
                                 }
                                 return;
                               }
                               if (RegExp(r'^(?=(?:.*[A-Z]){4,})(?=(?:.*[a-z]){4,})(?=.*\d)').hasMatch(value)) {
-                                if (_errorMessage == _passwordErrorText) {
+                                if (_errorMessage == l10n.passwordValidation) {
                                   setState(() => _errorMessage = null);
                                 }
                               } else {
-                                setState(() => _errorMessage = _passwordErrorText);
+                                setState(() => _errorMessage = l10n.passwordValidation);
                               }
                             },
                             icon: Icons.lock_outline,
@@ -717,21 +715,21 @@ class _RegistrationPageState extends State<RegistrationPage>
                           const SizedBox(height: 16),
                           _buildTextField(
                             _driverPassword2Controller,
-                            'إعادة كلمة المرور',
+                            l10n.reEnterPassword,
                             obscureText: true,
                             onChanged: (value) {
                               if (value.isEmpty) {
-                                if (_errorMessage == _confirmPasswordErrorText) {
+                                if (_errorMessage == l10n.passwordsDoNotMatch) {
                                   setState(() => _errorMessage = null);
                                 }
                                 return;
                               }
                               if (value == _driverPasswordController.text) {
-                                if (_errorMessage == _confirmPasswordErrorText) {
+                                if (_errorMessage == l10n.passwordsDoNotMatch) {
                                   setState(() => _errorMessage = null);
                                 }
                               } else {
-                                setState(() => _errorMessage = _confirmPasswordErrorText);
+                                setState(() => _errorMessage = l10n.passwordsDoNotMatch);
                               }
                             },
                             icon: Icons.lock_reset,
@@ -739,13 +737,13 @@ class _RegistrationPageState extends State<RegistrationPage>
                           const SizedBox(height: 16),
                           _buildTextField(
                             _driverCarTypeController,
-                            'نوع السيارة',
+                            l10n.carType,
                             icon: Icons.directions_car_filled_outlined,
                           ),
                           const SizedBox(height: 16),
                           _buildTextField(
                             _driverCarPlateController,
-                            'رقم لوحة السيارة',
+                            l10n.carPlateNumber,
                             icon: Icons.confirmation_number_outlined,
                           ),
                           const SizedBox(height: 16),
@@ -758,10 +756,10 @@ class _RegistrationPageState extends State<RegistrationPage>
                             },
                             title: Row(
                               children: [
-                                const Expanded(
+                                Expanded(
                                   child: Text(
-                                    'أوافق على سياسة الخصوصية',
-                                    style: TextStyle(fontSize: 15),
+                                    l10n.acceptPrivacyPolicy,
+                                    style: const TextStyle(fontSize: 15),
                                   ),
                                 ),
                                 TextButton(
@@ -772,7 +770,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                                       ),
                                     );
                                   },
-                                  child: const Text('عرض'),
+                                  child: Text(l10n.view),
                                 ),
                               ],
                             ),
@@ -827,7 +825,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                               strokeWidth: 2,
                             ),
                           )
-                        : const Text('إنشاء حساب '),
+                        : Text(l10n.createAccount),
                   ),
                 ),
               ],
@@ -861,8 +859,8 @@ class _RegistrationPageState extends State<RegistrationPage>
                           Align(
                             alignment: Alignment.topRight,
                             child: Text(
-                              'راكب',
-                              style: TextStyle(
+                              l10n.traveler,
+                              style: const TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
                                 color: kAppBarColor,
@@ -873,41 +871,41 @@ class _RegistrationPageState extends State<RegistrationPage>
                           const SizedBox(height: 16),
                           _buildTextField(
                             _travelerFirstNameController,
-                            'الاسم الاول',
+                            l10n.firstName,
                             icon: Icons.person_outline,
                           ),
                           const SizedBox(height: 16),
                           _buildTextField(
                             _travelerLastNameController,
-                            'اسم العائلة ',
+                            l10n.lastName,
                             icon: Icons.person_outline,
                           ),
                             const SizedBox(height: 16),
                             _buildTextField(
                               _travelerUsernameController,
-                              'اسم المستخدم',
+                              l10n.username,
                               icon: Icons.account_circle_outlined,
                               onChanged: (value) {
                                 final trimmed = value.trim();
                                 if (trimmed.isEmpty) {
-                                  if (_errorMessage == _usernameErrorText) {
+                                  if (_errorMessage == l10n.usernameValidation) {
                                     setState(() => _errorMessage = null);
                                   }
                                   return;
                                 }
                                 if (RegExp(r'^[a-zA-Z0-9]{4,8}$').hasMatch(trimmed)) {
-                                  if (_errorMessage == _usernameErrorText) {
+                                  if (_errorMessage == l10n.usernameValidation) {
                                     setState(() => _errorMessage = null);
                                   }
                                 } else {
-                                  setState(() => _errorMessage = _usernameErrorText);
+                                  setState(() => _errorMessage = l10n.usernameValidation);
                                 }
                               },
                             ),
                           const SizedBox(height: 16),
                           _buildTextField(
                             _travelerPhoneController,
-                            'رقم الجوال',
+                            l10n.mobileNumber,
                             onChanged: (value) =>
                                 _validatePhoneInput(value, false),
                             icon: Icons.phone_iphone,
@@ -915,21 +913,21 @@ class _RegistrationPageState extends State<RegistrationPage>
                           const SizedBox(height: 16),
                           _buildTextField(
                             _travelerEmailController,
-                            'الايميل الالكتروني',
+                            l10n.emailAddress,
                             onChanged: (value) {
                               final trimmed = value.trim();
                               if (trimmed.isEmpty) {
-                                if (_errorMessage == _emailErrorText) {
+                                if (_errorMessage == l10n.emailValidation) {
                                   setState(() => _errorMessage = null);
                                 }
                                 return;
                               }
                               if (trimmed.contains('@') && trimmed.contains('.')) {
-                                if (_errorMessage == _emailErrorText) {
+                                if (_errorMessage == l10n.emailValidation) {
                                   setState(() => _errorMessage = null);
                                 }
                               } else {
-                                setState(() => _errorMessage = _emailErrorText);
+                                setState(() => _errorMessage = l10n.emailValidation);
                               }
                             },
                             icon: Icons.email_outlined,
@@ -937,22 +935,22 @@ class _RegistrationPageState extends State<RegistrationPage>
                           const SizedBox(height: 16),
                           _buildTextField(
                             _travelerPasswordController,
-                            'كلمة المرور',
+                            l10n.password,
                             obscureText: true,
-                            hint: 'اربع حروف كبيرة واربع حروف صغيرة ورقم',
+                            hint: l10n.passwordHint,
                             onChanged: (value) {
                               if (value.isEmpty) {
-                                if (_errorMessage == _passwordErrorText) {
+                                if (_errorMessage == l10n.passwordValidation) {
                                   setState(() => _errorMessage = null);
                                 }
                                 return;
                               }
                               if (RegExp(r'^(?=(?:.*[A-Z]){4,})(?=(?:.*[a-z]){4,})(?=.*\d)').hasMatch(value)) {
-                                if (_errorMessage == _passwordErrorText) {
+                                if (_errorMessage == l10n.passwordValidation) {
                                   setState(() => _errorMessage = null);
                                 }
                               } else {
-                                setState(() => _errorMessage = _passwordErrorText);
+                                setState(() => _errorMessage = l10n.passwordValidation);
                               }
                             },
                             icon: Icons.lock_outline,
@@ -960,21 +958,21 @@ class _RegistrationPageState extends State<RegistrationPage>
                           const SizedBox(height: 16),
                           _buildTextField(
                             _travelerPassword2Controller,
-                            'إعادة كلمة المرور',
+                            l10n.reEnterPassword,
                             obscureText: true,
                             onChanged: (value) {
                               if (value.isEmpty) {
-                                if (_errorMessage == _confirmPasswordErrorText) {
+                                if (_errorMessage == l10n.passwordsDoNotMatch) {
                                   setState(() => _errorMessage = null);
                                 }
                                 return;
                               }
                               if (value == _travelerPasswordController.text) {
-                                if (_errorMessage == _confirmPasswordErrorText) {
+                                if (_errorMessage == l10n.passwordsDoNotMatch) {
                                   setState(() => _errorMessage = null);
                                 }
                               } else {
-                                setState(() => _errorMessage = _confirmPasswordErrorText);
+                                setState(() => _errorMessage = l10n.passwordsDoNotMatch);
                               }
                             },
                             icon: Icons.lock_reset,
@@ -989,10 +987,10 @@ class _RegistrationPageState extends State<RegistrationPage>
                             },
                             title: Row(
                               children: [
-                                const Expanded(
+                                Expanded(
                                   child: Text(
-                                    'أوافق على سياسة الخصوصية',
-                                    style: TextStyle(fontSize: 15),
+                                    l10n.acceptPrivacyPolicy,
+                                    style: const TextStyle(fontSize: 15),
                                   ),
                                 ),
                                 TextButton(
@@ -1003,7 +1001,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                                       ),
                                     );
                                   },
-                                  child: const Text('عرض'),
+                                  child: Text(l10n.view),
                                 ),
                               ],
                             ),
@@ -1058,7 +1056,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                               strokeWidth: 2,
                             ),
                           )
-                        : const Text('إنشاء حساب '),
+                        : Text(l10n.createAccount),
                   ),
                 ),
               ],

@@ -955,6 +955,210 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'User not found'**
   String get userNotFound;
+
+  /// selectAccountType
+  ///
+  /// In en, this message translates to:
+  /// **'Select Account Type'**
+  String get selectAccountType;
+
+  /// driver
+  ///
+  /// In en, this message translates to:
+  /// **'Driver'**
+  String get driver;
+
+  /// passenger
+  ///
+  /// In en, this message translates to:
+  /// **'Passenger'**
+  String get passenger;
+
+  /// vehicleDriver
+  ///
+  /// In en, this message translates to:
+  /// **'Vehicle Driver'**
+  String get vehicleDriver;
+
+  /// traveler
+  ///
+  /// In en, this message translates to:
+  /// **'Traveler'**
+  String get traveler;
+
+  /// carPlateNumber
+  ///
+  /// In en, this message translates to:
+  /// **'Car Plate Number'**
+  String get carPlateNumber;
+
+  /// acceptPrivacyPolicy
+  ///
+  /// In en, this message translates to:
+  /// **'I agree to the Privacy Policy'**
+  String get acceptPrivacyPolicy;
+
+  /// view
+  ///
+  /// In en, this message translates to:
+  /// **'View'**
+  String get view;
+
+  /// mustAcceptPrivacyPolicy
+  ///
+  /// In en, this message translates to:
+  /// **'You must agree to the Privacy Policy before creating an account'**
+  String get mustAcceptPrivacyPolicy;
+
+  /// usernameValidation
+  ///
+  /// In en, this message translates to:
+  /// **'Username must be 4-8 alphanumeric characters only'**
+  String get usernameValidation;
+
+  /// emailValidation
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get emailValidation;
+
+  /// phoneValidation
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number must be exactly 10 digits'**
+  String get phoneValidation;
+
+  /// passwordValidation
+  ///
+  /// In en, this message translates to:
+  /// **'Password must contain four uppercase letters, four lowercase letters and a number'**
+  String get passwordValidation;
+
+  /// passwordsDoNotMatch
+  ///
+  /// In en, this message translates to:
+  /// **'Passwords do not match'**
+  String get passwordsDoNotMatch;
+
+  /// registrationSuccess
+  ///
+  /// In en, this message translates to:
+  /// **'Registered Successfully'**
+  String get registrationSuccess;
+
+  /// accountCreatedSuccess
+  ///
+  /// In en, this message translates to:
+  /// **'Your account has been created successfully! Please login using your credentials.'**
+  String get accountCreatedSuccess;
+
+  /// accountAlreadyExists
+  ///
+  /// In en, this message translates to:
+  /// **'This account is already registered. Please login or use different credentials'**
+  String get accountAlreadyExists;
+
+  /// phoneAlreadyUsed
+  ///
+  /// In en, this message translates to:
+  /// **'Phone number is already used by another user.'**
+  String get phoneAlreadyUsed;
+
+  /// emailAlreadyUsed
+  ///
+  /// In en, this message translates to:
+  /// **'Email is already used by another user.'**
+  String get emailAlreadyUsed;
+
+  /// weakPassword
+  ///
+  /// In en, this message translates to:
+  /// **'Password is weak or invalid'**
+  String get weakPassword;
+
+  /// userAlreadyRegistered
+  ///
+  /// In en, this message translates to:
+  /// **'User already registered'**
+  String get userAlreadyRegistered;
+
+  /// errorOccurred
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred. Please check your data and try again'**
+  String get errorOccurred;
+
+  /// mobileNumber
+  ///
+  /// In en, this message translates to:
+  /// **'Mobile Number'**
+  String get mobileNumber;
+
+  /// emailAddress
+  ///
+  /// In en, this message translates to:
+  /// **'Email Address'**
+  String get emailAddress;
+
+  /// reEnterPassword
+  ///
+  /// In en, this message translates to:
+  /// **'Re-enter Password'**
+  String get reEnterPassword;
+
+  /// passwordHint
+  ///
+  /// In en, this message translates to:
+  /// **'Four uppercase, four lowercase and a number'**
+  String get passwordHint;
+
+  /// recoverPassword
+  ///
+  /// In en, this message translates to:
+  /// **'Recover Password'**
+  String get recoverPassword;
+
+  /// enterEmailToRecover
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your email to receive a password recovery link'**
+  String get enterEmailToRecover;
+
+  /// pleaseEnterEmail
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter an email address'**
+  String get pleaseEnterEmail;
+
+  /// pleaseEnterValidEmail
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email address'**
+  String get pleaseEnterValidEmail;
+
+  /// resetLinkSent
+  ///
+  /// In en, this message translates to:
+  /// **'Recovery link sent if account exists'**
+  String get resetLinkSent;
+
+  /// rateLimitError
+  ///
+  /// In en, this message translates to:
+  /// **'You can request again after 15 seconds'**
+  String get rateLimitError;
+
+  /// errorOccurredMessage
+  ///
+  /// In en, this message translates to:
+  /// **'An error occurred: {message}'**
+  String errorOccurredMessage(Object message);
+
+  /// send
+  ///
+  /// In en, this message translates to:
+  /// **'Send'**
+  String get send;
 }
 
 class _AppLocalizationsDelegate

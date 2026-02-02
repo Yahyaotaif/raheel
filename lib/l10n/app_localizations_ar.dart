@@ -440,4 +440,116 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get userNotFound => 'لم يتم العثور على المستخدم';
+
+  @override
+  String get selectAccountType => 'اختر نوع الحساب';
+
+  @override
+  String get driver => 'سائق';
+
+  @override
+  String get passenger => 'راكب';
+
+  @override
+  String get vehicleDriver => 'قائد مركبة';
+
+  @override
+  String get traveler => 'راكب';
+
+  @override
+  String get carPlateNumber => 'رقم لوحة السيارة';
+
+  @override
+  String get acceptPrivacyPolicy => 'أوافق على سياسة الخصوصية';
+
+  @override
+  String get view => 'عرض';
+
+  @override
+  String get mustAcceptPrivacyPolicy =>
+      'يجب الموافقة على سياسة الخصوصية قبل إنشاء الحساب';
+
+  @override
+  String get usernameValidation =>
+      'اسم المستخدم يجب أن يكون بين 4 و 8 أحرف أو أرقام فقط';
+
+  @override
+  String get emailValidation => 'يرجى إدخال بريد إلكتروني صحيح';
+
+  @override
+  String get phoneValidation => 'رقم الجوال يجب أن يكون مكونًا من 10 أرقام';
+
+  @override
+  String get passwordValidation =>
+      'يجب أن تحتوي كلمة المرور على أربع حروف كبيرة وأربع حروف صغيرة ورقم';
+
+  @override
+  String get passwordsDoNotMatch => 'كلمتا المرور غير متطابقتين';
+
+  @override
+  String get registrationSuccess => 'تم التسجيل بنجاح';
+
+  @override
+  String get accountCreatedSuccess =>
+      'تم إنشاء حسابك بنجاح! يرجى تسجيل الدخول باستخدام بيانات اعتمادك.';
+
+  @override
+  String get accountAlreadyExists =>
+      'هذا الحساب مسجل بالفعل. يرجى تسجيل الدخول أو استخدام بيانات أخرى';
+
+  @override
+  String get phoneAlreadyUsed => 'رقم الجوال مستخدم بالفعل من قبل مستخدم آخر.';
+
+  @override
+  String get emailAlreadyUsed =>
+      'البريد الإلكتروني مستخدم بالفعل من قبل مستخدم آخر.';
+
+  @override
+  String get weakPassword => 'كلمة المرور ضعيفة أو غير صالحة';
+
+  @override
+  String get userAlreadyRegistered => 'المستخدم مسجل مسبقاً';
+
+  @override
+  String get errorOccurred =>
+      'حدث خطأ. يرجى التحقق من البيانات والمحاولة مرة أخرى';
+
+  @override
+  String get mobileNumber => 'رقم الجوال';
+
+  @override
+  String get emailAddress => 'الايميل الالكتروني';
+
+  @override
+  String get reEnterPassword => 'إعادة كلمة المرور';
+
+  @override
+  String get passwordHint => 'اربع حروف كبيرة واربع حروف صغيرة ورقم';
+
+  @override
+  String get recoverPassword => 'استعادة كلمة المرور';
+
+  @override
+  String get enterEmailToRecover =>
+      'أدخل بريدك الإلكتروني لاستلام رابط استعادة كلمة المرور';
+
+  @override
+  String get pleaseEnterEmail => 'يرجى إدخال بريد إلكتروني';
+
+  @override
+  String get pleaseEnterValidEmail => 'يرجى إدخال بريد إلكتروني صحيح';
+
+  @override
+  String get resetLinkSent => 'تم إرسال رابط الاستعادة إذا كان الحساب موجودًا';
+
+  @override
+  String get rateLimitError => 'يمكنك الطلب بعد 15 ثانية';
+
+  @override
+  String errorOccurredMessage(Object message) {
+    return 'حدث خطأ: $message';
+  }
+
+  @override
+  String get send => 'إرسال';
 }

@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:raheel/l10n/app_localizations.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   const ForgotPasswordPage({super.key});
@@ -56,11 +58,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   Future<void> _sendResetEmail() async {
+    final l10n = AppLocalizations.of(context);
     final email = _emailController.text.trim();
     
     if (email.isEmpty) {
       setState(() {
-        _message = 'يرجى إدخال بريد إلكتروني';
+        _message = l10n.pleaseEnterEmail;
         _isSuccess = false;
       });
       return;
@@ -69,7 +72,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     // Validate email format: must contain '@' and '.'
     if (!email.contains('@') || !email.contains('.')) {
       setState(() {
-        _message = 'يرجى إدخال بريد إلكتروني صحيح';
+        _message = l10n.pleaseEnterValidEmail;
         _isSuccess = false;
       });
       return;
@@ -81,13 +84,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     });
 
     try {
+      final redirectUrl = kIsWeb
+          ? 'http://localhost:5173/reset-password'
+          : 'com.raheelcorp.raheel://reset-password';
+
       await Supabase.instance.client.auth.resetPasswordForEmail(
         email,
-        redirectTo: 'http://localhost:5173/reset-password', // Change to your domain in production
+        redirectTo: redirectUrl,
       );
       setState(() {
         _isLoading = false;
-        _message = 'تم إرسال رابط الاستعادة إذا كان الحساب موجودًا';
+        _message = l10n.resetLinkSent;
         _isSuccess = true;
         _emailController.clear();
       });
@@ -95,16 +102,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       setState(() {
         _isLoading = false;
         if (e.statusCode == '429' || e.message.contains('rate_limit')) {
-          _message = 'يمكنك الطلب بعد 15 ثانية';
+          _message = l10n.rateLimitError;
         } else {
-          _message = 'حدث خطأ: ${e.message}';
+          _message = '${l10n.error}: ${e.message}';
         }
         _isSuccess = false;
       });
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _message = 'حدث خطأ: ${e.toString()}';
+        _message = '${l10n.error}: ${e.toString()}';
         _isSuccess = false;
       });
     }
@@ -118,15 +125,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: kBodyColor,
       appBar: AppBar(
         title: Row(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Icon(Icons.mail_outline, color: Colors.white, size: 24),
-            SizedBox(width: 8),
-            Text('استعادة كلمة المرور', style: TextStyle(color: Colors.white)),
+          children: [
+            const Icon(Icons.mail_outline, color: Colors.white, size: 24),
+            const SizedBox(width: 8),
+            Text(l10n.recoverPassword, style: const TextStyle(color: Colors.white)),
           ],
         ),
         elevation: 0,
@@ -165,16 +173,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 const SizedBox(height: 8),
-                const Text(
-                  'أدخل بريدك الإلكتروني لاستلام رابط استعادة كلمة المرور',
+                Text(
+                  l10n.enterEmailToRecover,
                   textDirection: TextDirection.rtl,
                   textAlign: TextAlign.right,
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                 ),
                 const SizedBox(height: 16),
                 _buildTextField(
                   controller: _emailController,
-                  label: 'الايميل الالكتروني',
+                  label: l10n.emailAddress,
                   icon: Icons.email_outlined,
                   keyboardType: TextInputType.emailAddress,
                 ),
@@ -213,7 +221,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                               strokeWidth: 2,
                             ),
                           )
-                        : const Text('إرسال'),
+                        : Text(l10n.send),
                   ),
                 ),
               ],

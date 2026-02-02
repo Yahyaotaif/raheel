@@ -69,11 +69,11 @@ class _SplashScreenState extends State<SplashScreen> {
             children: [
               AnimatedSlide(
                 offset: _textOffset,
-                duration: const Duration(milliseconds: 4000),
+                duration: const Duration(milliseconds: 3000),
                 curve: Curves.easeOut,
                 child: AnimatedOpacity(
                   opacity: _textOpacity,
-                  duration: const Duration(milliseconds: 4000),
+                  duration: const Duration(milliseconds: 3000),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -102,7 +102,7 @@ class _SplashScreenState extends State<SplashScreen> {
                         offset: const Offset(0, -30),
                         child: AnimatedSlide(
                           offset: _carrOffset,
-                          duration: const Duration(milliseconds: 6000),
+                          duration: const Duration(milliseconds: 5900),
                           curve: Curves.easeInOut,
                           child: Lottie.asset(
                             'assets/lottie/carr.json',
