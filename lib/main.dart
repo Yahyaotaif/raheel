@@ -281,11 +281,12 @@ class _MainAppState extends State<MainApp> {
 
         final tokenType = merged['type'];
         final token = merged['token'];
+        final code = merged['code'];
         final accessToken = merged['access_token'];
         final refreshToken = merged['refresh_token'];
 
         debugPrint('🔐 Detected reset password link');
-        debugPrint('📋 Token type: $tokenType, token=${token != null}, access=${accessToken != null}, refresh=${refreshToken != null}');
+        debugPrint('📋 Token type: $tokenType, token=${token != null}, code=${code != null}, access=${accessToken != null}, refresh=${refreshToken != null}');
 
         if (accessToken != null && refreshToken != null) {
           debugPrint('🎟️ Access/refresh tokens found, setting flag and navigating to reset-password');
@@ -297,6 +298,13 @@ class _MainAppState extends State<MainApp> {
               refreshToken: refreshToken,
               tokenType: tokenType,
             );
+          });
+        } else if (code != null) {
+          debugPrint('🔑 Recovery code found: $code');
+          isDeepLinkResetPasswordPending = true;
+
+          Future.microtask(() {
+            _navigateToResetPasswordWithCode(code);
           });
         } else if (token != null) {
           debugPrint('🎫 Token found, setting flag and navigating to reset-password');
@@ -393,6 +401,38 @@ class _MainAppState extends State<MainApp> {
     }
   }
 
+  void _navigateToResetPasswordWithCode(String code, {int retryCount = 0}) {
+    try {
+      final navigator = _navigatorKey.currentState;
+      if (navigator != null && navigator.mounted) {
+        debugPrint('🔄 Navigator available (retry: $retryCount), executing navigation to /reset-password with code');
+        navigator.pushReplacementNamed(
+          '/reset-password',
+          arguments: {
+            'code': code,
+            'type': 'recovery',
+          },
+        );
+        debugPrint('✅ Navigation command sent successfully');
+        Future.delayed(const Duration(milliseconds: 2000), () {
+          isDeepLinkResetPasswordPending = false;
+          debugPrint('🏁 Deep link flag cleared');
+        });
+      } else if (retryCount < 20) {
+        debugPrint('⏳ Navigator not ready (retry: $retryCount), retrying in 200ms');
+        Future.delayed(const Duration(milliseconds: 200), () {
+          _navigateToResetPasswordWithCode(code, retryCount: retryCount + 1);
+        });
+      } else {
+        debugPrint('❌ Failed to navigate after 20 retries');
+        isDeepLinkResetPasswordPending = false;
+      }
+    } catch (e) {
+      debugPrint('❌ Error during navigation to reset password with code: $e');
+      isDeepLinkResetPasswordPending = false;
+    }
+  }
+
   @override
   void dispose() {
     try {
@@ -425,10 +465,20 @@ class _MainAppState extends State<MainApp> {
               ),
             ),
             home: SplashScreen(),
-            routes: {
-              '/login': (context) => const LoginPage(),
-              '/profile': (context) => const ProfilePage(),
-              '/reset-password': (context) => const ResetPasswordHandler(),
+            onGenerateRoute: (settings) {
+              switch (settings.name) {
+                case '/login':
+                  return MaterialPageRoute(builder: (context) => const LoginPage());
+                case '/profile':
+                  return MaterialPageRoute(builder: (context) => const ProfilePage());
+                case '/reset-password':
+                  return MaterialPageRoute(
+                    builder: (context) => const ResetPasswordHandler(),
+                    settings: RouteSettings(arguments: settings.arguments),
+                  );
+                default:
+                  return null;
+              }
             },
           );
         },

@@ -21,34 +21,53 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
   @override
   void initState() {
     super.initState();
-    _initializePasswordReset();
+    debugPrint('✅ ResetPasswordHandler opened!');
+    // Defer initialization until after the first frame is rendered
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _initializePasswordReset();
+    });
   }
 
   Future<void> _initializePasswordReset() async {
     try {
+      debugPrint('🔐 ResetPasswordHandler initializing...');
       // Get the token from route arguments (passed from deep link handler)
       final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+      debugPrint('📋 Route arguments: $args');
+      
       final token = args?['token'] as String?;
-      final type = args?['type'] as String?;
+      final code = args?['code'] as String?;
       final accessToken = args?['access_token'] as String?;
       final refreshToken = args?['refresh_token'] as String?;
+      final type = args?['type'] as String?;
+
+      debugPrint('🔑 Token: ${token != null}, Code: ${code != null}, AccessToken: ${accessToken != null}, RefreshToken: ${refreshToken != null}');
+
+      // If we have a code, exchange it for a session via Supabase
+      if (code != null && type == 'recovery') {
+        debugPrint('🔄 Exchanging code for session...');
+        try {
+          await Supabase.instance.client.auth.exchangeCodeForSession(code);
+          debugPrint('✅ Session created from recovery code');
+        } catch (e) {
+          debugPrint('❌ Error during code exchange: $e');
+        }
+      }
+      
+      // Set session if we have access tokens
+      if (accessToken != null && refreshToken != null) {
+        try {
+          debugPrint('🔐 Setting session from tokens...');
+          await Supabase.instance.client.auth.setSession(accessToken);
+          debugPrint('✅ Session set successfully');
+        } catch (e) {
+          debugPrint('❌ Failed to set session: $e');
+        }
+      }
 
       debugPrint(
         'Password reset init - token=${token != null}, type=$type, access=${accessToken != null}, refresh=${refreshToken != null}',
       );
-
-      if (accessToken != null) {
-        try {
-          await Supabase.instance.client.auth.setSession(accessToken);
-          debugPrint('Session set successfully from access token');
-          setState(() {
-            _isInitialized = true;
-          });
-          return;
-        } catch (e) {
-          debugPrint('Failed to set session from access token: $e');
-        }
-      }
 
       if (token != null && type == 'recovery') {
         debugPrint('Recovery token provided but no access/refresh tokens found');
@@ -237,7 +256,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
       );
     }
 
-    if (_errorMessage != null && _errorMessage!.contains('Invalid') || _errorMessage!.contains('error')) {
+    if (_errorMessage != null && (_errorMessage!.contains('Invalid') || _errorMessage!.contains('error'))) {
       return Scaffold(
         backgroundColor: kBodyColor,
         appBar: AppBar(

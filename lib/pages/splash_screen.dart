@@ -26,6 +26,10 @@ class _SplashScreenState extends State<SplashScreen> {
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
     );
+    
+    // Check if deep link is pending at splash init
+    debugPrint('🔍 Splash init - deep link pending: $isDeepLinkResetPasswordPending');
+    
     Future.delayed(const Duration(milliseconds: 800), () {
       if (mounted) {
         setState(() {
@@ -47,8 +51,10 @@ class _SplashScreenState extends State<SplashScreen> {
       debugPrint('🔍 Checking deep link flag: $isDeepLinkResetPasswordPending');
       
       // Wait a bit more and check flag again in case deep link is still processing
-      await Future.delayed(const Duration(milliseconds: 1000));
+      await Future.delayed(const Duration(milliseconds: 2000));
       if (!mounted) return;
+      
+      debugPrint('🔍 Final check - deep link flag: $isDeepLinkResetPasswordPending');
       
       if (isDeepLinkResetPasswordPending) {
         debugPrint('🚫 Splash screen: deep link reset-password pending, skipping login navigation');
