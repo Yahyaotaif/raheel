@@ -259,7 +259,7 @@ class _LoginPageState extends State<LoginPage> {
             builder: (context, languageProvider, _) {
               return Padding(
                 padding: const EdgeInsets.only(right: 16.0),
-                child: IconButton(
+                child: TextButton.icon(
                   onPressed: () {
                     languageProvider.toggleLanguage();
                   },
@@ -267,10 +267,21 @@ class _LoginPageState extends State<LoginPage> {
                     languageProvider.languageCode == 'ar'
                         ? Icons.language
                         : Icons.language_outlined,
-                    color: kAppBarColor,
-                    size: 28,
+                    color: Colors.white,
+                    size: 24,
                   ),
-                  tooltip: AppLocalizations.of(context).language,
+                  label: Text(
+                    AppLocalizations.of(context).language,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600,
+                      fontSize: 13,
+                    ),
+                  ),
+                  style: TextButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  ),
                 ),
               );
             },
@@ -321,7 +332,7 @@ class _LoginPageState extends State<LoginPage> {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 4),
                         // Email/Username Field
                         _buildStyleTextField(
                           controller: _identifierController,
