@@ -54,13 +54,17 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
   String? _selectedDestinationDropdown;
   final TextEditingController _destinationController = TextEditingController();
   final _cardDecoration = BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(24),
+    gradient: LinearGradient(
+      colors: [Colors.white, Colors.white.withValues(alpha: 0.98)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ),
+    borderRadius: BorderRadius.circular(20),
     boxShadow: [
       BoxShadow(
-        color: Colors.black12,
-        blurRadius: 16,
-        offset: Offset(0, 8),
+        color: Colors.black.withValues(alpha: 0.08),
+        blurRadius: 20,
+        offset: Offset(0, 10),
       ),
     ],
   );
@@ -669,44 +673,77 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.location_on, color: kAppBarColor, size: 28),
+                          Icon(Icons.location_on, color: kAppBarColor, size: 24),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              initialValue: _selectedDestinationDropdown,
-                              decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context).destination,
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                                filled: true,
-                                fillColor: Colors.white,
-                                alignLabelWithHint: true,
-                                labelStyle: const TextStyle(fontSize: 18, color: Colors.black87, fontWeight: FontWeight.normal),
-                              ),
-                              dropdownColor: Colors.white,
-                              items: _destinationCities.map((city) {
-                                return DropdownMenuItem(
-                                  value: city,
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    city,
-                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.05),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
                                   ),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedDestinationDropdown = value;
-                                  _selectedTime = null;
-                                  _trips = [];
-                                  _currentPage = 0;
-                                  _hasMoreTrips = true;
-                                });
-                                // Refresh trips if date is already selected
-                                if (_selectedDate != null) {
-                                  _fetchTripsForDate(_selectedDate!);
-                                }
-                              },
+                                ],
+                              ),
+                              child: DropdownButtonFormField<String>(
+                                isExpanded: true,
+                                initialValue: _selectedDestinationDropdown,
+                                decoration: InputDecoration(
+                                  labelText: AppLocalizations.of(context).destination,
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Noto Naskh Arabic',
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey[300]!,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                      color: kAppBarColor,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                                dropdownColor: Colors.white,
+                                items: _destinationCities.map((city) {
+                                  return DropdownMenuItem(
+                                    value: city,
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      city,
+                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black87),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedDestinationDropdown = value;
+                                    _selectedTime = null;
+                                    _trips = [];
+                                    _currentPage = 0;
+                                    _hasMoreTrips = true;
+                                  });
+                                  // Refresh trips if date is already selected
+                                  if (_selectedDate != null) {
+                                    _fetchTripsForDate(_selectedDate!);
+                                  }
+                                },
+                              ),
                             ),
                           ),
                         ],
@@ -714,19 +751,21 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                       const SizedBox(height: 24),
                       Row(
                         children: [
-                          Icon(Icons.calendar_today, color: kAppBarColor, size: 28),
+                          Icon(Icons.calendar_today, color: kAppBarColor, size: 24),
                           const SizedBox(width: 10),
                           Expanded(
                             child: OutlinedButton(
                               style: OutlinedButton.styleFrom(
-                                backgroundColor: Colors.transparent,
-                                side: BorderSide(color: kAppBarColor, width: 1.5),
+                                backgroundColor: Colors.white,
+                                side: BorderSide(color: Colors.grey[300]!, width: 1.5),
                                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                minimumSize: const Size(0, 48),
+                                minimumSize: const Size(0, 52),
                                 padding: EdgeInsets.zero,
+                                elevation: 0,
+                                shadowColor: Colors.black.withValues(alpha: 0.05),
                               ),
                               onPressed: () => _pickDate(context),
-                              child: Text(AppLocalizations.of(context).selectDate, style: const TextStyle(fontSize: 18, color: Colors.black)),
+                              child: Text(AppLocalizations.of(context).selectDate, style: TextStyle(fontSize: 16, color: Colors.grey[700], fontWeight: FontWeight.w500)),
                             ),
                           ),
                         ],

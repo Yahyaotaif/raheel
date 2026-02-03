@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     // Initialize car animation controller
     _carController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 5000),
+      duration: const Duration(milliseconds: 9000),
     );
     
     _carAnimation = Tween<Offset>(
@@ -59,7 +59,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         _carController.repeat();
       }
     });
-    Future.delayed(const Duration(milliseconds: 7000), () async {
+    Future.delayed(const Duration(milliseconds: 6500), () async {
       if (!mounted) return;
       debugPrint('🕐 Splash screen 6s timer completed');
       debugPrint('🔍 Checking deep link flag: $isDeepLinkResetPasswordPending');

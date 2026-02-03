@@ -34,13 +34,17 @@ class _DriverSetPageState extends State<DriverSetPage> {
   String? _errorMessage;
   double _tripPrice = 0;
   final _cardDecoration = BoxDecoration(
-    color: Colors.white,
-    borderRadius: BorderRadius.circular(24),
+    gradient: LinearGradient(
+      colors: [Colors.white, Colors.white.withValues(alpha: 0.98)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ),
+    borderRadius: BorderRadius.circular(20),
     boxShadow: [
       BoxShadow(
-        color: Colors.black12,
-        blurRadius: 16,
-        offset: Offset(0, 8),
+        color: Colors.black.withValues(alpha: 0.08),
+        blurRadius: 20,
+        offset: Offset(0, 10),
       ),
     ],
   );
@@ -368,19 +372,21 @@ class _DriverSetPageState extends State<DriverSetPage> {
                   children: [
                     Row(
                       children: [
-                        Icon(Icons.calendar_today, color: kAppBarColor, size: 28),
+                        Icon(Icons.calendar_today, color: kAppBarColor, size: 24),
                         const SizedBox(width: 10),
                         Expanded(
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              side: BorderSide(color: kAppBarColor, width: 1.5),
+                              backgroundColor: Colors.white,
+                              side: BorderSide(color: Colors.grey[300]!, width: 1.5),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              minimumSize: const Size(0, 48),
+                              minimumSize: const Size(0, 52),
                               padding: EdgeInsets.zero,
+                              elevation: 0,
+                              shadowColor: Colors.black.withValues(alpha: 0.05),
                             ),
                             onPressed: () => _pickDate(context),
-                            child: Text(AppLocalizations.of(context).selectDate, style: const TextStyle(fontSize: 18, color: Colors.black)),
+                            child: Text(AppLocalizations.of(context).selectDate, style: TextStyle(fontSize: 16, color: Colors.grey[700], fontWeight: FontWeight.w500)),
                           ),
                         ),
                       ],
@@ -399,19 +405,21 @@ class _DriverSetPageState extends State<DriverSetPage> {
                     const SizedBox(height: 20),
                     Row(
                       children: [
-                        Icon(Icons.access_time, color: kAppBarColor, size: 28),
+                        Icon(Icons.access_time, color: kAppBarColor, size: 24),
                         const SizedBox(width: 10),
                         Expanded(
                           child: OutlinedButton(
                             style: OutlinedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              side: BorderSide(color: kAppBarColor, width: 1.5),
+                              backgroundColor: Colors.white,
+                              side: BorderSide(color: Colors.grey[300]!, width: 1.5),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              minimumSize: const Size(0, 48),
+                              minimumSize: const Size(0, 52),
                               padding: EdgeInsets.zero,
+                              elevation: 0,
+                              shadowColor: Colors.black.withValues(alpha: 0.05),
                             ),
                             onPressed: () => _pickTime(context),
-                            child: Text(AppLocalizations.of(context).selectTime, style: const TextStyle(fontSize: 18, color: Colors.black)),
+                            child: Text(AppLocalizations.of(context).selectTime, style: TextStyle(fontSize: 16, color: Colors.grey[700], fontWeight: FontWeight.w500)),
                           ),
                         ),
                       ],
@@ -442,57 +450,68 @@ class _DriverSetPageState extends State<DriverSetPage> {
                     children: [
                       Row(
                         children: [
-                          Icon(Icons.location_on, color: kAppBarColor, size: 28),
+                          Icon(Icons.location_on, color: kAppBarColor, size: 24),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              initialValue: _selectedDestinationDropdown,
-                              decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context).destination,
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                                filled: true,
-                                fillColor: Colors.white,
-                                alignLabelWithHint: true,
-                                labelStyle: const TextStyle(fontSize: 18, color: Colors.black87, fontWeight: FontWeight.normal),
-                              ),
-                              dropdownColor: Colors.white,
-                              items: destinations.map((city) {
-                                return DropdownMenuItem(
-                                  value: city,
-                                  alignment: Alignment.centerRight,
-                                  child: Text(
-                                    city,
-                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.05),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
                                   ),
-                                );
-                              }).toList(),
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedDestinationDropdown = value;
-                                });
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        children: [
-                          Icon(Icons.flag, color: kAppBarColor, size: 28),
-                          const SizedBox(width: 10),
-                          Expanded(
-                            child: TextField(
-                              controller: _destinationController,
-                              textDirection: TextDirection.rtl,
-                              decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context).arrivalPlace,
-                                hintText: AppLocalizations.of(context).arrivalPlace,
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                                filled: true,
-                                fillColor: Colors.white,
-                                alignLabelWithHint: true,
-                                labelStyle: const TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.normal),
+                                ],
+                              ),
+                              child: DropdownButtonFormField<String>(
+                                isExpanded: true,
+                                initialValue: _selectedDestinationDropdown,
+                                decoration: InputDecoration(
+                                  labelText: AppLocalizations.of(context).destination,
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Noto Naskh Arabic',
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey[300]!,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                      color: kAppBarColor,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                                dropdownColor: Colors.white,
+                                items: destinations.map((city) {
+                                  return DropdownMenuItem(
+                                    value: city,
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      city,
+                                      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black87),
+                                    ),
+                                  );
+                                }).toList(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedDestinationDropdown = value;
+                                  });
+                                },
                               ),
                             ),
                           ),
@@ -501,20 +520,61 @@ class _DriverSetPageState extends State<DriverSetPage> {
                       const SizedBox(height: 16),
                       Row(
                         children: [
-                          Icon(Icons.place, color: kAppBarColor, size: 28),
+                          Icon(Icons.flag, color: kAppBarColor, size: 24),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: TextField(
-                              controller: _meetingPointController,
-                              textDirection: TextDirection.rtl,
-                              decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context).departurePlace,
-                                hintText: AppLocalizations.of(context).departurePlace,
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                                filled: true,
-                                fillColor: Colors.white,
-                                alignLabelWithHint: true,
-                                labelStyle: const TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.normal),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.05),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: TextField(
+                                controller: _destinationController,
+                                textDirection: TextDirection.rtl,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
+                                decoration: InputDecoration(
+                                  labelText: AppLocalizations.of(context).arrivalPlace,
+                                  hintText: AppLocalizations.of(context).arrivalPlace,
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey[400],
+                                    fontFamily: 'Noto Naskh Arabic',
+                                  ),
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Noto Naskh Arabic',
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey[300]!,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                      color: kAppBarColor,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
@@ -523,39 +583,135 @@ class _DriverSetPageState extends State<DriverSetPage> {
                       const SizedBox(height: 16),
                       Row(
                         children: [
-                          Icon(Icons.people, color: kAppBarColor, size: 28),
+                          Icon(Icons.place, color: kAppBarColor, size: 24),
                           const SizedBox(width: 10),
                           Expanded(
-                            child: DropdownButtonFormField<String>(
-                              isExpanded: true,
-                              initialValue: _selectedPassengers,
-                              decoration: InputDecoration(
-                                labelText: AppLocalizations.of(context).numberOfSeats,
-                                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-                                filled: true,
-                                fillColor: Colors.white,
-                                alignLabelWithHint: true,
-                                labelStyle: const TextStyle(fontSize: 16, color: Colors.black54, fontWeight: FontWeight.normal),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.05),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
                               ),
-                              dropdownColor: Colors.white,
-                              hint: Text(AppLocalizations.of(context).numberOfSeats),
-                              items: const [
-                                DropdownMenuItem(value: '1', alignment: Alignment.centerRight, child: Text('1')),
-                                DropdownMenuItem(value: '2', alignment: Alignment.centerRight, child: Text('2')),
-                                DropdownMenuItem(value: '3', alignment: Alignment.centerRight, child: Text('3')),
-                                DropdownMenuItem(value: '4', alignment: Alignment.centerRight, child: Text('4')),
-                                DropdownMenuItem(value: '5', alignment: Alignment.centerRight, child: Text('5')),
-                                DropdownMenuItem(value: '6', alignment: Alignment.centerRight, child: Text('6')),
-                                DropdownMenuItem(value: '7', alignment: Alignment.centerRight, child: Text('7')),
-                                DropdownMenuItem(value: '8', alignment: Alignment.centerRight, child: Text('8')),
-                                DropdownMenuItem(value: '9', alignment: Alignment.centerRight, child: Text('9')),
-                                DropdownMenuItem(value: '10', alignment: Alignment.centerRight, child: Text('10')),
-                              ],
-                              onChanged: (value) {
-                                setState(() {
-                                  _selectedPassengers = value;
-                                });
-                              },
+                              child: TextField(
+                                controller: _meetingPointController,
+                                textDirection: TextDirection.rtl,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.black87,
+                                ),
+                                decoration: InputDecoration(
+                                  labelText: AppLocalizations.of(context).departurePlace,
+                                  hintText: AppLocalizations.of(context).departurePlace,
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey[400],
+                                    fontFamily: 'Noto Naskh Arabic',
+                                  ),
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Noto Naskh Arabic',
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey[300]!,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                      color: kAppBarColor,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Icon(Icons.people, color: kAppBarColor, size: 24),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.05),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: DropdownButtonFormField<String>(
+                                isExpanded: true,
+                                initialValue: _selectedPassengers,
+                                decoration: InputDecoration(
+                                  labelText: AppLocalizations.of(context).numberOfSeats,
+                                  labelStyle: TextStyle(
+                                    color: Colors.grey[600],
+                                    fontWeight: FontWeight.w500,
+                                    fontFamily: 'Noto Naskh Arabic',
+                                  ),
+                                  filled: true,
+                                  fillColor: Colors.white,
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide.none,
+                                  ),
+                                  enabledBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: BorderSide(
+                                      color: Colors.grey[300]!,
+                                      width: 1.5,
+                                    ),
+                                  ),
+                                  focusedBorder: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                    borderSide: const BorderSide(
+                                      color: kAppBarColor,
+                                      width: 2,
+                                    ),
+                                  ),
+                                ),
+                                dropdownColor: Colors.white,
+                                hint: Text(AppLocalizations.of(context).numberOfSeats),
+                                items: const [
+                                  DropdownMenuItem(value: '1', alignment: Alignment.centerRight, child: Text('1', style: TextStyle(fontSize: 16, color: Colors.black87))),
+                                  DropdownMenuItem(value: '2', alignment: Alignment.centerRight, child: Text('2', style: TextStyle(fontSize: 16, color: Colors.black87))),
+                                  DropdownMenuItem(value: '3', alignment: Alignment.centerRight, child: Text('3', style: TextStyle(fontSize: 16, color: Colors.black87))),
+                                  DropdownMenuItem(value: '4', alignment: Alignment.centerRight, child: Text('4', style: TextStyle(fontSize: 16, color: Colors.black87))),
+                                  DropdownMenuItem(value: '5', alignment: Alignment.centerRight, child: Text('5', style: TextStyle(fontSize: 16, color: Colors.black87))),
+                                  DropdownMenuItem(value: '6', alignment: Alignment.centerRight, child: Text('6', style: TextStyle(fontSize: 16, color: Colors.black87))),
+                                  DropdownMenuItem(value: '7', alignment: Alignment.centerRight, child: Text('7', style: TextStyle(fontSize: 16, color: Colors.black87))),
+                                  DropdownMenuItem(value: '8', alignment: Alignment.centerRight, child: Text('8', style: TextStyle(fontSize: 16, color: Colors.black87))),
+                                  DropdownMenuItem(value: '9', alignment: Alignment.centerRight, child: Text('9', style: TextStyle(fontSize: 16, color: Colors.black87))),
+                                  DropdownMenuItem(value: '10', alignment: Alignment.centerRight, child: Text('10', style: TextStyle(fontSize: 16, color: Colors.black87))),
+                                ],
+                                onChanged: (value) {
+                                  setState(() {
+                                    _selectedPassengers = value;
+                                  });
+                                },
+                              ),
                             ),
                           ),
                         ],
@@ -576,11 +732,12 @@ class _DriverSetPageState extends State<DriverSetPage> {
                 height: 56,
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
                     backgroundColor: kAppBarColor,
                     foregroundColor: Colors.white,
                     textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    elevation: 4,
+                    elevation: 6,
+                    shadowColor: kAppBarColor.withValues(alpha: 0.4),
                   ),
                   onPressed: _isLoading ? null : _createTrip,
                   icon: _isLoading

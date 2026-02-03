@@ -278,22 +278,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(
                   children: [
                     ListTile(
-                      leading: const Icon(Icons.privacy_tip_outlined, color: Colors.black54),
-                      title: Text(
-                        AppLocalizations.of(context).privacyPolicy,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const PrivacyPolicyPage(),
-                          ),
-                        );
-                      },
-                    ),
-                    const Divider(height: 1, color: Colors.black12),
-                    ListTile(
                       leading: const Icon(Icons.lock_outline, color: Colors.black54),
                       title: Text(
                         AppLocalizations.of(context).changePassword,
@@ -333,6 +317,22 @@ class _ProfilePageState extends State<ProfilePage> {
                       ),
                       trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
                       onTap: _sendHelpEmail,
+                    ),
+                    const Divider(height: 1, color: Colors.black12),
+                    ListTile(
+                      leading: const Icon(Icons.privacy_tip_outlined, color: Colors.black54),
+                      title: Text(
+                        AppLocalizations.of(context).privacyPolicy,
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const PrivacyPolicyPage(),
+                          ),
+                        );
+                      },
                     ),
                   ],
                 ),

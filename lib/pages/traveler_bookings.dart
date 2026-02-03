@@ -44,15 +44,13 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
     });
 
     try {
-      // Get localized strings before async operations
-      final userNotFoundMsg = AppLocalizations.of(context).userNotFound;
-      
       // Use auth_id from SharedPreferences for traveler_id
       final prefs = await SharedPreferences.getInstance();
       final travelerId = prefs.getString('auth_id') ?? prefs.getString('user_id');
 
       if (travelerId == null) {
-        throw Exception(userNotFoundMsg);
+        if (!mounted) return;
+        throw Exception(AppLocalizations.of(context).userNotFound);
       }
 
       // Fetch bookings for the current traveler
@@ -104,9 +102,6 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
 
   Future<void> _deleteBooking(dynamic bookingId) async {
     try {
-      // Get localized strings before async operations
-      final travelerDeletedMsg = AppLocalizations.of(context).travelerDeleted;
-      
       // Mark booking as completed instead of deleting
       await Supabase.instance.client
           .from('bookings')
@@ -122,7 +117,7 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(travelerDeletedMsg),
+          content: Text(AppLocalizations.of(context).travelerDeleted),
           backgroundColor: Colors.green,
           duration: const Duration(seconds: 2),
         ),
@@ -146,15 +141,13 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
       scheme: 'tel',
       path: phoneNumber,
     );
-    // Get localized string before async operation
-    final cannotOpenMsg = AppLocalizations.of(context).cannotOpenPhone;
     try {
       await launchUrl(launchUri);
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(cannotOpenMsg),
+          content: Text(AppLocalizations.of(context).cannotOpenPhone),
           backgroundColor: Colors.red,
         ),
       );
