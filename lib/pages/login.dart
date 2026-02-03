@@ -252,7 +252,8 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: const RaheelLogo(),
         centerTitle: true,
-        elevation: 0,
+        elevation: 8,
+        shadowColor: Colors.black.withValues(alpha: 0.2),
         backgroundColor: Colors.transparent,
         actions: [
           Consumer<LanguageProvider>(
@@ -332,7 +333,7 @@ class _LoginPageState extends State<LoginPage> {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(height: 2),
                         // Email/Username Field
                         _buildStyleTextField(
                           controller: _identifierController,
@@ -341,7 +342,7 @@ class _LoginPageState extends State<LoginPage> {
                           icon: Icons.person_outline,
                           width: 340,
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 16),
                         // Password Field
                         _buildStyleTextField(
                           controller: _passwordController,
