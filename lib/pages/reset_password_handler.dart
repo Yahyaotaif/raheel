@@ -198,7 +198,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(l10n.success),
+          content: Text('تمت إعادة ضبط كلمة المرور بنجاح'),
           backgroundColor: Colors.green,
           duration: const Duration(seconds: 3),
         ),
