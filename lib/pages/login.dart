@@ -333,7 +333,7 @@ class _LoginPageState extends State<LoginPage> {
                             fit: BoxFit.contain,
                           ),
                         ),
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 0),
                         // Email/Username Field
                         _buildStyleTextField(
                           controller: _identifierController,
