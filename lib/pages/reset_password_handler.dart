@@ -30,38 +30,28 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
       final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
       final token = args?['token'] as String?;
       final type = args?['type'] as String?;
+      final accessToken = args?['access_token'] as String?;
+      final refreshToken = args?['refresh_token'] as String?;
 
-      debugPrint('Password reset init - token: ${token != null}, type: $type');
+      debugPrint(
+        'Password reset init - token=${token != null}, type=$type, access=${accessToken != null}, refresh=${refreshToken != null}',
+      );
 
-      if (token != null && type == 'recovery') {
-        // Supabase sends a token that we need to verify
-        // The token will be used by Supabase to authenticate the session
+      if (accessToken != null) {
         try {
-          // Verify the recovery token with Supabase
-          await Supabase.instance.client.auth.verifyOTP(
-            email: '',
-            token: token,
-            type: OtpType.recovery,
-          );
-          debugPrint('OTP verification successful');
+          await Supabase.instance.client.auth.setSession(accessToken);
+          debugPrint('Session set successfully from access token');
           setState(() {
             _isInitialized = true;
           });
           return;
         } catch (e) {
-          debugPrint('Token verification failed: $e');
-          // Try using the token directly as a session token
-          try {
-            await Supabase.instance.client.auth.setSession(token);
-            debugPrint('Session set successfully from token');
-            setState(() {
-              _isInitialized = true;
-            });
-            return;
-          } catch (e2) {
-            debugPrint('Failed to set session from token: $e2');
-          }
+          debugPrint('Failed to set session from access token: $e');
         }
+      }
+
+      if (token != null && type == 'recovery') {
+        debugPrint('Recovery token provided but no access/refresh tokens found');
       }
 
       // Check if user is already authenticated

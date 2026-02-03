@@ -296,149 +296,153 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             Expanded(
-              child: Center(
+              child: Align(
+                alignment: Alignment.topCenter,
                 child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: Image.asset(
-                          'assets/logo.png',
-                          width: MediaQuery.of(context).size.width - 8, // Increased width
-                          height: 220, // Slightly increased height for better aspect
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      SizedBox(
-                        width: 340,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: TextField(
-                            controller: _identifierController,
-                            keyboardType: TextInputType.text,
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.person),
-                              border: const OutlineInputBorder(),
-                              labelText: AppLocalizations.of(context).emailOrUsername,
-                              hintText: AppLocalizations.of(context).enterEmailOrUsername,
-                              filled: true,
-                              fillColor: Colors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
-                      SizedBox(
-                        width: 340,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withValues(alpha: 0.2),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                          child: TextField(
-                            controller: _passwordController,
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(Icons.lock),
-                              border: const OutlineInputBorder(),
-                              labelText: AppLocalizations.of(context).password,
-                              filled: true,
-                              fillColor: Colors.white,
-                            ),
-                            obscureText: true,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      if (_errorMessage != null) ...[
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 12.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                          child: Text(
-                            _errorMessage!,
-                            style: const TextStyle(color: Colors.red, fontSize: 16),
-                            textAlign: TextAlign.center,
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Image.asset(
+                            'assets/logo.png',
+                            width: MediaQuery.of(context).size.width - 8, // Increased width
+                            height: 220, // Slightly increased height for better aspect
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                        SizedBox(
+                          width: 340,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: TextField(
+                              controller: _identifierController,
+                              keyboardType: TextInputType.text,
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.person),
+                                border: const OutlineInputBorder(),
+                                labelText: AppLocalizations.of(context).emailOrUsername,
+                                hintText: AppLocalizations.of(context).enterEmailOrUsername,
+                                filled: true,
+                                fillColor: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+                        SizedBox(
+                          width: 340,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: TextField(
+                              controller: _passwordController,
+                              decoration: InputDecoration(
+                                prefixIcon: const Icon(Icons.lock),
+                                border: const OutlineInputBorder(),
+                                labelText: AppLocalizations.of(context).password,
+                                filled: true,
+                                fillColor: Colors.white,
+                              ),
+                              obscureText: true,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        if (_errorMessage != null) ...[
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                            child: Text(
+                              _errorMessage!,
+                              style: const TextStyle(color: Colors.red, fontSize: 16),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                        SizedBox(
+                          width: 320,
+                          height: 48,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              backgroundColor: kAppBarColor,
+                              foregroundColor: Colors.white,
+                              textStyle: const TextStyle(fontSize: 18),
+                            ),
+                            onPressed: _isLoading ? null : _login,
+                            child: _isLoading
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2,
+                                    ),
+                                  )
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(Icons.login, size: 20),
+                                      const SizedBox(width: 8),
+                                      Text(AppLocalizations.of(context).login),
+                                    ],
+                                  ),
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        TextButton(
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const RegistrationPage(),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.person_add,
+                                size: 18,
+                                color: Color.fromARGB(255, 119, 135, 149),
+                              ),
+                              const SizedBox(width: 8),
+                              Text(
+                                '${AppLocalizations.of(context).dontHaveAccount} ${AppLocalizations.of(context).registerNow}',
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontFamily: 'Noto Naskh Arabic',
+                                  color: Color.fromARGB(255, 119, 135, 149),
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
-                      SizedBox(
-                        width: 320,
-                        height: 48,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            backgroundColor: kAppBarColor,
-                            foregroundColor: Colors.white,
-                            textStyle: const TextStyle(fontSize: 18),
-                          ),
-                          onPressed: _isLoading ? null : _login,
-                          child: _isLoading
-                              ? const SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
-                                  ),
-                                )
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    const Icon(Icons.login, size: 20),
-                                    const SizedBox(width: 8),
-                                    Text(AppLocalizations.of(context).login),
-                                  ],
-                                ),
-                        ),
-                      ),
-                      const SizedBox(height: 10),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const RegistrationPage(),
-                            ),
-                          );
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.person_add,
-                              size: 18,
-                              color: Color.fromARGB(255, 119, 135, 149),
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              '${AppLocalizations.of(context).dontHaveAccount} ${AppLocalizations.of(context).registerNow}',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontFamily: 'Noto Naskh Arabic',
-                                color: Color.fromARGB(255, 119, 135, 149),
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),

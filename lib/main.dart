@@ -10,6 +10,7 @@ import 'package:app_links/app_links.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:raheel/l10n/app_localizations.dart';
+import 'package:raheel/deeplink_state.dart';
 import 'dart:async';
 
 void main() async {
@@ -225,6 +226,7 @@ class _MainAppState extends State<MainApp> {
     try {
       final uri = await _appLinks.getInitialLink();
       if (uri != null) {
+        debugPrint('Initial link detected: $uri');
         _handleDeepLink(uri);
       }
     } catch (e) {
@@ -234,35 +236,160 @@ class _MainAppState extends State<MainApp> {
 
   void _handleDeepLink(Uri uri) {
     try {
+      debugPrint('=== Deep Link Handler ===');
       debugPrint('Deep link received: $uri');
-      debugPrint('Scheme: ${uri.scheme}, Host: ${uri.host}');
+      debugPrint('Full URL: ${uri.toString()}');
+      debugPrint('Scheme: ${uri.scheme}');
+      debugPrint('Host: ${uri.host}');
+      debugPrint('Path: ${uri.path}');
       debugPrint('Query params: ${uri.queryParameters}');
+      debugPrint('Fragment: ${uri.fragment}');
+      debugPrint('========================');
 
       // Check if it's a password reset link from Supabase
-      // Supabase sends recovery links with type=recovery and a token parameter
-      if ((uri.scheme == 'com.raheelcorp.raheel' ||
-              uri.scheme == 'com.example.raheel') &&
-          uri.host == 'reset-password') {
-        
-        final tokenType = uri.queryParameters['type'];
-        final token = uri.queryParameters['token'];
-        
-        debugPrint('Token type: $tokenType, Token exists: ${token != null}');
+      // Supabase sends recovery links with type=recovery and tokens in query or fragment
+      bool isResetPasswordLink = false;
 
-        if (tokenType == 'recovery' && token != null) {
-          // Supabase sends a single token that contains both access and refresh tokens
-          // We'll pass it to the reset handler
-          _navigatorKey.currentState?.pushReplacementNamed(
-            '/reset-password',
-            arguments: {
-              'token': token,
-              'type': tokenType,
-            },
-          );
+      // Check various possible URL formats:
+      // 1. com.raheelcorp.raheel://reset-password?token=xxx&type=recovery
+      // 2. com.raheelcorp.raheel://reset-password#access_token=...&refresh_token=...&type=recovery
+      // 3. https://mwjjaiqqfzmlaiaamlhu.supabase.co/auth/v1/verify?token=...&type=recovery (Supabase email link)
+      // 4. http(s)://.../reset-password?token=xxx&type=recovery (web)
+
+      if (uri.scheme == 'com.raheelcorp.raheel') {
+        if (uri.host == 'reset-password' || uri.path.contains('reset-password')) {
+          isResetPasswordLink = true;
         }
+      } else if (uri.scheme == 'http' || uri.scheme == 'https') {
+        // Supabase verification links
+        if (uri.host.contains('supabase.co') && uri.path.contains('/auth/v1/verify')) {
+          isResetPasswordLink = true;
+        } else if (uri.path.contains('reset-password')) {
+          isResetPasswordLink = true;
+        }
+      }
+
+      if (isResetPasswordLink) {
+        final queryParams = Map<String, String>.from(uri.queryParameters);
+        final fragmentParams = uri.fragment.isNotEmpty
+            ? Uri.splitQueryString(uri.fragment)
+            : <String, String>{};
+
+        final merged = <String, String>{}
+          ..addAll(fragmentParams)
+          ..addAll(queryParams);
+
+        final tokenType = merged['type'];
+        final token = merged['token'];
+        final accessToken = merged['access_token'];
+        final refreshToken = merged['refresh_token'];
+
+        debugPrint('🔐 Detected reset password link');
+        debugPrint('📋 Token type: $tokenType, token=${token != null}, access=${accessToken != null}, refresh=${refreshToken != null}');
+
+        if (accessToken != null && refreshToken != null) {
+          debugPrint('🎟️ Access/refresh tokens found, setting flag and navigating to reset-password');
+          isDeepLinkResetPasswordPending = true;
+
+          Future.microtask(() {
+            _navigateToResetPasswordWithTokens(
+              accessToken: accessToken,
+              refreshToken: refreshToken,
+              tokenType: tokenType,
+            );
+          });
+        } else if (token != null) {
+          debugPrint('🎫 Token found, setting flag and navigating to reset-password');
+          isDeepLinkResetPasswordPending = true;
+
+          Future.microtask(() {
+            _navigateToResetPassword(token, tokenType);
+          });
+        } else {
+          debugPrint('⚠️ No usable token found in deep link');
+        }
+      } else {
+        debugPrint('❓ Not a recognized deep link: scheme=${uri.scheme}, host=${uri.host}, path=${uri.path}');
       }
     } catch (e) {
       debugPrint('Error handling deep link: $e');
+    }
+  }
+
+  void _navigateToResetPassword(String token, String? tokenType, {int retryCount = 0}) {
+    try {
+      final navigator = _navigatorKey.currentState;
+      if (navigator != null && navigator.mounted) {
+        debugPrint('🔄 Navigator available (retry: $retryCount), executing navigation to /reset-password');
+        navigator.pushReplacementNamed(
+          '/reset-password',
+          arguments: {
+            'token': token,
+            'type': tokenType ?? 'recovery',
+          },
+        );
+        debugPrint('✅ Navigation command sent successfully');
+        // Keep flag true for a bit longer to ensure SplashScreen doesn't interfere
+        Future.delayed(const Duration(milliseconds: 2000), () {
+          isDeepLinkResetPasswordPending = false;
+          debugPrint('🏁 Deep link flag cleared');
+        });
+      } else if (retryCount < 20) {
+        debugPrint('⏳ Navigator not ready (retry: $retryCount), retrying in 200ms');
+        Future.delayed(const Duration(milliseconds: 200), () {
+          _navigateToResetPassword(token, tokenType, retryCount: retryCount + 1);
+        });
+      } else {
+        debugPrint('❌ Failed to navigate after 20 retries');
+        isDeepLinkResetPasswordPending = false;
+      }
+    } catch (e) {
+      debugPrint('❌ Error during navigation to reset password: $e');
+      isDeepLinkResetPasswordPending = false;
+    }
+  }
+
+  void _navigateToResetPasswordWithTokens({
+    required String accessToken,
+    required String refreshToken,
+    String? tokenType,
+    int retryCount = 0,
+  }) {
+    try {
+      final navigator = _navigatorKey.currentState;
+      if (navigator != null && navigator.mounted) {
+        debugPrint('🔄 Navigator available (retry: $retryCount), executing navigation to /reset-password with tokens');
+        navigator.pushReplacementNamed(
+          '/reset-password',
+          arguments: {
+            'access_token': accessToken,
+            'refresh_token': refreshToken,
+            'type': tokenType ?? 'recovery',
+          },
+        );
+        debugPrint('✅ Navigation command sent successfully');
+        // Keep flag true for a bit longer to ensure SplashScreen doesn't interfere
+        Future.delayed(const Duration(milliseconds: 2000), () {
+          isDeepLinkResetPasswordPending = false;
+          debugPrint('🏁 Deep link flag cleared');
+        });
+      } else if (retryCount < 20) {
+        debugPrint('⏳ Navigator not ready (retry: $retryCount), retrying in 200ms');
+        Future.delayed(const Duration(milliseconds: 200), () {
+          _navigateToResetPasswordWithTokens(
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            tokenType: tokenType,
+            retryCount: retryCount + 1,
+          );
+        });
+      } else {
+        debugPrint('❌ Failed to navigate after 20 retries');
+        isDeepLinkResetPasswordPending = false;
+      }
+    } catch (e) {
+      debugPrint('❌ Error during navigation to reset password: $e');
+      isDeepLinkResetPasswordPending = false;
     }
   }
 
@@ -308,4 +435,6 @@ class _MainAppState extends State<MainApp> {
       ),
     );
   }
+
 }
+

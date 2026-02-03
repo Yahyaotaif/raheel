@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -84,9 +83,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     });
 
     try {
-      final redirectUrl = kIsWeb
-          ? 'http://localhost:5173/reset-password'
-          : 'com.raheelcorp.raheel://reset-password';
+      // For Android, we use the direct deep link
+      // Supabase will redirect through their verification URL first, 
+      // then to this deep link
+      final redirectUrl = 'com.raheelcorp.raheel://reset-password';
 
       await Supabase.instance.client.auth.resetPasswordForEmail(
         email,

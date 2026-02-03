@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
 import 'package:lottie/lottie.dart';
+import 'package:raheel/deeplink_state.dart';
 import 'package:raheel/pages/login.dart';
 import '../theme_constants.dart';
 
@@ -43,6 +43,19 @@ class _SplashScreenState extends State<SplashScreen> {
     });
     Future.delayed(const Duration(milliseconds: 6000), () async {
       if (!mounted) return;
+      debugPrint('🕐 Splash screen 6s timer completed');
+      debugPrint('🔍 Checking deep link flag: $isDeepLinkResetPasswordPending');
+      
+      // Wait a bit more and check flag again in case deep link is still processing
+      await Future.delayed(const Duration(milliseconds: 1000));
+      if (!mounted) return;
+      
+      if (isDeepLinkResetPasswordPending) {
+        debugPrint('🚫 Splash screen: deep link reset-password pending, skipping login navigation');
+        return;
+      }
+      
+      debugPrint('➡️ Splash screen: navigating to login');
       setState(() {
         _fadeOpacity = 0.0;
       });
