@@ -22,6 +22,9 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  late Future<Map<String, dynamic>?> _userFuture;
+  late Future<String?> _roleFuture;
+
   /// Retrieves the current user from SharedPreferences session storage.
   Future<Map<String, dynamic>?> getCurrentUserFromCustomSession() async {
     final prefs = await SharedPreferences.getInstance();
@@ -40,6 +43,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
+    _userFuture = getCurrentUserFromCustomSession();
+    _roleFuture = _loadUserRoleForButton();
   }
 
   Future<String?> _loadUserRoleForButton() async {
@@ -188,101 +193,81 @@ class _ProfilePageState extends State<ProfilePage> {
         color: kBodyColor,
         child: Padding(
           padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+          child: ListView(
             children: [
-              // User info container
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.white, width: 2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black12,
-                      blurRadius: 8,
-                      offset: Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  children: [
-                    // Image placeholder
-                    Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        shape: BoxShape.rectangle,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: const Icon(Icons.person, size: 36, color: Colors.grey),
-                    ),
-                    const SizedBox(width: 16),
-                    // User info
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        FutureBuilder(
-                          future: getCurrentUserFromCustomSession(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Text('...');
-                            }
-                            if (snapshot.hasError || snapshot.data == null) {
-                              return const Text(
-                                'اسم المستخدم',
-                                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                              );
-                            }
-                            final data = snapshot.data as Map?;
-                            final first = (data?['FirstName'] ?? '').toString().trim();
-                            final last = (data?['LastName'] ?? '').toString().trim();
-                            final displayName = (first.isNotEmpty || last.isNotEmpty)
-                                ? ('$first $last').trim()
-                                : 'اسم المستخدم';
-                            return Text(
-                              displayName,
-                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                            );
-                          },
-                        ),
-                        const SizedBox(height: 8),
-                        FutureBuilder(
-                          future: getCurrentUserFromCustomSession(),
-                          builder: (context, snapshot) {
-                            if (snapshot.connectionState == ConnectionState.waiting) {
-                              return const Text('...');
-                            }
-                            if (snapshot.hasError || snapshot.data == null) {
-                              return const Text(
-                                'user@email.com',
-                                style: TextStyle(fontSize: 16, color: Colors.black54),
-                              );
-                            }
-                            final data = snapshot.data as Map?;
-                            final email = (data?['EmailAddress'] ?? '').toString().trim();
-                            return Text(
-                              email.isNotEmpty ? email : 'user@email.com',
-                              style: const TextStyle(fontSize: 16, color: Colors.black54),
-                            );
-                          },
+              FutureBuilder<Map<String, dynamic>?>(
+                future: _userFuture,
+                builder: (context, snapshot) {
+                  final data = snapshot.data;
+                  final first = (data?['FirstName'] ?? '').toString().trim();
+                  final last = (data?['LastName'] ?? '').toString().trim();
+                  final email = (data?['EmailAddress'] ?? '').toString().trim();
+                  final displayName = (first.isNotEmpty || last.isNotEmpty)
+                      ? ('$first $last').trim()
+                      : AppLocalizations.of(context).profile;
+
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.white, width: 2),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
                         ),
                       ],
                     ),
-                  ],
-                ),
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.grey[300],
+                            shape: BoxShape.rectangle,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: const Icon(Icons.person, size: 36, color: Colors.grey),
+                        ),
+                        const SizedBox(width: 16),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              snapshot.connectionState == ConnectionState.waiting
+                                  ? '...'
+                                  : displayName,
+                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              snapshot.connectionState == ConnectionState.waiting
+                                  ? '...'
+                                  : (email.isNotEmpty ? email : 'user@email.com'),
+                              style: const TextStyle(fontSize: 16, color: Colors.black54),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 24),
-
-              // Settings buttons container
+              Text(
+                AppLocalizations.of(context).settings,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
                   border: Border.all(color: Colors.white, width: 2),
-                  boxShadow: [
+                  boxShadow: const [
                     BoxShadow(
                       color: Colors.black12,
                       blurRadius: 8,
@@ -292,10 +277,13 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 child: Column(
                   children: [
-                    // Change password
-                    // Privacy Policy
-                    InkWell(
-                      borderRadius: BorderRadius.circular(0),
+                    ListTile(
+                      leading: const Icon(Icons.privacy_tip_outlined, color: Colors.black54),
+                      title: Text(
+                        AppLocalizations.of(context).privacyPolicy,
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -303,26 +291,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         );
                       },
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.privacy_tip_outlined, color: Colors.black54),
-                            const SizedBox(width: 12),
-                            Text(
-                              AppLocalizations.of(context).privacyPolicy,
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                            ),
-                            const Spacer(),
-                            const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                          ],
-                        ),
-                      ),
                     ),
                     const Divider(height: 1, color: Colors.black12),
-                    // Help center
-                    InkWell(
-                      borderRadius: const BorderRadius.only(topLeft: Radius.circular(16), topRight: Radius.circular(16)),
+                    ListTile(
+                      leading: const Icon(Icons.lock_outline, color: Colors.black54),
+                      title: Text(
+                        AppLocalizations.of(context).changePassword,
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -330,25 +307,15 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         );
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.lock_outline, color: Colors.black54),
-                            const SizedBox(width: 12),
-                            Text(
-                              AppLocalizations.of(context).changePassword,
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                            ),
-                            const Spacer(),
-                            const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                          ],
-                        ),
-                      ),
                     ),
                     Divider(height: 1, color: Colors.grey.shade300),
-                    // Edit profile
-                    InkWell(
+                    ListTile(
+                      leading: const Icon(Icons.edit, color: Colors.black54),
+                      title: Text(
+                        AppLocalizations.of(context).editProfile,
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
                       onTap: () {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -356,161 +323,75 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         );
                       },
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.edit, color: Colors.black54),
-                            const SizedBox(width: 12),
-                            Text(
-                              AppLocalizations.of(context).editProfile,
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                            ),
-                            const Spacer(),
-                            const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                          ],
-                        ),
-                      ),
                     ),
                     Divider(height: 1, color: Colors.grey.shade300),
-                    // Help and support
-                    InkWell(
-                      borderRadius: const BorderRadius.only(bottomLeft: Radius.circular(16), bottomRight: Radius.circular(16)),
-                      onTap: _sendHelpEmail,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.help_outline, color: Colors.black54),
-                            const SizedBox(width: 12),
-                            Text(
-                              AppLocalizations.of(context).helpAndSupport,
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                            ),
-                            const Spacer(),
-                            Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                          ],
-                        ),
+                    ListTile(
+                      leading: const Icon(Icons.help_outline, color: Colors.black54),
+                      title: Text(
+                        AppLocalizations.of(context).helpAndSupport,
+                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                       ),
+                      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                      onTap: _sendHelpEmail,
                     ),
                   ],
                 ),
               ),
-              const SizedBox(height: 16, width: 300),
-              
-              // Manage bookings container - only for drivers
+              const SizedBox(height: 16),
+              Text(
+                AppLocalizations.of(context).bookings,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 8),
               FutureBuilder<String?>(
-                future: _loadUserRoleForButton(),
+                future: _roleFuture,
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done && 
+                  if (snapshot.connectionState == ConnectionState.done &&
                       snapshot.data == 'driver') {
-                    return SizedBox(
-                      width: double.infinity,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(16),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const DriverBookingsPage(),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white, width: 2),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 8,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
+                    return _buildActionCard(
+                      icon: Icons.calendar_today,
+                      title: AppLocalizations.of(context).manageBookings,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const DriverBookingsPage(),
                           ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.calendar_today, color: Colors.black54),
-                              const SizedBox(width: 12),
-                              Text(
-                                AppLocalizations.of(context).manageBookings,
-                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                              ),
-                              const Spacer(),
-                              const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                            ],
-                          ),
-                        ),
-                      ),
+                        );
+                      },
                     );
                   }
                   return const SizedBox.shrink();
                 },
               ),
-              const SizedBox(height: 16, width: 300),
-              
-              // Manage traveler bookings container - only for travelers
               FutureBuilder<String?>(
-                future: _loadUserRoleForButton(),
+                future: _roleFuture,
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done && 
+                  if (snapshot.connectionState == ConnectionState.done &&
                       snapshot.data == 'traveler') {
-                    return SizedBox(
-                      width: double.infinity,
-                      child: InkWell(
-                        borderRadius: BorderRadius.circular(16),
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => const TravelerBookingsPage(),
-                            ),
-                          );
-                        },
-                        child: Container(
-                          padding: const EdgeInsets.all(16),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                            border: Border.all(color: Colors.white, width: 2),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 8,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
+                    return _buildActionCard(
+                      icon: Icons.bookmark,
+                      title: AppLocalizations.of(context).myTrips,
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const TravelerBookingsPage(),
                           ),
-                          child: Row(
-                            children: [
-                              const Icon(Icons.bookmark, color: Colors.black54),
-                              const SizedBox(width: 12),
-                              Text(
-                                AppLocalizations.of(context).myTrips,
-                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                              ),
-                              const Spacer(),
-                              const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                            ],
-                          ),
-                        ),
-                      ),
+                        );
+                      },
                     );
                   }
                   return const SizedBox.shrink();
                 },
               ),
-              Spacer(),
+              const SizedBox(height: 16),
               FutureBuilder<String?>(
-                future: _loadUserRoleForButton(),
+                future: _roleFuture,
                 builder: (context, snapshot) {
-                  String buttonText = 'بحث عن رحلة';
+                  String buttonText = AppLocalizations.of(context).searchTrip;
                   String? userRole = snapshot.data;
                   if (snapshot.connectionState == ConnectionState.done && userRole != null) {
                     if (userRole == 'driver') {
                       buttonText = AppLocalizations.of(context).createTrip;
-                    } else {
-                      buttonText = AppLocalizations.of(context).searchTrip;
                     }
                   }
                   return SizedBox(
@@ -569,6 +450,47 @@ class _ProfilePageState extends State<ProfilePage> {
                   label: Text(AppLocalizations.of(context).logout),
                 ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionCard({
+    required IconData icon,
+    required String title,
+    required VoidCallback onTap,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: Colors.white, width: 2),
+            boxShadow: const [
+              BoxShadow(
+                color: Colors.black12,
+                blurRadius: 8,
+                offset: Offset(0, 4),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Icon(icon, color: Colors.black54),
+              const SizedBox(width: 12),
+              Text(
+                title,
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              ),
+              const Spacer(),
+              const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
             ],
           ),
         ),

@@ -511,38 +511,67 @@ class _RegistrationPageState extends State<RegistrationPage>
     Function(String)? onChanged,
     IconData? icon,
   }) {
-    return TextField(
-      controller: controller,
-      obscureText: obscureText,
-      onChanged: onChanged,
-      textDirection: TextDirection.rtl,
-      decoration: InputDecoration(
-        labelText: label,
-        hintText: hint,
-        prefixIcon: icon != null
-            ? Icon(icon, color: kAppBarColor)
-            : null,
-        hintStyle: const TextStyle(fontSize: 12, color: Colors.grey),
-        labelStyle: const TextStyle(
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        onChanged: onChanged,
+        textDirection: TextDirection.rtl,
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: hint,
+          prefixIcon: icon != null
+              ? Icon(
+                  icon,
+                  color: kAppBarColor,
+                  size: 22,
+                )
+              : null,
+          hintStyle: TextStyle(
+            color: Colors.grey[400],
+            fontFamily: 'Noto Naskh Arabic',
+          ),
+          labelStyle: TextStyle(
+            color: Colors.grey[600],
+            fontWeight: FontWeight.w500,
+            fontFamily: 'Noto Naskh Arabic',
+          ),
+          filled: true,
+          fillColor: Colors.white,
+          contentPadding:
+              const EdgeInsets.symmetric(vertical: 16, horizontal: 4),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide.none,
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: BorderSide(
+              color: Colors.grey[300]!,
+              width: 1.5,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(
+              color: kAppBarColor,
+              width: 2,
+            ),
+          ),
+        ),
+        style: const TextStyle(
           fontSize: 16,
-          fontWeight: FontWeight.w500,
           color: Colors.black87,
-        ),
-        filled: true,
-        fillColor: Colors.grey.shade50,
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 14, horizontal: 14),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.black12.withValues(alpha: 0.5)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: BorderSide(color: Colors.black12.withValues(alpha: 0.5)),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(12),
-          borderSide: const BorderSide(color: kAppBarColor, width: 1.6),
         ),
       ),
     );
@@ -572,6 +601,10 @@ class _RegistrationPageState extends State<RegistrationPage>
         centerTitle: true,
         elevation: 10,
         shadowColor: Colors.black,
+        toolbarHeight: 70,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+        ),
         flexibleSpace: Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -582,10 +615,18 @@ class _RegistrationPageState extends State<RegistrationPage>
           ),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Color(0xFFF7F8FA), Color(0xFFE6F0EC)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: TabBarView(
+          controller: _tabController,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
           // Empty Tab (default)
           const Center(child: SizedBox.shrink()),
           // Driver Tab
@@ -597,16 +638,20 @@ class _RegistrationPageState extends State<RegistrationPage>
                 Expanded(
                   child: SingleChildScrollView(
                       child: Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.transparent, width: 1),
-                        boxShadow: const [
+                        gradient: LinearGradient(
+                          colors: [Colors.white, Colors.white.withValues(alpha: 0.95)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.black12.withValues(alpha: 0.08)),
+                        boxShadow: [
                           BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 18,
-                            offset: Offset(0, 8),
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 24,
+                            offset: const Offset(0, 12),
                           ),
                         ],
                       ),
@@ -754,6 +799,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                                 _driverAcceptedPolicy = value ?? false;
                               });
                             },
+                            activeColor: kAppBarColor,
                             title: Row(
                               children: [
                                 Expanded(
@@ -809,11 +855,13 @@ class _RegistrationPageState extends State<RegistrationPage>
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(14),
                       ),
                       backgroundColor: kAppBarColor,
                       foregroundColor: Colors.white,
                       textStyle: const TextStyle(fontSize: 18),
+                      elevation: 6,
+                      shadowColor: kAppBarColor.withValues(alpha: 0.4),
                     ),
                     onPressed: _isLoading ? null : _registerDriver,
                     child: _isLoading
@@ -840,16 +888,20 @@ class _RegistrationPageState extends State<RegistrationPage>
                 Expanded(
                   child: SingleChildScrollView(
                     child: Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.transparent, width: 1),
-                        boxShadow: const [
+                        gradient: LinearGradient(
+                          colors: [Colors.white, Colors.white.withValues(alpha: 0.95)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(color: Colors.black12.withValues(alpha: 0.08)),
+                        boxShadow: [
                           BoxShadow(
-                            color: Colors.black12,
-                            blurRadius: 18,
-                            offset: Offset(0, 8),
+                            color: Colors.black.withValues(alpha: 0.08),
+                            blurRadius: 24,
+                            offset: const Offset(0, 12),
                           ),
                         ],
                       ),
@@ -985,6 +1037,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                                 _travelerAcceptedPolicy = value ?? false;
                               });
                             },
+                            activeColor: kAppBarColor,
                             title: Row(
                               children: [
                                 Expanded(
@@ -1040,11 +1093,13 @@ class _RegistrationPageState extends State<RegistrationPage>
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                        borderRadius: BorderRadius.circular(14),
                       ),
                       backgroundColor: kAppBarColor,
                       foregroundColor: Colors.white,
                       textStyle: const TextStyle(fontSize: 18),
+                      elevation: 6,
+                      shadowColor: kAppBarColor.withValues(alpha: 0.4),
                     ),
                     onPressed: _isLoading ? null : _registerTraveler,
                     child: _isLoading
@@ -1063,6 +1118,7 @@ class _RegistrationPageState extends State<RegistrationPage>
             ),
           ),
         ],
+        ),
       ),
     );
   }

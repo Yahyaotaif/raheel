@@ -315,217 +315,214 @@ class _LoginPageState extends State<LoginPage> {
         child: Column(
           children: [
             Expanded(
-              child: Align(
-                alignment: Alignment.topCenter,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(top: 16.0),
-                          child: Image.asset(
-                            'assets/logo.png',
-                            width: MediaQuery.of(context).size.width - 10,
-                            height: 200,
-                            fit: BoxFit.contain,
-                          ),
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(top: 16.0),
+                        child: Image.asset(
+                          'assets/logo.png',
+                          width: MediaQuery.of(context).size.width - 10,
+                          height: 200,
+                          fit: BoxFit.contain,
                         ),
-                        const SizedBox(height: 0),
-                        // Email/Username Field
-                        _buildStyleTextField(
-                          controller: _identifierController,
-                          label: AppLocalizations.of(context).emailOrUsername,
-                          hint: AppLocalizations.of(context).enterEmailOrUsername,
-                          icon: Icons.person_outline,
-                          width: 340,
-                        ),
-                        const SizedBox(height: 16),
-                        // Password Field
-                        _buildStyleTextField(
-                          controller: _passwordController,
-                          label: AppLocalizations.of(context).password,
-                          hint: '',
-                          icon: Icons.lock_outline,
-                          obscureText: true,
-                          width: 340,
-                        ),
-                        const SizedBox(height: 28),
-                        // Error Message
-                        if (_errorMessage != null) ...[
-                          Container(
-                            padding: const EdgeInsets.all(14),
-                            margin: const EdgeInsets.only(bottom: 20),
-                            decoration: BoxDecoration(
-                              color: Colors.red.withValues(alpha: 0.08),
-                              borderRadius: BorderRadius.circular(12),
-                              border: Border.all(
-                                color: Colors.red.withValues(alpha: 0.3),
-                                width: 1.5,
-                              ),
-                            ),
-                            child: Text(
-                              _errorMessage!,
-                              style: const TextStyle(
-                                color: Colors.red,
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                fontFamily: 'Noto Naskh Arabic',
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                        // Login Button
-                        SizedBox(
-                          width: 320,
-                          height: 52,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: kAppBarColor.withValues(alpha: 0.3),
-                                  blurRadius: 16,
-                                  offset: const Offset(0, 8),
-                                ),
-                              ],
-                            ),
-                            child: ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                backgroundColor: kAppBarColor,
-                                foregroundColor: Colors.white,
-                                elevation: 0,
-                                padding: EdgeInsets.zero,
-                              ),
-                              onPressed: _isLoading ? null : _login,
-                              child: _isLoading
-                                  ? const SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: CircularProgressIndicator(
-                                        color: Colors.white,
-                                        strokeWidth: 2.5,
-                                      ),
-                                    )
-                                  : Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
-                                      children: [
-                                        const Icon(Icons.login_outlined, size: 22),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          AppLocalizations.of(context).login,
-                                          style: const TextStyle(
-                                            fontSize: 18,
-                                            fontWeight: FontWeight.w600,
-                                            letterSpacing: 0.5,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 24),
-                        // Divider
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                height: 1,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.grey[300]!,
-                                      Colors.transparent,
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Text(
-                                'أو',
-                                style: TextStyle(
-                                  color: Colors.grey[600],
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Container(
-                                height: 1,
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.grey[300]!,
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        // Register Button
+                      ),
+                      const SizedBox(height: 0),
+                      // Email/Username Field
+                      _buildStyleTextField(
+                        controller: _identifierController,
+                        label: AppLocalizations.of(context).emailOrUsername,
+                        hint: AppLocalizations.of(context).enterEmailOrUsername,
+                        icon: Icons.person_outline,
+                        width: 340,
+                      ),
+                      const SizedBox(height: 16),
+                      // Password Field
+                      _buildStyleTextField(
+                        controller: _passwordController,
+                        label: AppLocalizations.of(context).password,
+                        hint: '',
+                        icon: Icons.lock_outline,
+                        obscureText: true,
+                        width: 340,
+                      ),
+                      const SizedBox(height: 28),
+                      // Error Message
+                      if (_errorMessage != null) ...[
                         Container(
-                          width: 320,
-                          height: 48,
+                          padding: const EdgeInsets.all(14),
+                          margin: const EdgeInsets.only(bottom: 20),
                           decoration: BoxDecoration(
+                            color: Colors.red.withValues(alpha: 0.08),
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color: kAppBarColor.withValues(alpha: 0.3),
+                              color: Colors.red.withValues(alpha: 0.3),
                               width: 1.5,
                             ),
                           ),
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              elevation: 0,
-                              padding: EdgeInsets.zero,
+                          child: Text(
+                            _errorMessage!,
+                            style: const TextStyle(
+                              color: Colors.red,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Noto Naskh Arabic',
                             ),
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const RegistrationPage(),
-                                ),
-                              );
-                            },
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.person_add_outlined,
-                                  size: 20,
-                                  color: kAppBarColor,
-                                ),
-                                const SizedBox(width: 10),
-                                Text(
-                                  '${AppLocalizations.of(context).dontHaveAccount} ${AppLocalizations.of(context).registerNow}',
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w600,
-                                    color: kAppBarColor,
-                                    fontFamily: 'Noto Naskh Arabic',
-                                  ),
-                                ),
-                              ],
-                            ),
+                            textAlign: TextAlign.center,
                           ),
                         ),
                       ],
-                    ),
+                      // Login Button
+                      SizedBox(
+                        width: 320,
+                        height: 52,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: kAppBarColor.withValues(alpha: 0.3),
+                                blurRadius: 16,
+                                offset: const Offset(0, 8),
+                              ),
+                            ],
+                          ),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              backgroundColor: kAppBarColor,
+                              foregroundColor: Colors.white,
+                              elevation: 0,
+                              padding: EdgeInsets.zero,
+                            ),
+                            onPressed: _isLoading ? null : _login,
+                            child: _isLoading
+                                ? const SizedBox(
+                                    width: 24,
+                                    height: 24,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
+                                      strokeWidth: 2.5,
+                                    ),
+                                  )
+                                : Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      const Icon(Icons.login_outlined, size: 22),
+                                      const SizedBox(width: 10),
+                                      Text(
+                                        AppLocalizations.of(context).login,
+                                        style: const TextStyle(
+                                          fontSize: 18,
+                                          fontWeight: FontWeight.w600,
+                                          letterSpacing: 0.5,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 24),
+                      // Divider
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              height: 1,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.grey[300]!,
+                                    Colors.transparent,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Text(
+                              'أو',
+                              style: TextStyle(
+                                color: Colors.grey[600],
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: 1,
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.grey[300]!,
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      // Register Button
+                      Container(
+                        width: 320,
+                        height: 48,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: kAppBarColor.withValues(alpha: 0.3),
+                            width: 1.5,
+                          ),
+                        ),
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            elevation: 0,
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(
+                                builder: (context) => const RegistrationPage(),
+                              ),
+                            );
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.person_add_outlined,
+                                size: 20,
+                                color: kAppBarColor,
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                '${AppLocalizations.of(context).dontHaveAccount} ${AppLocalizations.of(context).registerNow}',
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: kAppBarColor,
+                                  fontFamily: 'Noto Naskh Arabic',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

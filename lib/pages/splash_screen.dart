@@ -12,11 +12,13 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> {
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   double _textOpacity = 0.0;
   Offset _textOffset = Offset.zero;
   double _fadeOpacity = 1.0;
-  Offset _carrOffset = const Offset(-4, 0);
+  late AnimationController _carController;
+  late Animation<Offset> _carAnimation;
+  
   @override
   void initState() {
     super.initState();
@@ -26,6 +28,20 @@ class _SplashScreenState extends State<SplashScreen> {
         systemNavigationBarIconBrightness: Brightness.dark,
       ),
     );
+    
+    // Initialize car animation controller
+    _carController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 5000),
+    );
+    
+    _carAnimation = Tween<Offset>(
+      begin: const Offset(-4, 0),
+      end: const Offset(3, 0),
+    ).animate(CurvedAnimation(
+      parent: _carController,
+      curve: Curves.easeInOut,
+    ));
     
     // Check if deep link is pending at splash init
     debugPrint('🔍 Splash init - deep link pending: $isDeepLinkResetPasswordPending');
@@ -40,12 +56,10 @@ class _SplashScreenState extends State<SplashScreen> {
     });
     Future.delayed(const Duration(milliseconds: 1500), () {
       if (mounted) {
-        setState(() {
-          _carrOffset = const Offset(3, 0);
-        });
+        _carController.repeat();
       }
     });
-    Future.delayed(const Duration(milliseconds: 6000), () async {
+    Future.delayed(const Duration(milliseconds: 7000), () async {
       if (!mounted) return;
       debugPrint('🕐 Splash screen 6s timer completed');
       debugPrint('🔍 Checking deep link flag: $isDeepLinkResetPasswordPending');
@@ -71,6 +85,12 @@ class _SplashScreenState extends State<SplashScreen> {
         MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     });
+  }
+
+  @override
+  void dispose() {
+    _carController.dispose();
+    super.dispose();
   }
 
   @override
@@ -119,10 +139,14 @@ class _SplashScreenState extends State<SplashScreen> {
                       ),
                       Transform.translate(
                         offset: const Offset(0, -30),
-                        child: AnimatedSlide(
-                          offset: _carrOffset,
-                          duration: const Duration(milliseconds: 5900),
-                          curve: Curves.easeInOut,
+                        child: AnimatedBuilder(
+                          animation: _carAnimation,
+                          builder: (context, child) {
+                            return Transform.translate(
+                              offset: Offset(_carAnimation.value.dx * 100, 0),
+                              child: child,
+                            );
+                          },
                           child: Lottie.asset(
                             'assets/lottie/carr.json',
                             width: 100,

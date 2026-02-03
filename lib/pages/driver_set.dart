@@ -209,7 +209,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
       // Handle payment result with proper context guarding
       if (!mounted) return;
 
-      if (paymentResult == null || paymentResult['success'] != true) {
+      if (paymentResult?['success'] != true) {
         // Payment was cancelled or failed
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
