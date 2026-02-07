@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/auth/password_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:raheel/widgets/modern_back_button.dart';
 
 class ChangePasswordPage extends StatelessWidget {
   const ChangePasswordPage({super.key});
@@ -13,6 +14,10 @@ class ChangePasswordPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: kBodyColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Navigator.of(context).canPop()
+            ? const ModernBackButton()
+            : null,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: const [

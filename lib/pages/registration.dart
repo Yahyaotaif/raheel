@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/pages/privacy_policy.dart';
 import 'package:raheel/l10n/app_localizations.dart';
+import 'package:raheel/widgets/modern_back_button.dart';
 
 import 'package:raheel/auth/auth_service.dart';
 
@@ -583,6 +584,10 @@ class _RegistrationPageState extends State<RegistrationPage>
     return Scaffold(
       backgroundColor: kBodyColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Navigator.of(context).canPop()
+            ? const ModernBackButton()
+            : null,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -641,7 +646,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Colors.white, Colors.white.withValues(alpha: 0.95)],
+                          colors: [kBodyColor, kBodyColor.withValues(alpha: 0.95)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -891,7 +896,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
-                          colors: [Colors.white, Colors.white.withValues(alpha: 0.95)],
+                          colors: [kBodyColor, kBodyColor.withValues(alpha: 0.95)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),

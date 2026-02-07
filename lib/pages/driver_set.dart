@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/widgets/payment_dialog.dart';
 import 'package:raheel/l10n/app_localizations.dart';
+import 'package:raheel/widgets/modern_back_button.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -334,6 +335,10 @@ class _DriverSetPageState extends State<DriverSetPage> {
     return Scaffold(
       backgroundColor: kBodyColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Navigator.of(context).canPop()
+            ? const ModernBackButton()
+            : null,
         elevation: 0,
         backgroundColor: Colors.transparent,
         flexibleSpace: Container(

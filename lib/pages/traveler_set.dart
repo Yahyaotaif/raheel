@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/widgets/payment_dialog.dart';
 import 'package:raheel/l10n/app_localizations.dart';
+import 'package:raheel/widgets/modern_back_button.dart';
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -630,6 +631,10 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
       resizeToAvoidBottomInset: true,
       backgroundColor: kBodyColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Navigator.of(context).canPop()
+            ? const ModernBackButton()
+            : null,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

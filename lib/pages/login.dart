@@ -11,6 +11,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import 'package:raheel/providers/language_provider.dart';
 import 'package:raheel/l10n/app_localizations.dart';
+import 'package:raheel/widgets/modern_back_button.dart';
 // Custom Logo Widget
 class RaheelLogo extends StatelessWidget {
   const RaheelLogo({super.key});
@@ -250,6 +251,10 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: kBodyColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Navigator.of(context).canPop()
+            ? const ModernBackButton()
+            : null,
         title: const RaheelLogo(),
         centerTitle: true,
         elevation: 8,
@@ -509,13 +514,21 @@ class _LoginPageState extends State<LoginPage> {
                                 color: kAppBarColor,
                               ),
                               const SizedBox(width: 10),
-                              Text(
-                                '${AppLocalizations.of(context).dontHaveAccount} ${AppLocalizations.of(context).registerNow}',
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: kAppBarColor,
-                                  fontFamily: 'Noto Naskh Arabic',
+                              Flexible(
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  alignment: Alignment.centerLeft,
+                                  child: Text(
+                                    '${AppLocalizations.of(context).dontHaveAccount} ${AppLocalizations.of(context).registerNow}',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.w600,
+                                      color: kAppBarColor,
+                                      fontFamily: 'Noto Naskh Arabic',
+                                    ),
+                                  ),
                                 ),
                               ),
                             ],

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
+import 'package:raheel/widgets/modern_back_button.dart';
 
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
@@ -11,6 +12,10 @@ class PrivacyPolicyPage extends StatelessWidget {
       child: Scaffold(
         backgroundColor: kBodyColor,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: Navigator.of(context).canPop()
+              ? const ModernBackButton()
+              : null,
           title: const Text(
             'سياسة الخصوصية',
             style: TextStyle(

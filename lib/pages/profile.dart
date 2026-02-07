@@ -9,6 +9,7 @@ import 'package:raheel/pages/traveler_set.dart';
 import 'package:raheel/pages/privacy_policy.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/pages/edit_profile.dart';
+import 'package:raheel/widgets/modern_back_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:raheel/l10n/app_localizations.dart';
@@ -158,19 +159,72 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.person, color: Colors.white, size: 28),
-            const SizedBox(width: 8),
-            Text(AppLocalizations.of(context).profile, style: const TextStyle(color: Colors.white)),
-          ],
+        automaticallyImplyLeading: false,
+        leading: Navigator.of(context).canPop()
+            ? const ModernBackButton()
+            : null,
+        title: FutureBuilder<Map<String, dynamic>?>(
+          future: _userFuture,
+          builder: (context, snapshot) {
+            final data = snapshot.data;
+            final first = (data?['FirstName'] ?? '').toString().trim();
+            final last = (data?['LastName'] ?? '').toString().trim();
+            final email = (data?['EmailAddress'] ?? '').toString().trim();
+            final displayName = (first.isNotEmpty || last.isNotEmpty)
+                ? ('$first $last').trim()
+                : AppLocalizations.of(context).profile;
+
+            return Row(
+              children: [
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    shape: BoxShape.rectangle,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: const Icon(Icons.person, size: 28, color: Colors.grey),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        snapshot.connectionState == ConnectionState.waiting
+                            ? '...'
+                            : displayName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        snapshot.connectionState == ConnectionState.waiting
+                            ? '...'
+                            : (email.isNotEmpty ? email : 'user@email.com'),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white70,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            );
+          },
         ),
-        titleTextStyle: const TextStyle(
-          fontSize: 24,
-          color: Colors.white,
-        ),
-        centerTitle: true,
+        toolbarHeight: 96,
+        centerTitle: false,
         elevation: 10,
         shadowColor: Colors.black,
         flexibleSpace: Container(
@@ -195,68 +249,7 @@ class _ProfilePageState extends State<ProfilePage> {
           padding: const EdgeInsets.all(24.0),
           child: ListView(
             children: [
-              FutureBuilder<Map<String, dynamic>?>(
-                future: _userFuture,
-                builder: (context, snapshot) {
-                  final data = snapshot.data;
-                  final first = (data?['FirstName'] ?? '').toString().trim();
-                  final last = (data?['LastName'] ?? '').toString().trim();
-                  final email = (data?['EmailAddress'] ?? '').toString().trim();
-                  final displayName = (first.isNotEmpty || last.isNotEmpty)
-                      ? ('$first $last').trim()
-                      : AppLocalizations.of(context).profile;
-
-                  return Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: Colors.white, width: 2),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black12,
-                          blurRadius: 8,
-                          offset: Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: Colors.grey[300],
-                            shape: BoxShape.rectangle,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: const Icon(Icons.person, size: 36, color: Colors.grey),
-                        ),
-                        const SizedBox(width: 16),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              snapshot.connectionState == ConnectionState.waiting
-                                  ? '...'
-                                  : displayName,
-                              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 8),
-                            Text(
-                              snapshot.connectionState == ConnectionState.waiting
-                                  ? '...'
-                                  : (email.isNotEmpty ? email : 'user@email.com'),
-                              style: const TextStyle(fontSize: 16, color: Colors.black54),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 8),
               Text(
                 AppLocalizations.of(context).settings,
                 style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/l10n/app_localizations.dart';
+import 'package:raheel/widgets/modern_back_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -211,6 +212,10 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
     return Scaffold(
       backgroundColor: kBodyColor,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Navigator.of(context).canPop()
+            ? const ModernBackButton()
+            : null,
         title: Row(
           mainAxisSize: MainAxisSize.min,
           children: [

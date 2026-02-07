@@ -3,6 +3,7 @@ import 'package:raheel/theme_constants.dart';
 import 'package:raheel/auth/password_utils.dart';
 import 'package:raheel/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:raheel/widgets/modern_back_button.dart';
 
 class ResetPasswordHandler extends StatefulWidget {
   const ResetPasswordHandler({super.key});
@@ -247,6 +248,10 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
       return Scaffold(
         backgroundColor: kBodyColor,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: Navigator.of(context).canPop()
+              ? const ModernBackButton()
+              : null,
           title: Text(l10n.recoverPassword),
           backgroundColor: kAppBarColor,
         ),
@@ -260,6 +265,10 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
       return Scaffold(
         backgroundColor: kBodyColor,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
+          leading: Navigator.of(context).canPop()
+              ? const ModernBackButton()
+              : null,
           title: Text(l10n.recoverPassword),
           backgroundColor: kAppBarColor,
         ),

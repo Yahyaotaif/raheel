@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:raheel/l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 import 'package:raheel/providers/language_provider.dart';
+import 'package:raheel/widgets/modern_back_button.dart';
 
 class ExampleLocalizationUsage extends StatelessWidget {
   const ExampleLocalizationUsage({super.key});
@@ -18,6 +19,10 @@ class ExampleLocalizationUsage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
+        leading: Navigator.of(context).canPop()
+            ? const ModernBackButton()
+            : null,
         title: Text(loc.appTitle), // Uses "Raheel" or "رحيل"
       ),
       body: Center(

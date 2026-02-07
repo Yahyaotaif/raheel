@@ -32,7 +32,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     // Initialize car animation controller
     _carController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 9000),
+      duration: const Duration(milliseconds: 3000),
     );
     
     _carAnimation = Tween<Offset>(
@@ -54,12 +54,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         });
       }
     });
-    Future.delayed(const Duration(milliseconds: 1500), () {
+    Future.delayed(const Duration(milliseconds: 4100), () {
       if (mounted) {
         _carController.repeat();
       }
     });
-    Future.delayed(const Duration(milliseconds: 6500), () async {
+    Future.delayed(const Duration(milliseconds: 4000), () async {
       if (!mounted) return;
       debugPrint('🕐 Splash screen 6s timer completed');
       debugPrint('🔍 Checking deep link flag: $isDeepLinkResetPasswordPending');
@@ -100,7 +100,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       body: Center(
         child: AnimatedOpacity(
           opacity: _fadeOpacity,
-          duration: const Duration(milliseconds: 1000),
+          duration: const Duration(milliseconds: 2000),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -108,11 +108,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             children: [
               AnimatedSlide(
                 offset: _textOffset,
-                duration: const Duration(milliseconds: 3000),
+                duration: const Duration(milliseconds: 2000),
                 curve: Curves.easeOut,
                 child: AnimatedOpacity(
                   opacity: _textOpacity,
-                  duration: const Duration(milliseconds: 3000),
+                  duration: const Duration(milliseconds: 2000),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.center,
