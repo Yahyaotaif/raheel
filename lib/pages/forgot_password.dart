@@ -207,7 +207,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 SizedBox(
                   width: 320,
-                  height: _isLoading ? 120 : 48,
+                  height: 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(

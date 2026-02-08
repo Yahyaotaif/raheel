@@ -379,7 +379,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
                   ),
                 ),
               SizedBox(
-                height: _isLoading ? 120 : 48,
+                height: 48,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     backgroundColor: kAppBarColor,
