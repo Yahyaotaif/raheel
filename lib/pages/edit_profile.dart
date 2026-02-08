@@ -266,7 +266,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ),
                   SizedBox(
                     width: 320,
-                    height: 48,
+                    height: _isLoading ? 120 : 48,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         shape: RoundedRectangleBorder(

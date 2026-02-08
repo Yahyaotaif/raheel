@@ -856,7 +856,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                 ],
                 SizedBox(
                   width: double.infinity,
-                  height: 48,
+                  height: _isLoading ? 120 : 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
@@ -1091,7 +1091,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                 ],
                 SizedBox(
                   width: double.infinity,
-                  height: 48,
+                  height: _isLoading ? 120 : 48,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(

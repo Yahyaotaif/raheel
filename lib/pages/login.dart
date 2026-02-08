@@ -385,7 +385,7 @@ class _LoginPageState extends State<LoginPage> {
                       // Login Button
                       SizedBox(
                         width: 320,
-                        height: 52,
+                        height: _isLoading ? 120 : 52,
                         child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(12),

@@ -149,7 +149,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
               ),
             SizedBox(
               width: 320,
-              height: 48,
+              height: isLoading ? 120 : 48,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   shape: RoundedRectangleBorder(
