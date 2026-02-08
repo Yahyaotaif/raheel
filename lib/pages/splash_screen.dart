@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
 import 'package:raheel/deeplink_state.dart';
 import 'package:raheel/pages/login.dart';
+import 'package:raheel/pages/walkthrough.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../theme_constants.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -32,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     // Initialize car animation controller
     _carController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 3000),
+      duration: const Duration(milliseconds: 5000),
     );
     
     _carAnimation = Tween<Offset>(
@@ -46,7 +48,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     // Check if deep link is pending at splash init
     debugPrint('🔍 Splash init - deep link pending: $isDeepLinkResetPasswordPending');
     
-    Future.delayed(const Duration(milliseconds: 800), () {
+    Future.delayed(const Duration(milliseconds: 600), () {
       if (mounted) {
         setState(() {
           _textOpacity = 1.0;
@@ -54,12 +56,12 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         });
       }
     });
-    Future.delayed(const Duration(milliseconds: 4100), () {
+    Future.delayed(const Duration(milliseconds: 700), () {
       if (mounted) {
         _carController.repeat();
       }
     });
-    Future.delayed(const Duration(milliseconds: 4000), () async {
+    Future.delayed(const Duration(milliseconds: 2000), () async {
       if (!mounted) return;
       debugPrint('🕐 Splash screen 6s timer completed');
       debugPrint('🔍 Checking deep link flag: $isDeepLinkResetPasswordPending');
@@ -75,15 +77,24 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
         return;
       }
       
-      debugPrint('➡️ Splash screen: navigating to login');
+      final prefs = await SharedPreferences.getInstance();
+      final hasSeenWalkthrough = prefs.getBool('walkthrough_seen') ?? false;
+
+      debugPrint('➡️ Splash screen: navigating to next screen');
       setState(() {
         _fadeOpacity = 0.0;
       });
       await Future.delayed(const Duration(milliseconds: 500));
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const LoginPage()),
-      );
+      if (hasSeenWalkthrough) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const LoginPage()),
+        );
+      } else {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(builder: (context) => const WalkthroughPage()),
+        );
+      }
     });
   }
 
