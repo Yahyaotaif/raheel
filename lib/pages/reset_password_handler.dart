@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:raheel/theme_constants.dart';
+import 'package:raheel/widgets/loading_indicator.dart';
 import 'package:raheel/auth/password_utils.dart';
 import 'package:raheel/l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -256,7 +256,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
           backgroundColor: kAppBarColor,
         ),
         body: const Center(
-          child: CircularProgressIndicator(),
+          child: LoadingIndicator(),
         ),
       );
     }
@@ -392,10 +392,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
                       ? const SizedBox(
                           width: 24,
                           height: 24,
-                          child: CircularProgressIndicator(
-                            color: Colors.white,
-                            strokeWidth: 2,
-                          ),
+                          child: LoadingIndicator(size: 24),
                         )
                       : Text(l10n.resetPassword),
                 ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:raheel/theme_constants.dart';
+import 'package:raheel/widgets/loading_indicator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:raheel/l10n/app_localizations.dart';
 import 'package:raheel/widgets/modern_back_button.dart';
@@ -221,10 +221,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         ? const SizedBox(
                             width: 24,
                             height: 24,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
+                            child: LoadingIndicator(size: 24),
                           )
                         : Text(l10n.send),
                   ),

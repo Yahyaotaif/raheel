@@ -268,10 +268,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                     ? const SizedBox(
                         width: 24,
                         height: 24,
-                        child: CircularProgressIndicator(
-                          color: Colors.white,
-                          strokeWidth: 2,
-                        ),
+                        child: LoadingIndicator(size: 24),
                       )
                     : const Text('حفظ'),
               ),

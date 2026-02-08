@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:raheel/pages/forgot_password.dart';
+import 'package:raheel/widgets/loading_indicator.dart';
 import 'package:raheel/pages/registration.dart';
-import 'package:raheel/theme_constants.dart';
+import 'package:raheel/pages/forgot_password.dart';
 import 'package:raheel/pages/profile.dart';
+import 'package:raheel/theme_constants.dart';
 import 'package:raheel/auth/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -411,10 +412,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ? const SizedBox(
                                     width: 24,
                                     height: 24,
-                                    child: CircularProgressIndicator(
-                                      color: Colors.white,
-                                      strokeWidth: 2.5,
-                                    ),
+                                    child: LoadingIndicator(size: 24),
                                   )
                                 : Row(
                                     mainAxisAlignment: MainAxisAlignment.center,

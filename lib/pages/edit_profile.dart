@@ -280,10 +280,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           ? const SizedBox(
                               width: 24,
                               height: 24,
-                              child: CircularProgressIndicator(
-                                color: Colors.white,
-                                strokeWidth: 2,
-                              ),
+                              child: LoadingIndicator(size: 24),
                             )
                           : const Text('حفظ'),
                     ),

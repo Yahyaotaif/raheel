@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:raheel/theme_constants.dart';
+import 'package:raheel/widgets/loading_indicator.dart';
 import 'package:raheel/pages/privacy_policy.dart';
 import 'package:raheel/l10n/app_localizations.dart';
 import 'package:raheel/widgets/modern_back_button.dart';
-
+import 'package:raheel/theme_constants.dart';
 import 'package:raheel/auth/auth_service.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -873,10 +873,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                         ? const SizedBox(
                             width: 24,
                             height: 24,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
+                            child: LoadingIndicator(size: 24),
                           )
                         : Text(l10n.createAccount),
                   ),
@@ -1111,10 +1108,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                         ? const SizedBox(
                             width: 24,
                             height: 24,
-                            child: CircularProgressIndicator(
-                              color: Colors.white,
-                              strokeWidth: 2,
-                            ),
+                            child: LoadingIndicator(size: 24),
                           )
                         : Text(l10n.createAccount),
                   ),
