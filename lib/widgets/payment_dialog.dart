@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:raheel/widgets/button_loading_indicator.dart';
 import 'package:flutter/services.dart';
 import 'package:raheel/services/moyasar_service.dart';
 import 'package:raheel/theme_constants.dart';
-import 'package:raheel/widgets/loading_indicator.dart';
 
 class PaymentDialog extends StatefulWidget {
   final double amount;
@@ -172,7 +172,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
               ? const SizedBox(
                   height: 20,
                   width: 20,
-                  child: LoadingIndicator(size: 100),
+                  child: ButtonLoadingIndicator(),
                 )
               : const Text('ادفع الآن'),
         ),

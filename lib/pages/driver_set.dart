@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:raheel/widgets/loading_indicator.dart';
+import 'package:raheel/widgets/button_loading_indicator.dart';
 import 'package:raheel/widgets/modern_back_button.dart';
 import 'package:raheel/widgets/payment_dialog.dart';
 import 'package:raheel/l10n/app_localizations.dart';
@@ -753,7 +753,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
                       ? const SizedBox(
                           width: 28,
                           height: 28,
-                          child: LoadingIndicator(size: 100),
+                          child: ButtonLoadingIndicator(),
                         )
                       : Text(AppLocalizations.of(context).createNewTrip),
                 ),
