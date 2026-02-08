@@ -49,6 +49,7 @@ flutter:
     - assets/lottie/earth_tag.json
     - assets/lottie/loadingcar.json
     - assets/lottie/carr.json
+    - assets/lottie/loader.json
   fonts:
     - family: QTSHoby
       fonts:
