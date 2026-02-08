@@ -220,9 +220,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     onPressed: _isLoading ? null : _sendResetEmail,
                     child: _isLoading
                         ? const SizedBox(
-                            width: 80,
-                            height: 80,
-                            child: LoadingIndicator(size: 80),
+                            width: 100,
+                            height: 100,
+                            child: LoadingIndicator(size: 100),
                           )
                         : Text(l10n.send),
                   ),

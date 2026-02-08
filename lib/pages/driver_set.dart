@@ -753,7 +753,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
                       ? const SizedBox(
                           width: 28,
                           height: 28,
-                          child: LoadingIndicator(size: 80),
+                          child: LoadingIndicator(size: 100),
                         )
                       : Text(AppLocalizations.of(context).createNewTrip),
                 ),
