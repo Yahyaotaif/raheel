@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:raheel/widgets/button_loading_indicator.dart';
 import 'package:raheel/widgets/loading_indicator.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/widgets/modern_back_button.dart';
@@ -394,7 +393,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
                       ? const SizedBox(
                           width: 100,
                           height: 100,
-                          child: ButtonLoadingIndicator(),
+                          child: CircularProgressIndicator(),
                         )
                       : Text(l10n.resetPassword),
                 ),

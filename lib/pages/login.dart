@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:raheel/widgets/button_loading_indicator.dart';
 import 'package:flutter/services.dart';
 import 'package:raheel/pages/registration.dart';
 import 'package:raheel/pages/forgot_password.dart';
@@ -412,7 +411,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ? const SizedBox(
                                     width: 100,
                                     height: 100,
-                                    child: ButtonLoadingIndicator(),
+                                    child: CircularProgressIndicator(),
                                   )
                                 : Row(
                                     mainAxisAlignment: MainAxisAlignment.center,

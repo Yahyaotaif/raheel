@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:raheel/widgets/button_loading_indicator.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/widgets/payment_dialog.dart';
 import 'package:raheel/l10n/app_localizations.dart';
@@ -806,7 +805,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                                 ? const SizedBox(
                                     width: 28,
                                     height: 28,
-                                    child: ButtonLoadingIndicator(),
+                                    child: CircularProgressIndicator(),
                                   )
                                 : Text(AppLocalizations.of(context).searchTrips),
                           ),

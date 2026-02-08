@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:raheel/widgets/button_loading_indicator.dart';
 import 'package:raheel/pages/privacy_policy.dart';
 import 'package:raheel/l10n/app_localizations.dart';
 import 'package:raheel/widgets/modern_back_button.dart';
@@ -873,7 +872,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                         ? const SizedBox(
                             width: 100,
                             height: 100,
-                            child: ButtonLoadingIndicator(),
+                            child: CircularProgressIndicator(),
                           )
                         : Text(l10n.createAccount),
                   ),
@@ -1108,7 +1107,7 @@ class _RegistrationPageState extends State<RegistrationPage>
                         ? const SizedBox(
                             width: 100,
                             height: 100,
-                            child: ButtonLoadingIndicator(),
+                            child: CircularProgressIndicator(),
                           )
                         : Text(l10n.createAccount),
                   ),
