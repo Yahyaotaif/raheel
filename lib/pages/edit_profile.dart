@@ -279,8 +279,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       onPressed: _isLoading ? null : _saveProfile,
                       child: _isLoading
                           ? const SizedBox(
-                              width: 24,
-                              height: 24,
+                              width: 80,
+                              height: 80,
                               child: LoadingIndicator(size: 80),
                             )
                           : const Text('حفظ'),

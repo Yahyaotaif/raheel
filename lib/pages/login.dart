@@ -410,8 +410,8 @@ class _LoginPageState extends State<LoginPage> {
                             onPressed: _isLoading ? null : _login,
                             child: _isLoading
                                 ? const SizedBox(
-                                    width: 24,
-                                    height: 24,
+                                    width: 80,
+                                    height: 80,
                                     child: LoadingIndicator(size: 80),
                                   )
                                 : Row(

@@ -391,8 +391,8 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
                   onPressed: _isLoading ? null : _resetPassword,
                   child: _isLoading
                       ? const SizedBox(
-                          width: 24,
-                          height: 24,
+                          width: 80,
+                          height: 80,
                           child: LoadingIndicator(size: 80),
                         )
                       : Text(l10n.resetPassword),
