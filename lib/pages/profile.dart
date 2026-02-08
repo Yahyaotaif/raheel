@@ -25,6 +25,7 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   late Future<Map<String, dynamic>?> _userFuture;
   late Future<String?> _roleFuture;
+  bool _isSettingsExpanded = false;
 
   /// Retrieves the current user from SharedPreferences session storage.
   Future<Map<String, dynamic>?> getCurrentUserFromCustomSession() async {
@@ -245,15 +246,13 @@ class _ProfilePageState extends State<ProfilePage> {
       
       body: Container(
         color: kBodyColor,
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: ListView(
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
             children: [
-              const SizedBox(height: 8),
-              Text(
-                AppLocalizations.of(context).settings,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
               const SizedBox(height: 8),
               Container(
                 decoration: BoxDecoration(
@@ -270,226 +269,255 @@ class _ProfilePageState extends State<ProfilePage> {
                 ),
                 child: Column(
                   children: [
-                    ListTile(
-                      leading: const Icon(Icons.lock_outline, color: Colors.black54),
-                      title: Text(
-                        AppLocalizations.of(context).changePassword,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                    InkWell(
                       onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const ChangePasswordPage(),
-                          ),
-                        );
+                        setState(() {
+                          _isSettingsExpanded = !_isSettingsExpanded;
+                        });
                       },
-                    ),
-                    Divider(height: 1, color: Colors.grey.shade300),
-                    ListTile(
-                      leading: const Icon(Icons.edit, color: Colors.black54),
-                      title: Text(
-                        AppLocalizations.of(context).editProfile,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Row(
+                          children: [
+                            const Icon(Icons.settings, color: Colors.black54),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                AppLocalizations.of(context).settings,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            AnimatedRotation(
+                              turns: _isSettingsExpanded ? 0.25 : 0,
+                              duration: const Duration(milliseconds: 200),
+                              child: const Icon(
+                                Icons.arrow_forward_ios,
+                                color: Colors.black38,
+                                size: 18,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const EditProfilePage(),
-                          ),
-                        );
-                      },
                     ),
-                    Divider(height: 1, color: Colors.grey.shade300),
-                    ListTile(
-                      leading: const Icon(Icons.help_outline, color: Colors.black54),
-                      title: Text(
-                        AppLocalizations.of(context).helpAndSupport,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                      onTap: _sendHelpEmail,
-                    ),
-                    const Divider(height: 1, color: Colors.black12),
-                    ListTile(
-                      leading: const Icon(Icons.privacy_tip_outlined, color: Colors.black54),
-                      title: Text(
-                        AppLocalizations.of(context).privacyPolicy,
-                        style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                      ),
-                      trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const PrivacyPolicyPage(),
-                          ),
-                        );
-                      },
+                    AnimatedSize(
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                      child: _isSettingsExpanded
+                          ? Column(
+                              children: [
+                                const Divider(height: 1, color: Colors.black12),
+                                ListTile(
+                                  leading: const Icon(Icons.lock_outline, color: Colors.black54),
+                                  title: Text(
+                                    AppLocalizations.of(context).changePassword,
+                                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => const ChangePasswordPage(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                Divider(height: 1, color: Colors.grey.shade300),
+                                ListTile(
+                                  leading: const Icon(Icons.edit, color: Colors.black54),
+                                  title: Text(
+                                    AppLocalizations.of(context).editProfile,
+                                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => const EditProfilePage(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                                Divider(height: 1, color: Colors.grey.shade300),
+                                ListTile(
+                                  leading: const Icon(Icons.help_outline, color: Colors.black54),
+                                  title: Text(
+                                    AppLocalizations.of(context).helpAndSupport,
+                                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                                  onTap: _sendHelpEmail,
+                                ),
+                                const Divider(height: 1, color: Colors.black12),
+                                ListTile(
+                                  leading: const Icon(Icons.privacy_tip_outlined, color: Colors.black54),
+                                  title: Text(
+                                    AppLocalizations.of(context).privacyPolicy,
+                                    style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                                  ),
+                                  trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => const PrivacyPolicyPage(),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            )
+                          : const SizedBox.shrink(),
                     ),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
-              Text(
-                AppLocalizations.of(context).bookings,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
               FutureBuilder<String?>(
                 future: _roleFuture,
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done &&
-                      snapshot.data == 'driver') {
-                    return _buildActionCard(
-                      icon: Icons.calendar_today,
-                      title: AppLocalizations.of(context).manageBookings,
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const DriverBookingsPage(),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-              FutureBuilder<String?>(
-                future: _roleFuture,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done &&
-                      snapshot.data == 'traveler') {
-                    return _buildActionCard(
-                      icon: Icons.bookmark,
-                      title: AppLocalizations.of(context).myTrips,
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => const TravelerBookingsPage(),
-                          ),
-                        );
-                      },
-                    );
-                  }
-                  return const SizedBox.shrink();
-                },
-              ),
-              const SizedBox(height: 16),
-              FutureBuilder<String?>(
-                future: _roleFuture,
-                builder: (context, snapshot) {
-                  String buttonText = AppLocalizations.of(context).searchTrip;
                   String? userRole = snapshot.data;
-                  if (snapshot.connectionState == ConnectionState.done && userRole != null) {
-                    if (userRole == 'driver') {
-                      buttonText = AppLocalizations.of(context).createTrip;
-                    }
+                  String createButtonText = AppLocalizations.of(context).searchTrip;
+                  if (snapshot.connectionState == ConnectionState.done && userRole == 'driver') {
+                    createButtonText = AppLocalizations.of(context).createTrip;
                   }
-                  return SizedBox(
-                    height: 48,
-                    child: ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                  
+                  return Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.white, width: 2),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.black12,
+                          blurRadius: 8,
+                          offset: Offset(0, 4),
                         ),
-                        backgroundColor: kAppBarColor,
-                        foregroundColor: Colors.white,
-                        textStyle: const TextStyle(fontSize: 18),
-                      ),
-                      onPressed: snapshot.connectionState == ConnectionState.waiting
-                          ? null
-                          : () {
-                              if (userRole == 'driver') {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => const DriverSetPage(),
-                                  ),
-                                );
-                              } else {
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => const TravelerSetPage(),
-                                  ),
-                                );
-                              }
+                      ],
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              const Icon(Icons.bookmark, color: Colors.black54),
+                              const SizedBox(width: 12),
+                              Text(
+                                AppLocalizations.of(context).bookings,
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (snapshot.connectionState == ConnectionState.done && userRole == 'driver') ...[
+                          const Divider(height: 1, color: Colors.black12),
+                          ListTile(
+                            leading: const Icon(Icons.calendar_today, color: Colors.black54),
+                            title: Text(
+                              AppLocalizations.of(context).manageBookings,
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                            ),
+                            trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const DriverBookingsPage(),
+                                ),
+                              );
                             },
-                      icon: Icon(userRole == 'driver' ? Icons.add_location : Icons.search),
-                      label: Text(buttonText),
+                          ),
+                        ],
+                        if (snapshot.connectionState == ConnectionState.done && userRole == 'traveler') ...[
+                          const Divider(height: 1, color: Colors.black12),
+                          ListTile(
+                            leading: const Icon(Icons.bookmark, color: Colors.black54),
+                            title: Text(
+                              AppLocalizations.of(context).myTrips,
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                            ),
+                            trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => const TravelerBookingsPage(),
+                                ),
+                              );
+                            },
+                          ),
+                        ],
+                        const Divider(height: 1, color: Colors.black12),
+                        ListTile(
+                          leading: Icon(
+                            userRole == 'driver' ? Icons.add_location : Icons.search,
+                            color: Colors.black54,
+                          ),
+                          title: Text(
+                            createButtonText,
+                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                          ),
+                          trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
+                          onTap: snapshot.connectionState == ConnectionState.waiting
+                              ? null
+                              : () {
+                                  if (userRole == 'driver') {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => const DriverSetPage(),
+                                      ),
+                                    );
+                                  } else {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => const TravelerSetPage(),
+                                      ),
+                                    );
+                                  }
+                                },
+                        ),
+                      ],
                     ),
                   );
                 },
               ),
-              const SizedBox(height: 10),
-              SizedBox(
-                height: 48,
-                child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    backgroundColor: kAppBarColor,
-                    foregroundColor: Colors.white,
-                    textStyle: const TextStyle(fontSize: 18),
-                  ),
-                  onPressed: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (context) => const LoginPage()),
-                      (route) => false,
-                    );
-                  },
-                  icon: const Icon(Icons.logout),
-                  label: Text(AppLocalizations.of(context).logout),
-                ),
-              ),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildActionCard({
-    required IconData icon,
-    required String title,
-    required VoidCallback onTap,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.white, width: 2),
-            boxShadow: const [
-              BoxShadow(
-                color: Colors.black12,
-                blurRadius: 8,
-                offset: Offset(0, 4),
+      Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: SizedBox(
+          width: double.infinity,
+          height: 48,
+          child: ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
-            ],
-          ),
-          child: Row(
-            children: [
-              Icon(icon, color: Colors.black54),
-              const SizedBox(width: 12),
-              Text(
-                title,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              ),
-              const Spacer(),
-              const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-            ],
+              backgroundColor: kAppBarColor,
+              foregroundColor: Colors.white,
+              textStyle: const TextStyle(fontSize: 18),
+            ),
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => const LoginPage()),
+                (route) => false,
+              );
+            },
+            icon: const Icon(Icons.logout),
+            label: Text(AppLocalizations.of(context).logout),
           ),
         ),
+      ),
+    ],
+  ),
       ),
     );
   }
 }
-
-
