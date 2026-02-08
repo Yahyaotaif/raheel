@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
+import 'package:raheel/widgets/loading_indicator.dart';
 import 'package:raheel/auth/password_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:raheel/widgets/modern_back_button.dart';
