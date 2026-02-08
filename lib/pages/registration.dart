@@ -871,9 +871,9 @@ class _RegistrationPageState extends State<RegistrationPage>
                     onPressed: _isLoading ? null : _registerDriver,
                     child: _isLoading
                         ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: LoadingIndicator(size: 24),
+                            width: 60,
+                            height: 60,
+                            child: LoadingIndicator(size: 60),
                           )
                         : Text(l10n.createAccount),
                   ),
@@ -1106,9 +1106,9 @@ class _RegistrationPageState extends State<RegistrationPage>
                     onPressed: _isLoading ? null : _registerTraveler,
                     child: _isLoading
                         ? const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: LoadingIndicator(size: 24),
+                            width: 60,
+                            height: 60,
+                            child: LoadingIndicator(size: 60),
                           )
                         : Text(l10n.createAccount),
                   ),

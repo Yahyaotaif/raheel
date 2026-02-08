@@ -222,7 +222,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         ? const SizedBox(
                             width: 24,
                             height: 24,
-                            child: LoadingIndicator(size: 24),
+                            child: LoadingIndicator(size: 60),
                           )
                         : Text(l10n.send),
                   ),

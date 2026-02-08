@@ -172,7 +172,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
               ? const SizedBox(
                   height: 20,
                   width: 20,
-                  child: LoadingIndicator(size: 20),
+                  child: LoadingIndicator(size: 60),
                 )
               : const Text('ادفع الآن'),
         ),

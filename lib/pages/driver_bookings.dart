@@ -241,7 +241,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
         ),
       ),
       body: _isLoading
-          ? const Center(child: LoadingIndicator())
+          ? const Center(child: LoadingIndicator(size: 60))
           : _errorMessage != null
           ? Center(
               child: Text(_errorMessage!, textAlign: TextAlign.center),

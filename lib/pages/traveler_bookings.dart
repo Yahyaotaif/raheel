@@ -190,7 +190,7 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
       ),
       body: _isLoading
           ? const Center(
-              child: LoadingIndicator(),
+              child: LoadingIndicator(size: 60),
             )
           : _errorMessage != null
               ? Center(

@@ -16,7 +16,7 @@ class AuthGate extends StatelessWidget {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Scaffold(
-            body: Center(child: LoadingIndicator()),
+            body: Center(child: LoadingIndicator(size: 60)),
           );
         }
         if (snapshot.hasError) {
