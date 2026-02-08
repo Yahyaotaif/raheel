@@ -806,7 +806,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                                 ? const SizedBox(
                                     width: 28,
                                     height: 28,
-                                    child: LoadingIndicator(size: 60),
+                                    child: LoadingIndicator(size: 80),
                                   )
                                 : Text(AppLocalizations.of(context).searchTrips),
                           ),

@@ -257,7 +257,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
           backgroundColor: kAppBarColor,
         ),
         body: const Center(
-          child: LoadingIndicator(size: 60),
+          child: LoadingIndicator(size: 80),
         ),
       );
     }
@@ -393,7 +393,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
                       ? const SizedBox(
                           width: 24,
                           height: 24,
-                          child: LoadingIndicator(size: 60),
+                          child: LoadingIndicator(size: 80),
                         )
                       : Text(l10n.resetPassword),
                 ),

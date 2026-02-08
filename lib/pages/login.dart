@@ -412,7 +412,7 @@ class _LoginPageState extends State<LoginPage> {
                                 ? const SizedBox(
                                     width: 24,
                                     height: 24,
-                                    child: LoadingIndicator(size: 60),
+                                    child: LoadingIndicator(size: 80),
                                   )
                                 : Row(
                                     mainAxisAlignment: MainAxisAlignment.center,

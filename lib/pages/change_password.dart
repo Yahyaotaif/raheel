@@ -269,7 +269,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                     ? const SizedBox(
                         width: 24,
                         height: 24,
-                        child: LoadingIndicator(size: 60),
+                        child: LoadingIndicator(size: 80),
                       )
                     : const Text('حفظ'),
               ),
