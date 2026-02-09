@@ -386,7 +386,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '${AppLocalizations.of(context).meetingPoint}: ${trip['meeting_point_description'] ?? 'غير محدد'}',
+                            'مكان الإنطلاق: ${trip['meeting_point_description'] ?? 'غير محدد'}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
