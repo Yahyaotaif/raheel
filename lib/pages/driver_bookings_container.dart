@@ -18,6 +18,9 @@ class _DriverBookingsContainerState extends State<DriverBookingsContainer> with 
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
+    _tabController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -112,9 +115,6 @@ class _DriverBookingsContainerState extends State<DriverBookingsContainer> with 
                 ),
               ],
               labelPadding: const EdgeInsets.all(8),
-              onTap: (index) {
-                setState(() {});
-              },
             ),
           ),
         ),
