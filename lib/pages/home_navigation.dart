@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/pages/profile.dart';
-import 'package:raheel/pages/driver_set.dart';
+import 'package:raheel/pages/driver_bookings_container.dart';
 import 'package:raheel/pages/traveler_set.dart';
 import 'package:raheel/pages/traveler_bookings.dart';
 
@@ -17,7 +17,7 @@ class _HomeNavigationPageState extends State<HomeNavigationPage> {
 
   late final List<Widget> _pages = [
     const ProfilePage(),
-    const DriverSetPage(),
+    const DriverBookingsContainer(),
     const TravelerSetPage(),
     const TravelerBookingsPage(),
   ];
