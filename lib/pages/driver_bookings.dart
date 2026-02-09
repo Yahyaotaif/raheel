@@ -6,6 +6,7 @@ import 'package:raheel/widgets/modern_back_button.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:async';
 
 class DriverBookingsPage extends StatefulWidget {
   const DriverBookingsPage({super.key});
@@ -20,17 +21,93 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
   List<Map<String, dynamic>> _trips = [];
   bool _isLoading = true;
   String? _errorMessage;
+  Timer? _pollingTimer;
+  String? _currentDriverId;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     _fetchBookings();
+    _setupRealtimeListener();
+  }
+
+  Future<void> _setupRealtimeListener() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _currentDriverId = prefs.getString('auth_id') ?? prefs.getString('user_id');
+
+      if (_currentDriverId != null) {
+        // Poll for new bookings every 3 seconds when app is active
+        _pollingTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+          if (mounted) {
+            _checkForNewBookings();
+          }
+        });
+      }
+    } catch (e) {
+      debugPrint('Error setting up listener: $e');
+    }
+  }
+
+  Future<void> _checkForNewBookings() async {
+    try {
+      final response = await Supabase.instance.client
+          .from('bookings')
+          .select()
+          .eq('driver_id', _currentDriverId!)
+          .or('status.is.null,status.neq.completed')
+          .order('created_at', ascending: false)
+          .limit(1);
+
+      if (!mounted) return;
+
+      if (response.isNotEmpty) {
+        final newestBooking = response.first;
+        
+        // Check if this is a new booking we haven't seen
+        if (_bookings.isEmpty ||
+            newestBooking['id'].toString() != _bookings.first['id'].toString()) {
+          // Show notification for new booking
+          _showNewBookingNotification(newestBooking);
+        }
+      }
+    } catch (e) {
+      debugPrint('Error checking for new bookings: $e');
+    }
+  }
+
+  void _showNewBookingNotification(Map<String, dynamic> booking) {
+    if (!mounted) return;
+    
+    final travelerName =
+        '${booking['traveler_first_name']} ${booking['traveler_last_name']}';
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          'حجز جديد من $travelerName',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 16,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Noto Naskh Arabic',
+          ),
+          textDirection: TextDirection.rtl,
+        ),
+        backgroundColor: Colors.green.shade600,
+        duration: const Duration(seconds: 5),
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(16),
+      ),
+    );
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
+    // Cancel polling timer
+    _pollingTimer?.cancel();
     super.dispose();
   }
 
