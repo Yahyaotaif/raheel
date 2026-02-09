@@ -48,6 +48,42 @@ class _LoginPageState extends State<LoginPage> {
   final AuthService _authService = AuthService();
   bool _isLoading = false;
   String? _errorMessage;
+  bool _rememberMe = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadSavedCredentials();
+  }
+
+  Future<void> _loadSavedCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedIdentifier = prefs.getString('saved_identifier');
+    final savedPassword = prefs.getString('saved_password');
+    final isRemembered = prefs.getBool('remember_me') ?? false;
+
+    if (savedIdentifier != null && savedPassword != null && isRemembered) {
+      setState(() {
+        _identifierController.text = savedIdentifier;
+        _passwordController.text = savedPassword;
+        _rememberMe = true;
+      });
+    }
+  }
+
+  Future<void> _saveCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (_rememberMe) {
+      await prefs.setString('saved_identifier', _identifierController.text.trim());
+      await prefs.setString('saved_password', _passwordController.text.trim());
+      await prefs.setBool('remember_me', true);
+    } else {
+      // Clear saved credentials if remember me is unchecked
+      await prefs.remove('saved_identifier');
+      await prefs.remove('saved_password');
+      await prefs.setBool('remember_me', false);
+    }
+  }
 
   @override
   void dispose() {
@@ -184,6 +220,8 @@ class _LoginPageState extends State<LoginPage> {
         return;
       }
       if (user != null) {
+        // Save credentials if remember me is checked
+        await _saveCredentials();
         // Run cleanup only after successful login
         await _cleanupOldTripsStartup();
         if (!mounted) return;
@@ -357,6 +395,56 @@ class _LoginPageState extends State<LoginPage> {
                         icon: Icons.lock_outline,
                         obscureText: true,
                         width: 340,
+                      ),
+                      const SizedBox(height: 16),
+                      // Remember Me Checkbox
+                      Padding(
+                        padding: const EdgeInsets.only(left: 2.0),
+                        child: SizedBox(
+                          width: 340,
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _rememberMe = !_rememberMe;
+                              });
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                              AnimatedContainer(
+                                duration: const Duration(milliseconds: 300),
+                                width: 20,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: _rememberMe ? kAppBarColor : Colors.transparent,
+                                  border: Border.all(
+                                    color: _rememberMe ? kAppBarColor : Colors.grey[400]!,
+                                    width: 2,
+                                  ),
+                                ),
+                                child: _rememberMe
+                                    ? const Icon(
+                                        Icons.check,
+                                        size: 14,
+                                        color: Colors.white,
+                                      )
+                                    : null,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                AppLocalizations.of(context).rememberMe,
+                                style: TextStyle(
+                                  fontSize: 15,
+                                  fontWeight: FontWeight.w600,
+                                  color: _rememberMe ? kAppBarColor : Colors.grey[700],
+                                  fontFamily: 'Noto Naskh Arabic',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                       ),
                       const SizedBox(height: 28),
                       // Error Message

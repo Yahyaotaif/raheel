@@ -11,6 +11,7 @@
   "email": "البريد الإلكتروني",
   "password": "كلمة المرور",
   "confirmPassword": "تأكيد كلمة المرور",
+  "rememberMe": "تذكرني",
   "forgotPassword": "هل نسيت كلمة المرور؟",
   "resetPassword": "إعادة تعيين كلمة المرور",
   "profile": "الملف الشخصي",

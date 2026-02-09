@@ -33,6 +33,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get confirmPassword => 'تأكيد كلمة المرور';
 
   @override
+  String get rememberMe => 'تذكرني';
+
+  @override
   String get forgotPassword => 'هل نسيت كلمة المرور؟';
 
   @override

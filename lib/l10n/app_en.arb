@@ -11,6 +11,7 @@
   "email": "Email",
   "password": "Password",
   "confirmPassword": "Confirm Password",
+  "rememberMe": "Remember Me",
   "forgotPassword": "Forgot Password?",
   "resetPassword": "Reset Password",
   "profile": "Profile",
