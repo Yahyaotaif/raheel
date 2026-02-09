@@ -398,14 +398,16 @@ class _LoginPageState extends State<LoginPage> {
                             ],
                           ),
                           child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(
+                            style: ButtonStyle(
+                              shape: WidgetStateProperty.all(RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
-                              ),
-                              backgroundColor: kAppBarColor,
-                              foregroundColor: Colors.white,
-                              elevation: 0,
-                              padding: EdgeInsets.zero,
+                              )),
+                              backgroundColor: WidgetStateProperty.resolveWith((states) {
+                                return kAppBarColor;
+                              }),
+                              foregroundColor: WidgetStateProperty.all(Colors.white),
+                              elevation: WidgetStateProperty.all(0),
+                              padding: WidgetStateProperty.all(EdgeInsets.zero),
                             ),
                             onPressed: _isLoading ? null : _login,
                             child: _isLoading

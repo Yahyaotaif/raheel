@@ -791,12 +791,16 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                       if (_selectedDate != null)
                         Center(
                           child: ElevatedButton.icon(
-                            style: ElevatedButton.styleFrom(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                              backgroundColor: kAppBarColor,
-                              foregroundColor: Colors.white,
-                              textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                              elevation: 4,
+                            style: ButtonStyle(
+                              shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              )),
+                              backgroundColor: WidgetStateProperty.resolveWith((states) {
+                                return kAppBarColor;
+                              }),
+                              foregroundColor: WidgetStateProperty.all(Colors.white),
+                              textStyle: WidgetStateProperty.all(const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                              elevation: WidgetStateProperty.all(4),
                             ),
                             onPressed: _isLoadingTrips ? null : () => _fetchTripsForDate(_selectedDate!),
                             icon: _isLoadingTrips

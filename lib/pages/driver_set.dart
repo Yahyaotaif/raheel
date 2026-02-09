@@ -737,13 +737,17 @@ class _DriverSetPageState extends State<DriverSetPage> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                    backgroundColor: kAppBarColor,
-                    foregroundColor: Colors.white,
-                    textStyle: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                    elevation: 6,
-                    shadowColor: kAppBarColor.withValues(alpha: 0.4),
+                  style: ButtonStyle(
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    )),
+                    backgroundColor: WidgetStateProperty.resolveWith((states) {
+                      return kAppBarColor;
+                    }),
+                    foregroundColor: WidgetStateProperty.all(Colors.white),
+                    textStyle: WidgetStateProperty.all(const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                    elevation: WidgetStateProperty.all(6),
+                    shadowColor: WidgetStateProperty.all(kAppBarColor.withValues(alpha: 0.4)),
                   ),
                   onPressed: _isLoading ? null : _createTrip,
                   icon: _isLoading

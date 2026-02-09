@@ -382,12 +382,15 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
               SizedBox(
                 height: 48,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kAppBarColor,
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
+                  style: ButtonStyle(
+                    shape: WidgetStateProperty.all(RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
-                    ),
+                    )),
+                    backgroundColor: WidgetStateProperty.resolveWith((states) {
+                      return kAppBarColor;
+                    }),
+                    foregroundColor: WidgetStateProperty.all(Colors.white),
+                    elevation: WidgetStateProperty.all(4),
                   ),
                   onPressed: _isLoading ? null : _resetPassword,
                   child: _isLoading

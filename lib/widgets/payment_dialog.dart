@@ -159,14 +159,18 @@ class _PaymentDialogState extends State<PaymentDialog> {
           onPressed: _isProcessing ? null : () => Navigator.pop(context),
           style: TextButton.styleFrom(
             foregroundColor: kAppBarColor,
+            disabledForegroundColor: kAppBarColor,
           ),
           child: const Text('إلغاء'),
         ),
         ElevatedButton(
           onPressed: _isProcessing ? null : _handlePayment,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: kAppBarColor,
-            foregroundColor: Colors.white,
+          style: ButtonStyle(
+            backgroundColor: WidgetStateProperty.resolveWith((states) {
+              return kAppBarColor;
+            }),
+            foregroundColor: WidgetStateProperty.all(Colors.white),
+            elevation: WidgetStateProperty.all(2),
           ),
           child: _isProcessing
               ? const SizedBox(

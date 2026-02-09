@@ -151,13 +151,16 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
               width: 320,
               height: 48,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(
+                style: ButtonStyle(
+                  shape: WidgetStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
-                  ),
-                  backgroundColor: kAppBarColor,
-                  foregroundColor: Colors.white,
-                  textStyle: const TextStyle(fontSize: 18),
+                  )),
+                  backgroundColor: WidgetStateProperty.resolveWith((states) {
+                    return kAppBarColor;
+                  }),
+                  foregroundColor: WidgetStateProperty.all(Colors.white),
+                  textStyle: WidgetStateProperty.all(const TextStyle(fontSize: 18)),
+                  elevation: WidgetStateProperty.all(4),
                 ),
                 onPressed: isLoading
                     ? null

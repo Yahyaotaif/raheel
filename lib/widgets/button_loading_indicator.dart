@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class ButtonLoadingIndicator extends StatelessWidget {
   final Color? color;
@@ -13,14 +13,9 @@ class ButtonLoadingIndicator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: size,
-      height: size,
-      child: Lottie.asset(
-        'assets/lottie/cute.json',
-        fit: BoxFit.contain,
-        repeat: true,
-      ),
+    return LoadingAnimationWidget.inkDrop(
+      color: color ?? Colors.white,
+      size: size,
     );
   }
 }

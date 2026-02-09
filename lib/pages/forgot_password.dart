@@ -209,13 +209,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   width: 320,
                   height: 48,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
+                    style: ButtonStyle(
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
-                      ),
-                      backgroundColor: kAppBarColor,
-                      foregroundColor: Colors.white,
-                      textStyle: const TextStyle(fontSize: 16),
+                      )),
+                      backgroundColor: WidgetStateProperty.resolveWith((states) {
+                        return kAppBarColor;
+                      }),
+                      foregroundColor: WidgetStateProperty.all(Colors.white),
+                      textStyle: WidgetStateProperty.all(const TextStyle(fontSize: 16)),
+                      elevation: WidgetStateProperty.all(4),
                     ),
                     onPressed: _isLoading ? null : _sendResetEmail,
                     child: _isLoading

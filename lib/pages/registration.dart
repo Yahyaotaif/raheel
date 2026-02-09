@@ -858,15 +858,17 @@ class _RegistrationPageState extends State<RegistrationPage>
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
+                    style: ButtonStyle(
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
-                      ),
-                      backgroundColor: kAppBarColor,
-                      foregroundColor: Colors.white,
-                      textStyle: const TextStyle(fontSize: 18),
-                      elevation: 6,
-                      shadowColor: kAppBarColor.withValues(alpha: 0.4),
+                      )),
+                      backgroundColor: WidgetStateProperty.resolveWith((states) {
+                        return kAppBarColor;
+                      }),
+                      foregroundColor: WidgetStateProperty.all(Colors.white),
+                      textStyle: WidgetStateProperty.all(const TextStyle(fontSize: 18)),
+                      elevation: WidgetStateProperty.all(6),
+                      shadowColor: WidgetStateProperty.all(kAppBarColor.withValues(alpha: 0.4)),
                     ),
                     onPressed: _isLoading ? null : _registerDriver,
                     child: _isLoading
@@ -1093,15 +1095,17 @@ class _RegistrationPageState extends State<RegistrationPage>
                   width: double.infinity,
                   height: 48,
                   child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      shape: RoundedRectangleBorder(
+                    style: ButtonStyle(
+                      shape: WidgetStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
-                      ),
-                      backgroundColor: kAppBarColor,
-                      foregroundColor: Colors.white,
-                      textStyle: const TextStyle(fontSize: 18),
-                      elevation: 6,
-                      shadowColor: kAppBarColor.withValues(alpha: 0.4),
+                      )),
+                      backgroundColor: WidgetStateProperty.resolveWith((states) {
+                        return kAppBarColor;
+                      }),
+                      foregroundColor: WidgetStateProperty.all(Colors.white),
+                      textStyle: WidgetStateProperty.all(const TextStyle(fontSize: 18)),
+                      elevation: WidgetStateProperty.all(6),
+                      shadowColor: WidgetStateProperty.all(kAppBarColor.withValues(alpha: 0.4)),
                     ),
                     onPressed: _isLoading ? null : _registerTraveler,
                     child: _isLoading
