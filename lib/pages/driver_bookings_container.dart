@@ -36,14 +36,31 @@ class _DriverBookingsContainerState extends State<DriverBookingsContainer> with 
         elevation: 0,
         bottom: TabBar(
           controller: _tabController,
-          tabs: const [
-            Tab(text: 'إنشاء رحلة'),
-            Tab(text: 'إدارة الحجوزات'),
+          tabs: [
+            Tab(
+              icon: const Icon(Icons.add_location, size: 20),
+              text: 'إنشاء رحلة',
+              iconMargin: const EdgeInsets.only(bottom: 4),
+            ),
+            Tab(
+              icon: const Icon(Icons.assignment, size: 20),
+              text: 'إدارة الحجوزات',
+              iconMargin: const EdgeInsets.only(bottom: 4),
+            ),
           ],
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
           indicatorColor: Colors.white,
           indicatorSize: TabBarIndicatorSize.tab,
+          indicatorWeight: 4.0,
+          labelStyle: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
+          ),
+          unselectedLabelStyle: const TextStyle(
+            fontSize: 13,
+            fontWeight: FontWeight.w500,
+          ),
         ),
       ),
       body: TabBarView(
