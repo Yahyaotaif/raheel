@@ -625,7 +625,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 12),
                       // Help Links under Register Button
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -681,7 +681,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 32),
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),
