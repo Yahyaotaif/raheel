@@ -31,6 +31,10 @@ class _DriverBookingsContainerState extends State<DriverBookingsContainer> with 
 
   @override
   Widget build(BuildContext context) {
+    final isCreateTrip = _tabController.index == 0;
+    final activeColor = isCreateTrip ? Colors.green.shade600 : Colors.blue.shade600;
+    final inactiveColor = Colors.grey.shade400;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(AppLocalizations.of(context).bookings),
@@ -38,83 +42,91 @@ class _DriverBookingsContainerState extends State<DriverBookingsContainer> with 
         backgroundColor: kAppBarColor,
         elevation: 0,
         bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(56),
+          preferredSize: const Size.fromHeight(70),
           child: Container(
-            color: Colors.grey.shade100,
-            child: TabBar(
-              controller: _tabController,
-              indicator: BoxDecoration(
-                border: Border(bottom: BorderSide(width: 4.0, color: Colors.green.shade600)),
-              ),
-              tabs: [
-                Tab(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: _tabController.index == 0 
-                        ? Colors.green.shade50 
-                        : Colors.transparent,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.add_location,
-                          size: 20,
-                          color: _tabController.index == 0 
-                            ? Colors.green.shade700 
-                            : Colors.grey.shade600,
+            color: Colors.white,
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // Create Trip Tab
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => _tabController.animateTo(0),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: _tabController.index == 0 ? Colors.green.shade50 : Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: _tabController.index == 0 ? Colors.green.shade300 : Colors.grey.shade300,
+                          width: 2,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'إنشاء رحلة',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: _tabController.index == 0 
-                              ? Colors.green.shade700 
-                              : Colors.grey.shade600,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.add_location,
+                            color: _tabController.index == 0 ? Colors.green.shade700 : inactiveColor,
+                            size: 24,
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 4),
+                          Text(
+                            'إنشاء رحلة',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: _tabController.index == 0 ? Colors.green.shade700 : inactiveColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-                Tab(
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: _tabController.index == 1 
-                        ? Colors.blue.shade50 
-                        : Colors.transparent,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.assignment,
-                          size: 20,
-                          color: _tabController.index == 1 
-                            ? Colors.blue.shade700 
-                            : Colors.grey.shade600,
+                const SizedBox(width: 12),
+                // Manage Bookings Tab
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () => _tabController.animateTo(1),
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: _tabController.index == 1 ? Colors.blue.shade50 : Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
+                          color: _tabController.index == 1 ? Colors.blue.shade300 : Colors.grey.shade300,
+                          width: 2,
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          'إدارة الحجوزات',
-                          style: TextStyle(
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
-                            color: _tabController.index == 1 
-                              ? Colors.blue.shade700 
-                              : Colors.grey.shade600,
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(
+                            Icons.assignment,
+                            color: _tabController.index == 1 ? Colors.blue.shade700 : inactiveColor,
+                            size: 24,
                           ),
-                        ),
-                      ],
+                          const SizedBox(height: 4),
+                          Text(
+                            'إدارة الحجوزات',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                              color: _tabController.index == 1 ? Colors.blue.shade700 : inactiveColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ],
-              labelPadding: const EdgeInsets.all(8),
             ),
           ),
         ),
