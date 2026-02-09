@@ -202,7 +202,12 @@ class _EditProfilePageState extends State<EditProfilePage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24.0, 32.0, 24.0, 24.0),
+          padding: EdgeInsets.fromLTRB(
+            24.0,
+            32.0,
+            24.0,
+            24.0 + MediaQuery.of(context).viewPadding.bottom,
+          ),
           child: Form(
             key: _formKey,
             child: Container(

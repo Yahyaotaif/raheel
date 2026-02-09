@@ -641,7 +641,12 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              padding: EdgeInsets.only(
+                top: 12.0,
+                bottom: 12.0 + MediaQuery.of(context).viewPadding.bottom,
+                left: 0,
+                right: 0,
+              ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [

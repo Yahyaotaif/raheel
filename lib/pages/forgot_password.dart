@@ -160,7 +160,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.fromLTRB(24, 32, 24, 24),
+          padding: EdgeInsets.fromLTRB(
+            24,
+            32,
+            24,
+            24 + MediaQuery.of(context).viewPadding.bottom,
+          ),
           child: Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(

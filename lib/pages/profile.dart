@@ -582,7 +582,12 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
       Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.only(
+          top: 24.0,
+          left: 24.0,
+          right: 24.0,
+          bottom: 24.0 + MediaQuery.of(context).viewPadding.bottom,
+        ),
         child: SizedBox(
           width: double.infinity,
           height: 48,

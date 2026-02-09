@@ -329,7 +329,9 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(24.0).copyWith(
+          bottom: 24.0 + MediaQuery.of(context).viewPadding.bottom,
+        ),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,

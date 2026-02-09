@@ -44,7 +44,9 @@ class ChangePasswordPage extends StatelessWidget {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: EdgeInsets.all(24.0).copyWith(
+          bottom: 24.0 + MediaQuery.of(context).viewPadding.bottom,
+        ),
         child: _ChangePasswordForm(
           newPasswordController: newPasswordController,
           repeatPasswordController: repeatPasswordController,
