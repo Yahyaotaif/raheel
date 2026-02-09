@@ -370,15 +370,23 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                           ),
                           const SizedBox(height: 12),
                           Text(
-                            '${trip['destination']}',
+                            '${AppLocalizations.of(context).destination}: ${trip['destination']}',
                             style: const TextStyle(
-                              fontSize: 18,
+                              fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '${AppLocalizations.of(context).departingFrom}: ${trip['destination_description'] ?? 'غير محدد'}',
+                            '${AppLocalizations.of(context).arrivalPlace}: ${trip['destination_description'] ?? 'غير محدد'}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            '${AppLocalizations.of(context).meetingPoint}: ${trip['meeting_point_description'] ?? 'غير محدد'}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
