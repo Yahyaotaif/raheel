@@ -625,83 +625,69 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
+                      const SizedBox(height: 32),
+                      // Help Links under Register Button
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Builder(
+                            builder: (BuildContext builderContext) {
+                              return TextButton.icon(
+                                onPressed: () {
+                                  Navigator.of(builderContext).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => const ForgotPasswordPage(),
+                                    ),
+                                  );
+                                },
+                                icon: Icon(
+                                  Icons.help_outline,
+                                  size: 18,
+                                  color: kAppBarColor,
+                                ),
+                                label: Text(
+                                  AppLocalizations.of(builderContext).forgotPassword,
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: kAppBarColor,
+                                    fontFamily: 'Noto Naskh Arabic',
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          Container(
+                            width: 1,
+                            height: 20,
+                            color: Colors.grey[300],
+                          ),
+                          TextButton.icon(
+                            onPressed: _sendHelpEmail,
+                            icon: Icon(
+                              Icons.support_agent_outlined,
+                              size: 18,
+                              color: kAppBarColor,
+                            ),
+                            label: Text(
+                              AppLocalizations.of(context).requestHelp,
+                              style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w600,
+                                color: kAppBarColor,
+                                fontFamily: 'Noto Naskh Arabic',
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 32),
                     ],
                   ),
                 ),
               ),
             ),
-            // Bottom Help Buttons
-            Container(
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.7),
-                border: Border(
-                  top: BorderSide(
-                    color: Colors.grey[200]!,
-                    width: 1,
-                  ),
-                ),
-              ),
-              padding: EdgeInsets.only(
-                top: 12.0,
-                bottom: 12.0 + MediaQuery.of(context).viewPadding.bottom,
-                left: 0,
-                right: 0,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Builder(
-                    builder: (BuildContext builderContext) {
-                      return TextButton.icon(
-                        onPressed: () {
-                          Navigator.of(builderContext).push(
-                            MaterialPageRoute(
-                              builder: (context) => const ForgotPasswordPage(),
-                            ),
-                          );
-                        },
-                        icon: Icon(
-                          Icons.help_outline,
-                          size: 20,
-                          color: kAppBarColor,
-                        ),
-                        label: Text(
-                          AppLocalizations.of(builderContext).forgotPassword,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: kAppBarColor,
-                            fontFamily: 'Noto Naskh Arabic',
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                  Container(
-                    width: 1,
-                    height: 24,
-                    color: Colors.grey[300],
-                  ),
-                  TextButton.icon(
-                    onPressed: _sendHelpEmail,
-                    icon: Icon(
-                      Icons.support_agent_outlined,
-                      size: 20,
-                      color: kAppBarColor,
-                    ),
-                    label: Text(
-                      AppLocalizations.of(context).requestHelp,
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w600,
-                        color: kAppBarColor,
-                        fontFamily: 'Noto Naskh Arabic',
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // Remove bottom container completely
           ],
         ),
       ),

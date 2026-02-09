@@ -108,14 +108,15 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: kBodyColor,
-      body: Center(
-        child: AnimatedOpacity(
-          opacity: _fadeOpacity,
-          duration: const Duration(milliseconds: 2000),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
+      body: SafeArea(
+        child: Center(
+          child: AnimatedOpacity(
+            opacity: _fadeOpacity,
+            duration: const Duration(milliseconds: 2000),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               AnimatedSlide(
                 offset: _textOffset,
@@ -174,6 +175,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
             ],
           ),
         ),
+      ),
       ),
     );
   }
