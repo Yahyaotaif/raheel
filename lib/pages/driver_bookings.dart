@@ -23,6 +23,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
   String? _errorMessage;
   Timer? _pollingTimer;
   String? _currentDriverId;
+  String? _lastNotifiedBookingId;
 
   @override
   void initState() {
@@ -37,43 +38,62 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
       final prefs = await SharedPreferences.getInstance();
       _currentDriverId = prefs.getString('auth_id') ?? prefs.getString('user_id');
 
+      debugPrint('🔔 Driver Bookings: Setting up listener for driver: $_currentDriverId');
+
       if (_currentDriverId != null) {
-        // Poll for new bookings every 3 seconds when app is active
-        _pollingTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+        // Start polling immediately
+        _checkForNewBookings();
+        
+        // Then poll every 2 seconds for new bookings
+        _pollingTimer = Timer.periodic(const Duration(seconds: 2), (_) {
           if (mounted) {
             _checkForNewBookings();
           }
         });
+        
+        debugPrint('🔔 Driver Bookings: Polling started');
+      } else {
+        debugPrint('🔔 Driver Bookings: No driver ID found');
       }
     } catch (e) {
-      debugPrint('Error setting up listener: $e');
+      debugPrint('🔔 Driver Bookings: Error setting up listener: $e');
     }
   }
 
   Future<void> _checkForNewBookings() async {
     try {
+      if (_currentDriverId == null) {
+        debugPrint('🔔 No driver ID available for polling');
+        return;
+      }
+
       final response = await Supabase.instance.client
           .from('bookings')
           .select()
           .eq('driver_id', _currentDriverId!)
-          .or('status.is.null,status.neq.completed')
           .order('created_at', ascending: false)
-          .limit(1);
+          .limit(5);
 
       if (!mounted) return;
 
+      debugPrint('🔔 Driver Bookings: Polling result - ${response.length} bookings found');
+
       if (response.isNotEmpty) {
         final newestBooking = response.first;
-        
-        // Check if this is a new booking we haven't seen
-        if (_bookings.isEmpty ||
-            newestBooking['id'].toString() != _bookings.first['id'].toString()) {
-          // Show notification for new booking
+        final bookingId = newestBooking['id'].toString();
+        final status = newestBooking['status'] ?? 'pending';
+
+        debugPrint('🔔 Newest booking ID: $bookingId, Status: $status, Last notified: $_lastNotifiedBookingId');
+
+        // Check if this is a new booking we haven't notified about
+        if (_lastNotifiedBookingId != bookingId && status == 'pending') {
+          debugPrint('🔔 NEW BOOKING DETECTED! Showing notification');
+          _lastNotifiedBookingId = bookingId;
           _showNewBookingNotification(newestBooking);
         }
       }
     } catch (e) {
-      debugPrint('Error checking for new bookings: $e');
+      debugPrint('🔔 Driver Bookings: Error checking for new bookings: $e');
     }
   }
 
@@ -81,24 +101,36 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
     if (!mounted) return;
     
     final travelerName =
-        '${booking['traveler_first_name']} ${booking['traveler_last_name']}';
+        '${booking['traveler_first_name'] ?? 'مسافر'} ${booking['traveler_last_name'] ?? ''}';
+    
+    debugPrint('🔔 Showing notification for: $travelerName');
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(
-          'حجز جديد من $travelerName',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            fontFamily: 'Noto Naskh Arabic',
-          ),
+        content: Row(
           textDirection: TextDirection.rtl,
+          children: [
+            const Icon(Icons.notifications_active, color: Colors.white),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Text(
+                'حجز جديد من $travelerName',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  fontFamily: 'Noto Naskh Arabic',
+                ),
+                textDirection: TextDirection.rtl,
+              ),
+            ),
+          ],
         ),
         backgroundColor: Colors.green.shade600,
-        duration: const Duration(seconds: 5),
+        duration: const Duration(seconds: 6),
         behavior: SnackBarBehavior.floating,
         margin: const EdgeInsets.all(16),
+        elevation: 10,
       ),
     );
   }
@@ -158,6 +190,10 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
       setState(() {
         _bookings = List<Map<String, dynamic>>.from(response);
         _isLoading = false;
+        // Set the last notified booking ID to current newest booking to avoid duplicate notifications
+        if (_bookings.isNotEmpty) {
+          _lastNotifiedBookingId = _bookings.first['id'].toString();
+        }
       });
     } catch (e) {
       if (!mounted) return;
