@@ -135,7 +135,12 @@ class _WalkthroughPageState extends State<WalkthroughPage> {
         renderDoneBtn: _buildNavChip('ابدأ'),
         isShowPrevBtn: false,
         navigationBarConfig: NavigationBarConfig(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: EdgeInsets.only(
+            left: 24,
+            right: 24,
+            top: 16,
+            bottom: 16 + MediaQuery.of(context).viewPadding.bottom,
+          ),
           backgroundColor: Colors.transparent,
         ),
         onDonePress: _completeWalkthrough,
