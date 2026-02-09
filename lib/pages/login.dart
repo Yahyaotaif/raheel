@@ -358,337 +358,332 @@ class _LoginPageState extends State<LoginPage> {
             ],
           ),
         ),
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 20.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 16.0),
-                        child: Image.asset(
-                          'assets/logo.png',
-                          width: MediaQuery.of(context).size.width - 10,
-                          height: 200,
-                          fit: BoxFit.contain,
-                        ),
-                      ),
-                      const SizedBox(height: 0),
-                      // Email/Username Field
-                      _buildStyleTextField(
-                        controller: _identifierController,
-                        label: AppLocalizations.of(context).emailOrUsername,
-                        hint: AppLocalizations.of(context).enterEmailOrUsername,
-                        icon: Icons.person_outline,
-                        width: 340,
-                      ),
-                      const SizedBox(height: 16),
-                      // Password Field
-                      _buildStyleTextField(
-                        controller: _passwordController,
-                        label: AppLocalizations.of(context).password,
-                        hint: '',
-                        icon: Icons.lock_outline,
-                        obscureText: true,
-                        width: 340,
-                      ),
-                      const SizedBox(height: 16),
-                      // Remember Me Checkbox
-                      Padding(
-                        padding: const EdgeInsets.only(left: 2.0),
-                        child: SizedBox(
-                          width: 340,
-                          child: GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                _rememberMe = !_rememberMe;
-                              });
-                            },
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                              AnimatedContainer(
-                                duration: const Duration(milliseconds: 300),
-                                width: 20,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(6),
-                                  color: _rememberMe ? kAppBarColor : Colors.transparent,
-                                  border: Border.all(
-                                    color: _rememberMe ? kAppBarColor : Colors.grey[400]!,
-                                    width: 2,
-                                  ),
-                                ),
-                                child: _rememberMe
-                                    ? const Icon(
-                                        Icons.check,
-                                        size: 14,
-                                        color: Colors.white,
-                                      )
-                                    : null,
-                              ),
-                              const SizedBox(width: 12),
-                              Text(
-                                AppLocalizations.of(context).rememberMe,
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w600,
-                                  color: _rememberMe ? kAppBarColor : Colors.grey[700],
-                                  fontFamily: 'Noto Naskh Arabic',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      ),
-                      const SizedBox(height: 28),
-                      // Error Message
-                      if (_errorMessage != null) ...[
-                        Container(
-                          padding: const EdgeInsets.all(14),
-                          margin: const EdgeInsets.only(bottom: 20),
-                          decoration: BoxDecoration(
-                            color: Colors.red.withValues(alpha: 0.08),
-                            borderRadius: BorderRadius.circular(12),
-                            border: Border.all(
-                              color: Colors.red.withValues(alpha: 0.3),
-                              width: 1.5,
-                            ),
-                          ),
-                          child: Text(
-                            _errorMessage!,
-                            style: const TextStyle(
-                              color: Colors.red,
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              fontFamily: 'Noto Naskh Arabic',
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                      // Login Button
-                      SizedBox(
-                        width: 320,
-                        height: 52,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: kAppBarColor.withValues(alpha: 0.3),
-                                blurRadius: 16,
-                                offset: const Offset(0, 8),
-                              ),
-                            ],
-                          ),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              )),
-                              backgroundColor: WidgetStateProperty.resolveWith((states) {
-                                return kAppBarColor;
-                              }),
-                              foregroundColor: WidgetStateProperty.all(Colors.white),
-                              elevation: WidgetStateProperty.all(0),
-                              padding: WidgetStateProperty.all(EdgeInsets.zero),
-                            ),
-                            onPressed: _isLoading ? null : _login,
-                            child: _isLoading
-                                ? const SizedBox(
-                                    width: 100,
-                                    height: 100,
-                                    child: ButtonLoadingIndicator(),
-                                  )
-                                : Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      const Icon(Icons.login_outlined, size: 22),
-                                      const SizedBox(width: 10),
-                                      Text(
-                                        AppLocalizations.of(context).login,
-                                        style: const TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 0.5,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 24),
-                      // Divider
-                      Row(
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.only(
+              left: 16.0,
+              right: 16.0,
+              top: 8.0,
+              bottom: MediaQuery.of(context).viewPadding.bottom + 8.0,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Logo
+                Image.asset(
+                  'assets/logo.png',
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: 140,
+                  fit: BoxFit.contain,
+                ),
+                const SizedBox(height: 8),
+                // Email/Username Field
+                _buildStyleTextField(
+                  controller: _identifierController,
+                  label: AppLocalizations.of(context).emailOrUsername,
+                  hint: AppLocalizations.of(context).enterEmailOrUsername,
+                  icon: Icons.person_outline,
+                  width: 340,
+                ),
+                const SizedBox(height: 12),
+                // Password Field
+                _buildStyleTextField(
+                  controller: _passwordController,
+                  label: AppLocalizations.of(context).password,
+                  hint: '',
+                  icon: Icons.lock_outline,
+                  obscureText: true,
+                  width: 340,
+                ),
+                const SizedBox(height: 12),
+                // Remember Me Checkbox
+                Padding(
+                  padding: const EdgeInsets.only(left: 2.0),
+                  child: SizedBox(
+                    width: 340,
+                    child: GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _rememberMe = !_rememberMe;
+                        });
+                      },
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Expanded(
-                            child: Container(
-                              height: 1,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.grey[300]!,
-                                    Colors.transparent,
-                                  ],
-                                ),
+                          AnimatedContainer(
+                            duration: const Duration(milliseconds: 300),
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6),
+                              color: _rememberMe ? kAppBarColor : Colors.transparent,
+                              border: Border.all(
+                                color: _rememberMe ? kAppBarColor : Colors.grey[400]!,
+                                width: 2,
                               ),
                             ),
+                            child: _rememberMe
+                                ? const Icon(
+                                    Icons.check,
+                                    size: 14,
+                                    color: Colors.white,
+                                  )
+                                : null,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Text(
-                              'أو',
-                              style: TextStyle(
-                                color: Colors.grey[600],
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              height: 1,
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.grey[300]!,
-                                  ],
-                                ),
-                              ),
+                          const SizedBox(width: 12),
+                          Text(
+                            AppLocalizations.of(context).rememberMe,
+                            style: TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                              color: _rememberMe ? kAppBarColor : Colors.grey[700],
+                              fontFamily: 'Noto Naskh Arabic',
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(height: 24),
-                      // Register Button
-                      Container(
-                        width: 320,
-                        height: 48,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: kAppBarColor.withValues(alpha: 0.3),
-                            width: 1.5,
-                          ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Error Message
+                if (_errorMessage != null) ...[
+                  Container(
+                    padding: const EdgeInsets.all(14),
+                    margin: const EdgeInsets.only(bottom: 20),
+                    decoration: BoxDecoration(
+                      color: Colors.red.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.red.withValues(alpha: 0.3),
+                        width: 1.5,
+                      ),
+                    ),
+                    child: Text(
+                      _errorMessage!,
+                      style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Noto Naskh Arabic',
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ],
+                // Login Button
+                SizedBox(
+                  width: 320,
+                  height: 48,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: kAppBarColor.withValues(alpha: 0.3),
+                          blurRadius: 16,
+                          offset: const Offset(0, 8),
                         ),
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            elevation: 0,
-                            padding: EdgeInsets.zero,
-                          ),
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(
-                                builder: (context) => const RegistrationPage(),
-                              ),
-                            );
-                          },
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.person_add_outlined,
-                                size: 20,
-                                color: kAppBarColor,
-                              ),
-                              const SizedBox(width: 10),
-                              Flexible(
-                                child: FittedBox(
-                                  fit: BoxFit.scaleDown,
-                                  alignment: Alignment.centerLeft,
-                                  child: Text(
-                                    '${AppLocalizations.of(context).dontHaveAccount} ${AppLocalizations.of(context).registerNow}',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.w600,
-                                      color: kAppBarColor,
-                                      fontFamily: 'Noto Naskh Arabic',
-                                    ),
+                      ],
+                    ),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        )),
+                        backgroundColor: WidgetStateProperty.resolveWith((states) {
+                          return kAppBarColor;
+                        }),
+                        foregroundColor: WidgetStateProperty.all(Colors.white),
+                        elevation: WidgetStateProperty.all(0),
+                        padding: WidgetStateProperty.all(EdgeInsets.zero),
+                      ),
+                      onPressed: _isLoading ? null : _login,
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 100,
+                              height: 100,
+                              child: ButtonLoadingIndicator(),
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.login_outlined, size: 22),
+                                const SizedBox(width: 10),
+                                Text(
+                                  AppLocalizations.of(context).login,
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w600,
+                                    letterSpacing: 0.5,
                                   ),
                                 ),
-                              ),
+                              ],
+                            ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                // Divider
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.grey[300]!,
+                              Colors.transparent,
                             ],
                           ),
                         ),
                       ),
-                      const SizedBox(height: 12),
-                      // Help Links under Register Button
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Builder(
-                            builder: (BuildContext builderContext) {
-                              return TextButton.icon(
-                                onPressed: () {
-                                  Navigator.of(builderContext).push(
-                                    MaterialPageRoute(
-                                      builder: (context) => const ForgotPasswordPage(),
-                                    ),
-                                  );
-                                },
-                                icon: Icon(
-                                  Icons.help_outline,
-                                  size: 18,
-                                  color: kAppBarColor,
-                                ),
-                                label: Text(
-                                  AppLocalizations.of(builderContext).forgotPassword,
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.w600,
-                                    color: kAppBarColor,
-                                    fontFamily: 'Noto Naskh Arabic',
-                                  ),
-                                ),
-                              );
-                            },
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Text(
+                        'أو',
+                        style: TextStyle(
+                          color: Colors.grey[600],
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Container(
+                        height: 1,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.transparent,
+                              Colors.grey[300]!,
+                            ],
                           ),
-                          Container(
-                            width: 1,
-                            height: 20,
-                            color: Colors.grey[300],
-                          ),
-                          TextButton.icon(
-                            onPressed: _sendHelpEmail,
-                            icon: Icon(
-                              Icons.support_agent_outlined,
-                              size: 18,
-                              color: kAppBarColor,
-                            ),
-                            label: Text(
-                              AppLocalizations.of(context).requestHelp,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                // Register Button
+                Container(
+                  width: 320,
+                  height: 44,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: kAppBarColor.withValues(alpha: 0.3),
+                      width: 1.5,
+                    ),
+                  ),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.white,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      elevation: 0,
+                      padding: EdgeInsets.zero,
+                    ),
+                    onPressed: () {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => const RegistrationPage(),
+                        ),
+                      );
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.person_add_outlined,
+                          size: 20,
+                          color: kAppBarColor,
+                        ),
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: FittedBox(
+                            fit: BoxFit.scaleDown,
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              '${AppLocalizations.of(context).dontHaveAccount} ${AppLocalizations.of(context).registerNow}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                fontSize: 13,
+                                fontSize: 15,
                                 fontWeight: FontWeight.w600,
                                 color: kAppBarColor,
                                 fontFamily: 'Noto Naskh Arabic',
                               ),
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 24),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
+                const SizedBox(height: 10),
+                // Help Links under Register Button
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Builder(
+                      builder: (BuildContext builderContext) {
+                        return TextButton.icon(
+                          onPressed: () {
+                            Navigator.of(builderContext).push(
+                              MaterialPageRoute(
+                                builder: (context) => const ForgotPasswordPage(),
+                              ),
+                            );
+                          },
+                          icon: Icon(
+                            Icons.help_outline,
+                            size: 18,
+                            color: kAppBarColor,
+                          ),
+                          label: Text(
+                            AppLocalizations.of(builderContext).forgotPassword,
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w600,
+                              color: kAppBarColor,
+                              fontFamily: 'Noto Naskh Arabic',
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                    Container(
+                      width: 1,
+                      height: 20,
+                      color: Colors.grey[300],
+                    ),
+                    TextButton.icon(
+                      onPressed: _sendHelpEmail,
+                      icon: Icon(
+                        Icons.support_agent_outlined,
+                        size: 18,
+                        color: kAppBarColor,
+                      ),
+                      label: Text(
+                        AppLocalizations.of(context).requestHelp,
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                          color: kAppBarColor,
+                          fontFamily: 'Noto Naskh Arabic',
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-            // Remove bottom container completely
-          ],
+          ),
         ),
       ),
     );
