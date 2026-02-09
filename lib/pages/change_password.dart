@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:raheel/widgets/button_loading_indicator.dart';
 import 'package:raheel/theme_constants.dart';
 import 'package:raheel/auth/password_utils.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -268,7 +269,7 @@ class _ChangePasswordFormState extends State<_ChangePasswordForm> {
                     ? const SizedBox(
                         width: 100,
                         height: 100,
-                        child: CircularProgressIndicator(),
+                        child: ButtonLoadingIndicator(),
                       )
                     : const Text('حفظ'),
               ),

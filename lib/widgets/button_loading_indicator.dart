@@ -17,7 +17,7 @@ class ButtonLoadingIndicator extends StatelessWidget {
       width: size,
       height: size,
       child: Lottie.asset(
-        'assets/lottie/loader.json',
+        'assets/lottie/cute.json',
         fit: BoxFit.contain,
         repeat: true,
       ),

@@ -50,6 +50,7 @@ flutter:
     - assets/lottie/loadingcar.json
     - assets/lottie/carr.json
     - assets/lottie/loader.json
+    - assets/lottie/cute.json
   fonts:
     - family: QTSHoby
       fonts:

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:raheel/widgets/button_loading_indicator.dart';
 import 'package:flutter/services.dart';
 import 'package:raheel/services/moyasar_service.dart';
 import 'package:raheel/theme_constants.dart';
@@ -171,7 +172,7 @@ class _PaymentDialogState extends State<PaymentDialog> {
               ? const SizedBox(
                   height: 20,
                   width: 20,
-                  child: CircularProgressIndicator(),
+                  child: ButtonLoadingIndicator(size: 20),
                 )
               : const Text('ادفع الآن'),
         ),
