@@ -373,11 +373,10 @@ class _LoginPageState extends State<LoginPage> {
                 // Logo
                 Image.asset(
                   'assets/logo.png',
-                  width: MediaQuery.of(context).size.width * 0.7,
+                  width: MediaQuery.of(context).size.width * 0.95,
                   height: 140,
                   fit: BoxFit.contain,
                 ),
-                const SizedBox(height: 8),
                 // Email/Username Field
                 _buildStyleTextField(
                   controller: _identifierController,
