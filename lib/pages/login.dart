@@ -214,7 +214,9 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) {
         String errorMessage = 'حدث خطأ غير متوقع.';
         final errorString = e.toString().toLowerCase();
-        if (errorString.contains('البريد الإلكتروني أو اسم المستخدم غير مسجل')) {
+        if (errorString.contains('jwt expired') || errorString.contains('pgrst303')) {
+          errorMessage = 'انتهت جلسة الاتصال. يرجى المحاولة مرة أخرى';
+        } else if (errorString.contains('البريد الإلكتروني أو اسم المستخدم غير مسجل')) {
           errorMessage = 'البريد الإلكتروني أو اسم المستخدم غير صحيح.';
         } else if (errorString.contains('كلمة المرور التي أدخلتها غير صحيحة') || errorString.contains('كلمة المرور غير صحيحة')) {
           errorMessage = 'كلمة المرور غير صحيحة.';

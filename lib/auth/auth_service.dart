@@ -127,6 +127,14 @@ class AuthService {
 
   // Sign in with email or username
   Future<Map<String, dynamic>?> signInWithEmailOrUsername(String identifier, String password) async {
+    // Clear any expired session before attempting login
+    try {
+      await _supabase.auth.signOut();
+      debugPrint('Cleared expired session');
+    } catch (e) {
+      debugPrint('No session to clear: $e');
+    }
+    
     debugPrint('Attempting login with identifier: "$identifier"');
     final userQuery = await _supabase
       .from('user')
