@@ -643,7 +643,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
             const SizedBox(width: 8),
             Text(
               AppLocalizations.of(context).searchTrip,
-              style: const TextStyle(color: Colors.white),
+                style: kAppBarTitleStyle,
             ),
           ],
         ),

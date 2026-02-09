@@ -170,7 +170,7 @@ class _TravelerBookingsPageState extends State<TravelerBookingsPage> with Widget
           children: [
             const Icon(Icons.event, color: Colors.white, size: 28),
             const SizedBox(width: 8),
-            Text(AppLocalizations.of(context).bookings, style: const TextStyle(color: Colors.white)),
+              Text(AppLocalizations.of(context).bookings, style: kAppBarTitleStyle),
           ],
         ),
         elevation: 0,

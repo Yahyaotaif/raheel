@@ -224,7 +224,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
             const SizedBox(width: 8),
             Text(
               AppLocalizations.of(context).manageBookings,
-              style: const TextStyle(color: Colors.white),
+                style: kAppBarTitleStyle,
             ),
           ],
         ),

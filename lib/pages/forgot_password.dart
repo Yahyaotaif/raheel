@@ -140,7 +140,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           children: [
             const Icon(Icons.mail_outline, color: Colors.white, size: 24),
             const SizedBox(width: 8),
-            Text(l10n.recoverPassword, style: const TextStyle(color: Colors.white)),
+            Text(l10n.recoverPassword, style: kAppBarTitleStyle),
           ],
         ),
         elevation: 0,

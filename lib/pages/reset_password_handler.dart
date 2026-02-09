@@ -254,7 +254,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
           leading: Navigator.of(context).canPop()
               ? const ModernBackButton()
               : null,
-          title: Text(l10n.recoverPassword),
+              title: Text(l10n.recoverPassword, style: kAppBarTitleStyle),
           backgroundColor: kAppBarColor,
         ),
         body: const Center(
@@ -271,7 +271,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
           leading: Navigator.of(context).canPop()
               ? const ModernBackButton()
               : null,
-          title: Text(l10n.recoverPassword),
+              title: Text(l10n.recoverPassword, style: kAppBarTitleStyle),
           backgroundColor: kAppBarColor,
         ),
         body: Center(
@@ -309,7 +309,7 @@ class _ResetPasswordHandlerState extends State<ResetPasswordHandler> {
           children: [
             const Icon(Icons.lock, color: Colors.white, size: 24),
             const SizedBox(width: 8),
-            Text(l10n.password, style: const TextStyle(color: Colors.white)),
+                Text(l10n.password, style: kAppBarTitleStyle),
           ],
         ),
         centerTitle: true,

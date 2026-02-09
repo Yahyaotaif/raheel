@@ -178,7 +178,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
           children: const [
             Icon(Icons.edit, color: Colors.white, size: 28),
             SizedBox(width: 8),
-            Text('تعديل الملف الشخصي', style: TextStyle(color: Colors.white)),
+            Text('تعديل الملف الشخصي', style: kAppBarTitleStyle),
           ],
         ),
         titleTextStyle: const TextStyle(

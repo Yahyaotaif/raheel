@@ -356,7 +356,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
           children: [
             const Icon(Icons.drive_eta, color: Colors.white, size: 28),
             const SizedBox(width: 8),
-            Text(AppLocalizations.of(context).createNewTrip, style: const TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
+                Text(AppLocalizations.of(context).createNewTrip, style: kAppBarTitleStyle),
           ],
         ),
         centerTitle: true,

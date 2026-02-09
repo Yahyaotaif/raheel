@@ -37,7 +37,10 @@ class _DriverBookingsContainerState extends State<DriverBookingsContainer> with 
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context).bookings),
+          title: Text(
+            AppLocalizations.of(context).bookings,
+            style: kAppBarTitleStyle,
+          ),
         centerTitle: true,
         backgroundColor: kAppBarColor,
         elevation: 0,
