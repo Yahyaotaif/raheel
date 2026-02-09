@@ -156,6 +156,41 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  Widget _buildBookingsActionTile({
+    required String label,
+    required IconData icon,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(14),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(color: color.withValues(alpha: 0.6), width: 2),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: color, size: 28),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -418,69 +453,125 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         if (snapshot.connectionState == ConnectionState.done && userRole == 'driver') ...[
                           const Divider(height: 1, color: Colors.black12),
-                          ListTile(
-                            leading: const Icon(Icons.calendar_today, color: Colors.black54),
-                            title: Text(
-                              AppLocalizations.of(context).manageBookings,
-                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                            ),
-                            trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const DriverBookingsPage(),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: AspectRatio(
+                                    aspectRatio: 1,
+                                    child: _buildBookingsActionTile(
+                                      label: AppLocalizations.of(context).createTrip,
+                                      icon: Icons.add_location,
+                                      color: Colors.green.shade700,
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => const DriverSetPage(),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
                                 ),
-                              );
-                            },
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: AspectRatio(
+                                    aspectRatio: 1,
+                                    child: _buildBookingsActionTile(
+                                      label: AppLocalizations.of(context).manageBookings,
+                                      icon: Icons.calendar_today,
+                                      color: Colors.teal.shade700,
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => const DriverBookingsPage(),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ],
                         if (snapshot.connectionState == ConnectionState.done && userRole == 'traveler') ...[
                           const Divider(height: 1, color: Colors.black12),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: AspectRatio(
+                                    aspectRatio: 1,
+                                    child: _buildBookingsActionTile(
+                                      label: AppLocalizations.of(context).searchTrip,
+                                      icon: Icons.search,
+                                      color: Colors.green.shade700,
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => const TravelerSetPage(),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: AspectRatio(
+                                    aspectRatio: 1,
+                                    child: _buildBookingsActionTile(
+                                      label: AppLocalizations.of(context).myTrips,
+                                      icon: Icons.bookmark,
+                                      color: Colors.teal.shade700,
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) => const TravelerBookingsPage(),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                        if (snapshot.connectionState != ConnectionState.done || (userRole != 'driver' && userRole != 'traveler')) ...[
+                          const Divider(height: 1, color: Colors.black12),
                           ListTile(
-                            leading: const Icon(Icons.bookmark, color: Colors.black54),
+                            leading: Icon(
+                              userRole == 'driver' ? Icons.add_location : Icons.search,
+                              color: Colors.black54,
+                            ),
                             title: Text(
-                              AppLocalizations.of(context).myTrips,
+                              createButtonText,
                               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
                             ),
                             trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const TravelerBookingsPage(),
-                                ),
-                              );
-                            },
+                            onTap: snapshot.connectionState == ConnectionState.waiting
+                                ? null
+                                : () {
+                                    if (userRole == 'driver') {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => const DriverSetPage(),
+                                        ),
+                                      );
+                                    } else {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => const TravelerSetPage(),
+                                        ),
+                                      );
+                                    }
+                                  },
                           ),
                         ],
-                        const Divider(height: 1, color: Colors.black12),
-                        ListTile(
-                          leading: Icon(
-                            userRole == 'driver' ? Icons.add_location : Icons.search,
-                            color: Colors.black54,
-                          ),
-                          title: Text(
-                            createButtonText,
-                            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-                          ),
-                          trailing: const Icon(Icons.arrow_forward_ios, color: Colors.black38, size: 18),
-                          onTap: snapshot.connectionState == ConnectionState.waiting
-                              ? null
-                              : () {
-                                  if (userRole == 'driver') {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => const DriverSetPage(),
-                                      ),
-                                    );
-                                  } else {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => const TravelerSetPage(),
-                                      ),
-                                    );
-                                  }
-                                },
-                        ),
                       ],
                     ),
                   );
