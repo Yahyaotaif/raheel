@@ -34,14 +34,13 @@
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="com.raheelcorp.raheel" android:host="reset-password"/>
             </intent-filter>
-            <!-- Deep link intent filter for password reset - HTTPS fallback -->
+            <!-- Deep link intent filter for password reset - Custom domain (with auto-verify) -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
                 <data android:scheme="https"/>
-                <data android:scheme="http"/>
-                <data android:host="mwjjaiqqfzmlaiaamlhu.supabase.co"/>
+                <data android:host="www.raheelcorp.com"/>
                 <data android:pathPrefix="/auth/v1/verify"/>
             </intent-filter>
         </activity>
