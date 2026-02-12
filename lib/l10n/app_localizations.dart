@@ -470,6 +470,30 @@ abstract class AppLocalizations {
   /// **'OK'**
   String get ok;
 
+  /// No description provided for @tripPublishSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Trip posted successfully'**
+  String get tripPublishSuccessTitle;
+
+  /// No description provided for @tripPublishSuccessBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your trip has been posted successfully. Please visit Manage Bookings in your account to review passengers and contact them.'**
+  String get tripPublishSuccessBody;
+
+  /// No description provided for @bookingSuccessTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Booking successful'**
+  String get bookingSuccessTitle;
+
+  /// No description provided for @bookingSuccessBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Your trip has been booked successfully. Please visit Manage Bookings to review your driver and contact them.'**
+  String get bookingSuccessBody;
+
   /// selectDate
   ///
   /// In en, this message translates to:

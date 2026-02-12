@@ -26,6 +26,20 @@ class DriverSetPage extends StatefulWidget {
 }
 
 class _DriverSetPageState extends State<DriverSetPage> {
+  static const List<String> _destinationCities = [
+    'Yemen',
+    'Bahrain',
+    'Qatar',
+    'United Arab Emirates',
+    'Kuwait',
+    'Riyadh',
+    'Jeddah',
+    'Makkah',
+    'Abha',
+    'Jizan',
+    'Dammam',
+    'Jordan',
+  ];
   String? _selectedPassengers;
   DateTime? _selectedDate;
   TimeOfDay? _selectedTime;
@@ -50,6 +64,37 @@ class _DriverSetPageState extends State<DriverSetPage> {
       ),
     ],
   );
+
+  String _localizeDestination(String value, AppLocalizations localizations) {
+    switch (value) {
+      case 'Yemen':
+        return localizations.destinationYemen;
+      case 'Bahrain':
+        return localizations.destinationBahrain;
+      case 'Qatar':
+        return localizations.destinationQatar;
+      case 'United Arab Emirates':
+        return localizations.destinationUae;
+      case 'Kuwait':
+        return localizations.destinationKuwait;
+      case 'Riyadh':
+        return localizations.destinationRiyadh;
+      case 'Jeddah':
+        return localizations.destinationJeddah;
+      case 'Makkah':
+        return localizations.destinationMakkah;
+      case 'Abha':
+        return localizations.destinationAbha;
+      case 'Jizan':
+        return localizations.destinationJizan;
+      case 'Dammam':
+        return localizations.destinationDammam;
+      case 'Jordan':
+        return localizations.destinationJordan;
+      default:
+        return value;
+    }
+  }
 
   @override
   void initState() {
@@ -260,13 +305,14 @@ class _DriverSetPageState extends State<DriverSetPage> {
       });
 
       if (mounted) {
+        final l10n = AppLocalizations.of(context);
         showDialog(
           context: context,
           barrierDismissible: false,
           builder: (dialogContext) => AlertDialog(
             backgroundColor: kBodyColor,
-            title: const Text(
-              'تم إعلان الرحلة بنجاح',
+            title: Text(
+              l10n.tripPublishSuccessTitle,
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: kAppBarColor,
@@ -274,13 +320,13 @@ class _DriverSetPageState extends State<DriverSetPage> {
               ),
             ),
             content: Directionality(
-              textDirection: TextDirection.rtl,
+              textDirection: Directionality.of(context),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   const SizedBox(height: 16),
-                  const Text(
-                    'تم الإعلان عن رحلتك بنجاح! يرجى التوجه إلى إدارة حجوزاتك في حسابك للتحقق من الركاب الذين حجزوا معك والتواصل معهم.',
+                  Text(
+                    l10n.tripPublishSuccessBody,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 16),
                   ),
@@ -301,7 +347,7 @@ class _DriverSetPageState extends State<DriverSetPage> {
                   // Pop the DriverSetPage to return to home/profile
                   Navigator.of(context).pop();
                 },
-                child: const Text('حسناً'),
+                child: Text(l10n.ok),
               ),
             ],
           ),
@@ -319,20 +365,6 @@ class _DriverSetPageState extends State<DriverSetPage> {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context);
-    final destinations = <String>[
-      l10n.destinationYemen,
-      l10n.destinationBahrain,
-      l10n.destinationQatar,
-      l10n.destinationUae,
-      l10n.destinationKuwait,
-      l10n.destinationRiyadh,
-      l10n.destinationJeddah,
-      l10n.destinationMakkah,
-      l10n.destinationAbha,
-      l10n.destinationJizan,
-      l10n.destinationDammam,
-      l10n.destinationJordan,
-    ];
     return Scaffold(
       backgroundColor: kBodyColor,
       appBar: AppBar(
@@ -503,12 +535,12 @@ class _DriverSetPageState extends State<DriverSetPage> {
                                   ),
                                 ),
                                 dropdownColor: Colors.white,
-                                items: destinations.map((city) {
+                                items: _destinationCities.map((city) {
                                   return DropdownMenuItem(
                                     value: city,
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      city,
+                                      _localizeDestination(city, l10n),
                                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black87),
                                     ),
                                   );

@@ -196,6 +196,20 @@ class AppLocalizationsAr extends AppLocalizations {
   String get ok => 'حسناً';
 
   @override
+  String get tripPublishSuccessTitle => 'تم إعلان الرحلة بنجاح';
+
+  @override
+  String get tripPublishSuccessBody =>
+      'تم الإعلان عن رحلتك بنجاح! يرجى التوجه إلى إدارة حجوزاتك في حسابك للتحقق من الركاب الذين حجزوا معك والتواصل معهم.';
+
+  @override
+  String get bookingSuccessTitle => 'تم الحجز بنجاح';
+
+  @override
+  String get bookingSuccessBody =>
+      'تم حجز رحلتك بنجاح! يرجى التوجه إلى إدارة حجوزاتك للتحقق من السائق الذي ستسافر معه والتواصل معه.';
+
+  @override
   String get selectDate => 'اختر التاريخ';
 
   @override

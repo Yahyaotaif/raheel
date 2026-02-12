@@ -4,6 +4,7 @@ import 'package:raheel/theme_constants.dart';
 import 'package:raheel/widgets/payment_dialog.dart';
 import 'package:raheel/l10n/app_localizations.dart';
 import 'package:raheel/widgets/modern_back_button.dart';
+import 'package:intl/intl.dart' as intl;
 
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:http/http.dart' as http;
@@ -38,19 +39,49 @@ class TravelerSetPage extends StatefulWidget {
 class _TravelerSetPageState extends State<TravelerSetPage> {
     // List of destination cities
     static const List<String> _destinationCities = [
-      'اليمن',
-      'البحرين',
-      'قطر',
-      'الامارات',
-      'الكويت',
-      'الرياض',
-      'جدة',
-      'مكة',
-      'أبها',
-      'جيزان',
-      'الدمام',
-      'الاردن',
+      'Yemen',
+      'Bahrain',
+      'Qatar',
+      'United Arab Emirates',
+      'Kuwait',
+      'Riyadh',
+      'Jeddah',
+      'Makkah',
+      'Abha',
+      'Jizan',
+      'Dammam',
+      'Jordan',
     ];
+  String _localizeDestination(String value, AppLocalizations localizations) {
+    switch (value) {
+      case 'Yemen':
+        return localizations.destinationYemen;
+      case 'Bahrain':
+        return localizations.destinationBahrain;
+      case 'Qatar':
+        return localizations.destinationQatar;
+      case 'United Arab Emirates':
+        return localizations.destinationUae;
+      case 'Kuwait':
+        return localizations.destinationKuwait;
+      case 'Riyadh':
+        return localizations.destinationRiyadh;
+      case 'Jeddah':
+        return localizations.destinationJeddah;
+      case 'Makkah':
+        return localizations.destinationMakkah;
+      case 'Abha':
+        return localizations.destinationAbha;
+      case 'Jizan':
+        return localizations.destinationJizan;
+      case 'Dammam':
+        return localizations.destinationDammam;
+      case 'Jordan':
+        return localizations.destinationJordan;
+      default:
+        return value;
+    }
+  }
   DateTime? _selectedDate;
   String? _selectedTime;
   String? _selectedDestinationDropdown;
@@ -163,7 +194,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
 
   Future<void> _loadTripsPage(DateTime date, int page) async {
     try {
-      final dateString = date.toIso8601String().split('T')[0];
+      final dateString = intl.DateFormat('yyyy-MM-dd').format(date);
 
       var query = Supabase.instance.client
           .from('trips')
@@ -454,13 +485,14 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
           });
 
           if (mounted) {
+            final l10n = AppLocalizations.of(context);
             showDialog(
               context: context,
               barrierDismissible: false,
               builder: (dialogContext) => AlertDialog(
                 backgroundColor: kBodyColor,
-                title: const Text(
-                  'تم الحجز بنجاح',
+                title: Text(
+                  l10n.bookingSuccessTitle,
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: kAppBarColor,
@@ -468,17 +500,17 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                   ),
                 ),
                 content: Directionality(
-                  textDirection: TextDirection.rtl,
+                  textDirection: Directionality.of(context),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    children: const [
-                      SizedBox(height: 16),
+                    children: [
+                      const SizedBox(height: 16),
                       Text(
-                        'تم حجز رحلتك بنجاح! يرجى التوجه إلى إدارة حجوزاتك للتحقق من السائق الذي ستسافر معه والتواصل معه.',
+                        l10n.bookingSuccessBody,
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 16),
                       ),
-                      SizedBox(height: 24),
+                      const SizedBox(height: 24),
                     ],
                   ),
                 ),
@@ -494,7 +526,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                       // Navigate to profile page
                       Navigator.of(context).pushReplacementNamed('/profile');
                     },
-                    child: const Text('حسناً'),
+                    child: Text(l10n.ok),
                   ),
                 ],
               ),
@@ -628,6 +660,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: kBodyColor,
@@ -731,7 +764,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                                     value: city,
                                     alignment: Alignment.centerRight,
                                     child: Text(
-                                      city,
+                                      _localizeDestination(city, localizations),
                                       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.normal, color: Colors.black87),
                                     ),
                                   );
@@ -831,6 +864,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                 ..._trips.map((trip) {
                   final time = trip['trip_time'] as String;
                   final destination = trip['destination'] as String;
+                  final localizedDestination = _localizeDestination(destination, localizations);
                   final destinationDescription = trip['destination_description'] as String?;
                   final meetingPoint = trip['meeting_point_description'] as String?;
                   final numPassengers = trip['num_passengers'] as int;
@@ -881,7 +915,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                                     const SizedBox(width: 8),
                                     Expanded(
                                       child: Text(
-                                        '$destination (${convertTo12HourFormatFromString(time)})',
+                                        '$localizedDestination (${convertTo12HourFormatFromString(time)})',
                                         style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20,

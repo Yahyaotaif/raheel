@@ -196,6 +196,20 @@ class AppLocalizationsEn extends AppLocalizations {
   String get ok => 'OK';
 
   @override
+  String get tripPublishSuccessTitle => 'Trip posted successfully';
+
+  @override
+  String get tripPublishSuccessBody =>
+      'Your trip has been posted successfully. Please visit Manage Bookings in your account to review passengers and contact them.';
+
+  @override
+  String get bookingSuccessTitle => 'Booking successful';
+
+  @override
+  String get bookingSuccessBody =>
+      'Your trip has been booked successfully. Please visit Manage Bookings to review your driver and contact them.';
+
+  @override
   String get selectDate => 'Select Date';
 
   @override
