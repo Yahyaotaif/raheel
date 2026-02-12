@@ -854,8 +854,8 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
               ),
               // Trip cards
               if (_selectedDate != null && !_isLoadingTrips && _trips.isNotEmpty) ...[
-                const Text(
-                  'الرحلات المتاحة:',
+                Text(
+                  localizations.availableTrips,
                   textAlign: TextAlign.right,
                   textDirection: TextDirection.rtl,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
@@ -936,7 +936,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                                       Icon(Icons.flag, color: Colors.grey.shade600, size: 20),
                                       const SizedBox(width: 6),
                                       Expanded(
-                                        child: Text('الوصول: $destinationDescription', style: TextStyle(fontSize: 16, color: Colors.black87)),
+                                        child: Text('${localizations.arrival}: $destinationDescription', style: TextStyle(fontSize: 16, color: Colors.black87)),
                                       ),
                                     ],
                                   ),
@@ -946,7 +946,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                                       Icon(Icons.place, color: Colors.grey.shade600, size: 20),
                                       const SizedBox(width: 6),
                                       Expanded(
-                                        child: Text('الانطلاق: $meetingPoint', style: TextStyle(fontSize: 16, color: Colors.black87)),
+                                        child: Text('${localizations.departure}: $meetingPoint', style: TextStyle(fontSize: 16, color: Colors.black87)),
                                       ),
                                     ],
                                   ),
@@ -955,7 +955,7 @@ class _TravelerSetPageState extends State<TravelerSetPage> {
                                   children: [
                                     Icon(Icons.event_seat, color: Colors.grey.shade600, size: 20),
                                     const SizedBox(width: 6),
-                                    Text('المقاعد المتاحة: $availableSeats', style: TextStyle(fontSize: 16, color: Colors.black87)),
+                                    Text('${localizations.availableSeats}: $availableSeats', style: TextStyle(fontSize: 16, color: Colors.black87)),
                                   ],
                                 ),
                               ],

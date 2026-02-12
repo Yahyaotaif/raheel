@@ -64,6 +64,14 @@
   "copyEmail": "Copy Email",
   "emailCopied": "Email copied",
   "emailUsAt": "You can email us at",
+  "newBookingFrom": "New booking from {name}",
+  "@newBookingFrom": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "travelerFallback": "Traveler",
+  "notSpecified": "Not specified",
   "ok": "OK",
   "tripPublishSuccessTitle": "Trip posted successfully",
   "tripPublishSuccessBody": "Your trip has been posted successfully. Please visit Manage Bookings in your account to review passengers and contact them.",
@@ -129,6 +137,7 @@
   "bookings": "Bookings",
   "newBookingRequest": "New Booking Request",
   "noTripsOrBookings": "No trips or bookings currently",
+  "availableTrips": "Available Trips:",
   "errorLoadingTrips": "Error loading trip data. Please try again",
   "tripDeletedSuccess": "Trip deleted successfully",
   "travelerDeleted": "Traveler deleted",

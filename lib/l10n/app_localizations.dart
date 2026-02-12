@@ -464,6 +464,24 @@ abstract class AppLocalizations {
   /// **'You can email us at'**
   String get emailUsAt;
 
+  /// No description provided for @newBookingFrom.
+  ///
+  /// In en, this message translates to:
+  /// **'New booking from {name}'**
+  String newBookingFrom(Object name);
+
+  /// No description provided for @travelerFallback.
+  ///
+  /// In en, this message translates to:
+  /// **'Traveler'**
+  String get travelerFallback;
+
+  /// No description provided for @notSpecified.
+  ///
+  /// In en, this message translates to:
+  /// **'Not specified'**
+  String get notSpecified;
+
   /// ok
   ///
   /// In en, this message translates to:
@@ -853,6 +871,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No trips or bookings currently'**
   String get noTripsOrBookings;
+
+  /// No description provided for @availableTrips.
+  ///
+  /// In en, this message translates to:
+  /// **'Available Trips:'**
+  String get availableTrips;
 
   /// errorLoadingTrips
   ///

@@ -99,29 +99,31 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
 
   void _showNewBookingNotification(Map<String, dynamic> booking) {
     if (!mounted) return;
+
+    final l10n = AppLocalizations.of(context);
     
     final travelerName =
-        '${booking['traveler_first_name'] ?? 'مسافر'} ${booking['traveler_last_name'] ?? ''}';
+      '${booking['traveler_first_name'] ?? l10n.travelerFallback} ${booking['traveler_last_name'] ?? ''}';
     
     debugPrint('🔔 Showing notification for: $travelerName');
     
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
-          textDirection: TextDirection.rtl,
+          textDirection: Directionality.of(context),
           children: [
             const Icon(Icons.notifications_active, color: Colors.white),
             const SizedBox(width: 12),
             Expanded(
               child: Text(
-                'حجز جديد من $travelerName',
+                l10n.newBookingFrom(travelerName.trim()),
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Noto Naskh Arabic',
                 ),
-                textDirection: TextDirection.rtl,
+                textDirection: Directionality.of(context),
               ),
             ),
           ],
@@ -491,7 +493,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '${AppLocalizations.of(context).arrivalPlace}: ${trip['destination_description'] ?? 'غير محدد'}',
+                            '${AppLocalizations.of(context).arrivalPlace}: ${trip['destination_description'] ?? AppLocalizations.of(context).notSpecified}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,
@@ -499,7 +501,7 @@ class _DriverBookingsPageState extends State<DriverBookingsPage>
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            'مكان الإنطلاق: ${trip['meeting_point_description'] ?? 'غير محدد'}',
+                            '${AppLocalizations.of(context).departurePlace}: ${trip['meeting_point_description'] ?? AppLocalizations.of(context).notSpecified}',
                             style: const TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w500,

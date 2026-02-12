@@ -64,6 +64,14 @@
   "copyEmail": "نسخ",
   "emailCopied": "تم نسخ البريد الإلكتروني",
   "emailUsAt": "يمكنك مراسلتنا على",
+  "newBookingFrom": "حجز جديد من {name}",
+  "@newBookingFrom": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "travelerFallback": "مسافر",
+  "notSpecified": "غير محدد",
   "ok": "حسناً",
   "tripPublishSuccessTitle": "تم إعلان الرحلة بنجاح",
   "tripPublishSuccessBody": "تم الإعلان عن رحلتك بنجاح! يرجى التوجه إلى إدارة حجوزاتك في حسابك للتحقق من الركاب الذين حجزوا معك والتواصل معهم.",
@@ -129,6 +137,7 @@
   "bookings": "الحجوزات",
   "newBookingRequest": "طلب حجز جديد",
   "noTripsOrBookings": "لا توجد رحلات أو طلبات حجز حالياً",
+  "availableTrips": "الرحلات المتاحة:",
   "errorLoadingTrips": "حدث خطأ في تحميل بيانات الرحلة. يرجى المحاولة مرة أخرى",
   "tripDeletedSuccess": "تم حذف الرحلة بنجاح",
   "travelerDeleted": "تم حذف المسافر",

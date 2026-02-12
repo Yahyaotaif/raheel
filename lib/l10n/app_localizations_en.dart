@@ -193,6 +193,17 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailUsAt => 'You can email us at';
 
   @override
+  String newBookingFrom(Object name) {
+    return 'New booking from $name';
+  }
+
+  @override
+  String get travelerFallback => 'Traveler';
+
+  @override
+  String get notSpecified => 'Not specified';
+
+  @override
   String get ok => 'OK';
 
   @override
@@ -389,6 +400,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get noTripsOrBookings => 'No trips or bookings currently';
+
+  @override
+  String get availableTrips => 'Available Trips:';
 
   @override
   String get errorLoadingTrips => 'Error loading trip data. Please try again';

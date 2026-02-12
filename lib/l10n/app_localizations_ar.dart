@@ -193,6 +193,17 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emailUsAt => 'يمكنك مراسلتنا على';
 
   @override
+  String newBookingFrom(Object name) {
+    return 'حجز جديد من $name';
+  }
+
+  @override
+  String get travelerFallback => 'مسافر';
+
+  @override
+  String get notSpecified => 'غير محدد';
+
+  @override
   String get ok => 'حسناً';
 
   @override
@@ -389,6 +400,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get noTripsOrBookings => 'لا توجد رحلات أو طلبات حجز حالياً';
+
+  @override
+  String get availableTrips => 'الرحلات المتاحة:';
 
   @override
   String get errorLoadingTrips =>
