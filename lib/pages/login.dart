@@ -13,20 +13,18 @@ import 'package:provider/provider.dart';
 import 'package:raheel/providers/language_provider.dart';
 import 'package:raheel/l10n/app_localizations.dart';
 import 'package:raheel/widgets/modern_back_button.dart';
+
 // Custom Logo Widget
 class RaheelLogo extends StatelessWidget {
   const RaheelLogo({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
       ],
     );
   }
 }
-
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -36,13 +34,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-    Future<void> _cleanupOldTripsStartup() async {
-      try {
-        await Supabase.instance.client.rpc('cleanup_old_trips');
-      } catch (e) {
-        debugPrint('Startup cleanup failed: $e');
-      }
+  Future<void> _cleanupOldTripsStartup() async {
+    try {
+      await Supabase.instance.client.rpc('cleanup_old_trips');
+    } catch (e) {
+      debugPrint('Startup cleanup failed: $e');
     }
+  }
+
   final TextEditingController _identifierController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final AuthService _authService = AuthService();
@@ -74,7 +73,10 @@ class _LoginPageState extends State<LoginPage> {
   Future<void> _saveCredentials() async {
     final prefs = await SharedPreferences.getInstance();
     if (_rememberMe) {
-      await prefs.setString('saved_identifier', _identifierController.text.trim());
+      await prefs.setString(
+        'saved_identifier',
+        _identifierController.text.trim(),
+      );
       await prefs.setString('saved_password', _passwordController.text.trim());
       await prefs.setBool('remember_me', true);
     } else {
@@ -98,18 +100,13 @@ class _LoginPageState extends State<LoginPage> {
     final Uri emailUri = Uri(
       scheme: 'mailto',
       path: 'raheelcorp@outlook.com',
-      queryParameters: {
-        'subject': subject,
-      },
+      queryParameters: {'subject': subject},
     );
-    
+
     try {
       final canLaunch = await canLaunchUrl(emailUri);
       if (canLaunch) {
-        await launchUrl(
-          emailUri,
-          mode: LaunchMode.externalApplication,
-        );
+        await launchUrl(emailUri, mode: LaunchMode.externalApplication);
       } else {
         if (!mounted) return;
         _showEmailDialog();
@@ -122,7 +119,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void _showEmailDialog() {
     const emailAddress = 'raheelcorp@outlook.com';
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -137,7 +134,10 @@ class _LoginPageState extends State<LoginPage> {
             Text(
               AppLocalizations.of(context).emailUsAt,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'Noto Naskh Arabic', fontSize: 16),
+              style: const TextStyle(
+                fontFamily: 'Noto Naskh Arabic',
+                fontSize: 16,
+              ),
             ),
             const SizedBox(height: 12),
             Container(
@@ -164,14 +164,18 @@ class _LoginPageState extends State<LoginPage> {
                   IconButton(
                     icon: const Icon(Icons.copy, size: 20),
                     onPressed: () async {
-                      await Clipboard.setData(const ClipboardData(text: emailAddress));
+                      await Clipboard.setData(
+                        const ClipboardData(text: emailAddress),
+                      );
                       if (!context.mounted) return;
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           content: Text(
                             AppLocalizations.of(context).emailCopied,
                             textAlign: TextAlign.center,
-                            style: const TextStyle(fontFamily: 'Noto Naskh Arabic'),
+                            style: const TextStyle(
+                              fontFamily: 'Noto Naskh Arabic',
+                            ),
                           ),
                           duration: const Duration(seconds: 2),
                         ),
@@ -211,7 +215,7 @@ class _LoginPageState extends State<LoginPage> {
     });
     bool shouldSetLoadingFalse = true;
     try {
-      final user = await _authService.signInWithEmailOrUsername(
+      final user = await _authService.signInWithMobileOrUsername(
         identifier,
         _passwordController.text.trim(),
       );
@@ -252,21 +256,26 @@ class _LoginPageState extends State<LoginPage> {
       if (mounted) {
         String errorMessage = 'حدث خطأ غير متوقع.';
         final errorString = e.toString().toLowerCase();
-        if (errorString.contains('jwt expired') || errorString.contains('pgrst303')) {
+        if (errorString.contains('jwt expired') ||
+            errorString.contains('pgrst303')) {
           errorMessage = 'انتهت جلسة الاتصال. يرجى المحاولة مرة أخرى';
-        } else if (errorString.contains('البريد الإلكتروني أو اسم المستخدم غير مسجل')) {
-          errorMessage = 'البريد الإلكتروني أو اسم المستخدم غير صحيح.';
-        } else if (errorString.contains('كلمة المرور التي أدخلتها غير صحيحة') || errorString.contains('كلمة المرور غير صحيحة')) {
+        } else if (errorString.contains(
+          'رقم الجوال أو اسم المستخدم غير مسجل',
+        )) {
+          errorMessage = 'رقم الجوال أو اسم المستخدم غير صحيح.';
+        } else if (errorString.contains('كلمة المرور التي أدخلتها غير صحيحة') ||
+            errorString.contains('كلمة المرور غير صحيحة')) {
           errorMessage = 'كلمة المرور غير صحيحة.';
         } else if (errorString.contains('رقم الجوال غير مسجل')) {
           errorMessage = 'رقم الجوال غير مسجل.';
         } else if (errorString.contains('لا توجد كلمة مرور مسجلة')) {
           errorMessage = 'لا توجد كلمة مرور مسجلة لهذا الحساب.';
-        } else if (errorString.contains('socketexception') || 
+        } else if (errorString.contains('socketexception') ||
             errorString.contains('failed host lookup') ||
             errorString.contains('network') ||
             errorString.contains('no address associated')) {
-          errorMessage = 'لا يوجد اتصال بالإنترنت. يرجى التحقق من الاتصال والمحاولة مرة أخرى';
+          errorMessage =
+              'لا يوجد اتصال بالإنترنت. يرجى التحقق من الاتصال والمحاولة مرة أخرى';
         } else if (errorString.contains('timeout')) {
           errorMessage = 'انتهت مهلة الاتصال. يرجى المحاولة مرة أخرى';
         }
@@ -377,7 +386,7 @@ class _LoginPageState extends State<LoginPage> {
                   height: 140,
                   fit: BoxFit.contain,
                 ),
-                // Email/Username Field
+                // Mobile/Username Field
                 _buildStyleTextField(
                   controller: _identifierController,
                   label: AppLocalizations.of(context).emailOrUsername,
@@ -416,9 +425,13 @@ class _LoginPageState extends State<LoginPage> {
                             height: 20,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(6),
-                              color: _rememberMe ? kAppBarColor : Colors.transparent,
+                              color: _rememberMe
+                                  ? kAppBarColor
+                                  : Colors.transparent,
                               border: Border.all(
-                                color: _rememberMe ? kAppBarColor : Colors.grey[400]!,
+                                color: _rememberMe
+                                    ? kAppBarColor
+                                    : Colors.grey[400]!,
                                 width: 2,
                               ),
                             ),
@@ -436,7 +449,9 @@ class _LoginPageState extends State<LoginPage> {
                             style: TextStyle(
                               fontSize: 15,
                               fontWeight: FontWeight.w600,
-                              color: _rememberMe ? kAppBarColor : Colors.grey[700],
+                              color: _rememberMe
+                                  ? kAppBarColor
+                                  : Colors.grey[700],
                               fontFamily: 'Noto Naskh Arabic',
                             ),
                           ),
@@ -488,10 +503,14 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     child: ElevatedButton(
                       style: ButtonStyle(
-                        shape: WidgetStateProperty.all(RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        )),
-                        backgroundColor: WidgetStateProperty.resolveWith((states) {
+                        shape: WidgetStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                        backgroundColor: WidgetStateProperty.resolveWith((
+                          states,
+                        ) {
                           return kAppBarColor;
                         }),
                         foregroundColor: WidgetStateProperty.all(Colors.white),
@@ -532,10 +551,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 1,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [
-                              Colors.grey[300]!,
-                              Colors.transparent,
-                            ],
+                            colors: [Colors.grey[300]!, Colors.transparent],
                           ),
                         ),
                       ),
@@ -556,10 +572,7 @@ class _LoginPageState extends State<LoginPage> {
                         height: 1,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                            colors: [
-                              Colors.transparent,
-                              Colors.grey[300]!,
-                            ],
+                            colors: [Colors.transparent, Colors.grey[300]!],
                           ),
                         ),
                       ),
@@ -635,7 +648,8 @@ class _LoginPageState extends State<LoginPage> {
                           onPressed: () {
                             Navigator.of(builderContext).push(
                               MaterialPageRoute(
-                                builder: (context) => const ForgotPasswordPage(),
+                                builder: (context) =>
+                                    const ForgotPasswordPage(),
                               ),
                             );
                           },
@@ -656,11 +670,7 @@ class _LoginPageState extends State<LoginPage> {
                         );
                       },
                     ),
-                    Container(
-                      width: 1,
-                      height: 20,
-                      color: Colors.grey[300],
-                    ),
+                    Container(width: 1, height: 20, color: Colors.grey[300]),
                     TextButton.icon(
                       onPressed: _sendHelpEmail,
                       icon: Icon(
@@ -713,28 +723,18 @@ class _LoginPageState extends State<LoginPage> {
           controller: controller,
           obscureText: obscureText,
           decoration: InputDecoration(
-            prefixIcon: Icon(
-              icon,
-              color: kAppBarColor,
-              size: 22,
-            ),
+            prefixIcon: Icon(icon, color: kAppBarColor, size: 22),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: Colors.grey[300]!,
-                width: 1.5,
-              ),
+              borderSide: BorderSide(color: Colors.grey[300]!, width: 1.5),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: BorderSide(
-                color: kAppBarColor,
-                width: 2,
-              ),
+              borderSide: BorderSide(color: kAppBarColor, width: 2),
             ),
             labelText: label,
             labelStyle: TextStyle(
@@ -749,12 +749,12 @@ class _LoginPageState extends State<LoginPage> {
             ),
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(vertical: 16, horizontal: 4),
+            contentPadding: const EdgeInsets.symmetric(
+              vertical: 16,
+              horizontal: 4,
+            ),
           ),
-          style: const TextStyle(
-            fontSize: 16,
-            color: Colors.black87,
-          ),
+          style: const TextStyle(fontSize: 16, color: Colors.black87),
         ),
       ),
     );

@@ -150,14 +150,14 @@ class AppLocalizationsAr extends AppLocalizations {
   String get aboutMe => 'معلومات عني';
 
   @override
-  String get emailOrUsername => 'البريد الإلكتروني أو اسم المستخدم';
+  String get emailOrUsername => 'رقم الجوال أو اسم المستخدم';
 
   @override
-  String get enterEmailOrUsername => 'ادخل البريد الإلكتروني أو اسم المستخدم';
+  String get enterEmailOrUsername => 'ادخل رقم الجوال أو اسم المستخدم';
 
   @override
   String get loginFailed =>
-      'فشل تسجيل الدخول. تحقق من البريد الإلكتروني أو اسم المستخدم وكلمة المرور.';
+      'فشل تسجيل الدخول. تحقق من رقم الجوال أو اسم المستخدم وكلمة المرور.';
 
   @override
   String get privacyPolicy => 'سياسة الخصوصية';

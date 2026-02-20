@@ -150,14 +150,14 @@ class AppLocalizationsEn extends AppLocalizations {
   String get aboutMe => 'About Me';
 
   @override
-  String get emailOrUsername => 'Email or Username';
+  String get emailOrUsername => 'Mobile number or Username';
 
   @override
-  String get enterEmailOrUsername => 'Enter email or username';
+  String get enterEmailOrUsername => 'Enter mobile number or username';
 
   @override
   String get loginFailed =>
-      'Login failed. Check email or username and password.';
+      'Login failed. Check mobile number or username and password.';
 
   @override
   String get privacyPolicy => 'Privacy Policy';

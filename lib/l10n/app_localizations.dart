@@ -383,19 +383,19 @@ abstract class AppLocalizations {
   /// emailOrUsername
   ///
   /// In en, this message translates to:
-  /// **'Email or Username'**
+  /// **'Mobile number or Username'**
   String get emailOrUsername;
 
   /// enterEmailOrUsername
   ///
   /// In en, this message translates to:
-  /// **'Enter email or username'**
+  /// **'Enter mobile number or username'**
   String get enterEmailOrUsername;
 
   /// loginFailed
   ///
   /// In en, this message translates to:
-  /// **'Login failed. Check email or username and password.'**
+  /// **'Login failed. Check mobile number or username and password.'**
   String get loginFailed;
 
   /// privacyPolicy

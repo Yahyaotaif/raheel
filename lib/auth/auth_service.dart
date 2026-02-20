@@ -1,16 +1,15 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'password_utils.dart';
+import 'package:flutter/foundation.dart';
 
-  import 'package:supabase_flutter/supabase_flutter.dart';
-  import 'password_utils.dart';
-  import 'package:flutter/foundation.dart';
-
-  // Validate mobile number: must be 05XXXXXXXX
-  void validateMobileNumber(String mobile) {
-    final trimmed = mobile.trim();
-    final isValid = RegExp(r'^05\d{8}$').hasMatch(trimmed);
-    if (!isValid) {
-      throw Exception('يرجى إدخال رقم جوال يبدأ بـ 05 ويتكون من 10 أرقام');
-    }
+// Validate mobile number: must be 05XXXXXXXX
+void validateMobileNumber(String mobile) {
+  final trimmed = mobile.trim();
+  final isValid = RegExp(r'^05\d{8}$').hasMatch(trimmed);
+  if (!isValid) {
+    throw Exception('يرجى إدخال رقم جوال يبدأ بـ 05 ويتكون من 10 أرقام');
   }
+}
 
 class AuthService {
   // Access the Supabase client
@@ -39,8 +38,8 @@ class AuthService {
 
     // Check for duplicate Username
     final duplicateUsername = await _supabase
-      .from('user')
-      .select('auth_id')
+        .from('user')
+        .select('auth_id')
         .eq('Username', username)
         .limit(1)
         .maybeSingle();
@@ -50,8 +49,8 @@ class AuthService {
 
     // Check for duplicate MobileNumber
     final duplicateMobile = await _supabase
-      .from('user')
-      .select('auth_id')
+        .from('user')
+        .select('auth_id')
         .eq('MobileNumber', phone)
         .limit(1)
         .maybeSingle();
@@ -61,8 +60,8 @@ class AuthService {
 
     // Check for duplicate EmailAddress
     final duplicateEmail = await _supabase
-      .from('user')
-      .select('auth_id')
+        .from('user')
+        .select('auth_id')
         .eq('EmailAddress', emailAddress)
         .limit(1)
         .maybeSingle();
@@ -127,8 +126,11 @@ class AuthService {
     return response;
   }
 
-  // Sign in with email or username
-  Future<Map<String, dynamic>?> signInWithEmailOrUsername(String identifier, String password) async {
+  // Sign in with mobile number or username
+  Future<Map<String, dynamic>?> signInWithMobileOrUsername(
+    String identifier,
+    String password,
+  ) async {
     // Clear any expired session before attempting login
     try {
       await _supabase.auth.signOut();
@@ -136,17 +138,19 @@ class AuthService {
     } catch (e) {
       debugPrint('No session to clear: $e');
     }
-    
+
     debugPrint('Attempting login with identifier: "$identifier"');
     final userQuery = await _supabase
-      .from('user')
-      .select('auth_id, FirstName, LastName, EmailAddress, Username, MobileNumber, Password, user_type')
-        .or('EmailAddress.eq.$identifier,Username.eq.$identifier')
+        .from('user')
+        .select(
+          'auth_id, FirstName, LastName, EmailAddress, Username, MobileNumber, Password, user_type',
+        )
+        .or('MobileNumber.eq.$identifier,Username.eq.$identifier')
         .maybeSingle();
     debugPrint('Login query result: $userQuery');
     if (userQuery == null) {
       debugPrint('No user found for identifier: "$identifier"');
-      throw Exception('البريد الإلكتروني أو اسم المستخدم غير مسجل في النظام');
+      throw Exception('رقم الجوال أو اسم المستخدم غير مسجل في النظام');
     }
     final storedHash = userQuery['Password'] as String?;
     if (storedHash == null) {
