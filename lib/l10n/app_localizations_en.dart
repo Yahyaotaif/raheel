@@ -507,7 +507,8 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailValidation => 'Please enter a valid email address';
 
   @override
-  String get phoneValidation => 'Phone number must be exactly 10 digits';
+  String get phoneValidation =>
+      'Phone number must start with 05 and be exactly 10 digits';
 
   @override
   String get passwordValidation =>

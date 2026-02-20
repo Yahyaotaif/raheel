@@ -324,7 +324,7 @@
   "@usernameValidation": {"description": "usernameValidation"},
   "emailValidation": "يرجى إدخال بريد إلكتروني صحيح",
   "@emailValidation": {"description": "emailValidation"},
-  "phoneValidation": "رقم الجوال يجب أن يكون مكونًا من 10 أرقام",
+  "phoneValidation": "رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام",
   "@phoneValidation": {"description": "phoneValidation"},
   "passwordValidation": "يجب أن تحتوي كلمة المرور على أربع حروف كبيرة وأربع حروف صغيرة ورقم",
   "@passwordValidation": {"description": "passwordValidation"},

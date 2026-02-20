@@ -1079,7 +1079,7 @@ abstract class AppLocalizations {
   /// phoneValidation
   ///
   /// In en, this message translates to:
-  /// **'Phone number must be exactly 10 digits'**
+  /// **'Phone number must start with 05 and be exactly 10 digits'**
   String get phoneValidation;
 
   /// passwordValidation

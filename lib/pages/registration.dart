@@ -225,9 +225,9 @@ class _RegistrationPageState extends State<RegistrationPage>
       });
       return;
     }
-    // Validate phone number: exactly 10 digits
+    // Validate phone number: must be 05XXXXXXXX
     final phone = _driverPhoneController.text.trim();
-    if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
+    if (!RegExp(r'^05\d{8}$').hasMatch(phone)) {
       setState(() {
         _isLoading = false;
         _errorMessage = l10n.phoneValidation;
@@ -365,9 +365,9 @@ class _RegistrationPageState extends State<RegistrationPage>
       });
       return;
     }
-    // Validate phone number: exactly 10 digits
+    // Validate phone number: must be 05XXXXXXXX
     final phone = _travelerPhoneController.text.trim();
-    if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
+    if (!RegExp(r'^05\d{8}$').hasMatch(phone)) {
       setState(() {
         _isLoading = false;
         _errorMessage = l10n.phoneValidation;
@@ -490,8 +490,8 @@ class _RegistrationPageState extends State<RegistrationPage>
       return;
     }
 
-    // Just check if it's exactly 10 digits
-    if (!RegExp(r'^\d{10}$').hasMatch(phone)) {
+    // Check Saudi local format only: 05XXXXXXXX
+    if (!RegExp(r'^05\d{8}$').hasMatch(phone)) {
       setState(() {
         _errorMessage = l10n.phoneValidation;
       });

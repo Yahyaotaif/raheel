@@ -3,12 +3,12 @@
   import 'password_utils.dart';
   import 'package:flutter/foundation.dart';
 
-  // Validate mobile number: must be exactly 10 digits
+  // Validate mobile number: must be 05XXXXXXXX
   void validateMobileNumber(String mobile) {
     final trimmed = mobile.trim();
-    final isValid = RegExp(r'^\d{10}$').hasMatch(trimmed);
+    final isValid = RegExp(r'^05\d{8}$').hasMatch(trimmed);
     if (!isValid) {
-      throw Exception('يرجى إدخال رقم الجوال الصحيح المكون من 10 أرقام');
+      throw Exception('يرجى إدخال رقم جوال يبدأ بـ 05 ويتكون من 10 أرقام');
     }
   }
 
@@ -27,6 +27,8 @@ class AuthService {
     String? carType,
     String? carPlate,
   }) async {
+    validateMobileNumber(phone);
+
     // Validate non-empty Username and EmailAddress
     if (username.trim().isEmpty) {
       throw Exception('اسم المستخدم مطلوب ولا يمكن أن يكون فارغًا.');

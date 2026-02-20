@@ -324,7 +324,7 @@
   "@usernameValidation": {"description": "usernameValidation"},
   "emailValidation": "Please enter a valid email address",
   "@emailValidation": {"description": "emailValidation"},
-  "phoneValidation": "Phone number must be exactly 10 digits",
+  "phoneValidation": "Phone number must start with 05 and be exactly 10 digits",
   "@phoneValidation": {"description": "phoneValidation"},
   "passwordValidation": "Password must contain four uppercase letters, four lowercase letters and a number",
   "@passwordValidation": {"description": "passwordValidation"},

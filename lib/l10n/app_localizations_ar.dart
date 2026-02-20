@@ -508,7 +508,8 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emailValidation => 'يرجى إدخال بريد إلكتروني صحيح';
 
   @override
-  String get phoneValidation => 'رقم الجوال يجب أن يكون مكونًا من 10 أرقام';
+  String get phoneValidation =>
+      'رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام';
 
   @override
   String get passwordValidation =>
