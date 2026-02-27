@@ -2,12 +2,14 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'password_utils.dart';
 import 'package:flutter/foundation.dart';
 
-// Validate mobile number: must be 05XXXXXXXX
+// Validate mobile number: must be 05XXXXXXXX or 7XXXXXXXX
 void validateMobileNumber(String mobile) {
   final trimmed = mobile.trim();
-  final isValid = RegExp(r'^05\d{8}$').hasMatch(trimmed);
-  if (!isValid) {
-    throw Exception('يرجى إدخال رقم جوال يبدأ بـ 05 ويتكون من 10 أرقام');
+  // 05XXXXXXXX (10 digits), 7XXXXXXXX (9 digits)
+  final isValid05 = RegExp(r'^05\d{8}$').hasMatch(trimmed);
+  final isValid7 = RegExp(r'^7\d{8}$').hasMatch(trimmed);
+  if (!(isValid05 || isValid7)) {
+    throw Exception('يرجى إدخال رقم جوال يبدأ بـ 05 ويتكون من 10 أرقام أو يبدأ بـ 7 ويتكون من 9 أرقام');
   }
 }
 

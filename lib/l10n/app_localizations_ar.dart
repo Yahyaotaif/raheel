@@ -509,7 +509,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get phoneValidation =>
-      'رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام';
+      'رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام أو يبدأ بـ 7 ويتكون من 9 أرقام';
 
   @override
   String get passwordValidation =>

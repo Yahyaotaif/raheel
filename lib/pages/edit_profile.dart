@@ -74,10 +74,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }
       final mobileText = _mobileController.text.trim();
       if (mobileText.isNotEmpty) {
-        // Validate Saudi local format only: 05XXXXXXXX
-        if (!RegExp(r'^05\d{8}$').hasMatch(mobileText)) {
+        // Validate Saudi local format: 05XXXXXXXX or 7XXXXXXXX
+        if (!RegExp(r'^05\d{8}$').hasMatch(mobileText) && !RegExp(r'^7\d{8}$').hasMatch(mobileText)) {
           setState(() {
-            _errorMessage = 'رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام';
+            _errorMessage = 'رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام أو يبدأ بـ 7 ويتكون من 9 أرقام';
             _isLoading = false;
           });
           return;
@@ -253,8 +253,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                       if (value == null || value.trim().isEmpty) {
                         return 'يرجى إدخال رقم الجوال';
                       }
-                      if (!RegExp(r'^05\d{8}$').hasMatch(value.trim())) {
-                        return 'رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام';
+                      if (!RegExp(r'^05\d{8}$').hasMatch(value.trim()) && !RegExp(r'^7\d{8}$').hasMatch(value.trim())) {
+                        return 'رقم الجوال يجب أن يبدأ بـ 05 ويتكون من 10 أرقام أو يبدأ بـ 7 ويتكون من 9 أرقام';
                       }
                       return null;
                     },

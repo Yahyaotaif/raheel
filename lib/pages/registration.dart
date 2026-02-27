@@ -225,9 +225,9 @@ class _RegistrationPageState extends State<RegistrationPage>
       });
       return;
     }
-    // Validate phone number: must be 05XXXXXXXX
+    // Validate phone number: must be 05XXXXXXXX or 7XXXXXXXX
     final phone = _driverPhoneController.text.trim();
-    if (!RegExp(r'^05\d{8}$').hasMatch(phone)) {
+    if (!RegExp(r'^05\d{8}$').hasMatch(phone) && !RegExp(r'^7\d{8}$').hasMatch(phone)) {
       setState(() {
         _isLoading = false;
         _errorMessage = l10n.phoneValidation;
@@ -367,7 +367,7 @@ class _RegistrationPageState extends State<RegistrationPage>
     }
     // Validate phone number: must be 05XXXXXXXX
     final phone = _travelerPhoneController.text.trim();
-    if (!RegExp(r'^05\d{8}$').hasMatch(phone)) {
+    if (!RegExp(r'^05\d{8}$').hasMatch(phone) && !RegExp(r'^7\d{8}$').hasMatch(phone)) {
       setState(() {
         _isLoading = false;
         _errorMessage = l10n.phoneValidation;
@@ -491,7 +491,7 @@ class _RegistrationPageState extends State<RegistrationPage>
     }
 
     // Check Saudi local format only: 05XXXXXXXX
-    if (!RegExp(r'^05\d{8}$').hasMatch(phone)) {
+    if (!RegExp(r'^05\d{8}$').hasMatch(phone) && !RegExp(r'^7\d{8}$').hasMatch(phone)) {
       setState(() {
         _errorMessage = l10n.phoneValidation;
       });
