@@ -8,7 +8,7 @@ flutter_icons:
 name: raheel
 description: "Raheel - تطبيق مشاركة الرحلات"
 publish_to: 'none'
-version: 1.0.5+13
+version: 1.0.5+14
 
 
 environment:
