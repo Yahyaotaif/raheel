@@ -123,6 +123,7 @@ class _LoginPageState extends State<LoginPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: const Color(0xFFE3F2FD), // Light blue
         title: Text(
           AppLocalizations.of(context).contactUs,
           textAlign: TextAlign.center,
@@ -141,7 +142,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             const SizedBox(height: 12),
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
                 color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(8),
@@ -150,10 +151,10 @@ class _LoginPageState extends State<LoginPage> {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Flexible(
+                  Flexible(
                     child: Text(
                       emailAddress,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: Colors.black87,
@@ -182,6 +183,54 @@ class _LoginPageState extends State<LoginPage> {
                       );
                     },
                     tooltip: AppLocalizations.of(context).copyEmail,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.chat, color: Colors.green, size: 20),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'واتساب:',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                      fontFamily: 'Noto Naskh Arabic',
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: InkWell(
+                      onTap: () async {
+                        final whatsappNumber = '+966546388404';
+                        final whatsappUrl = Uri.parse('https://wa.me/${whatsappNumber.replaceAll('+', '')}');
+                        if (await canLaunchUrl(whatsappUrl)) {
+                          await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+                        }
+                      },
+                      child: Text(
+                        '+966546388404',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                          fontFamily: 'Noto Naskh Arabic',
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
