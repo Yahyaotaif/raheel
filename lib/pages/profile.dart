@@ -88,63 +88,117 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void _showEmailDialog() {
     const emailAddress = 'raheelcorp@outlook.com';
-    
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text(
+        backgroundColor: const Color(0xFFE3F2FD), // Light blue
+        title: Text(
           'تواصل معنا',
           textAlign: TextAlign.center,
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontFamily: 'Noto Naskh Arabic'),
         ),
-        content: Directionality(
-          textDirection: TextDirection.rtl,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'يمكنك التواصل معنا عبر البريد الإلكتروني:',
-                textAlign: TextAlign.center,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'يمكنك مراسلتنا على',
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontFamily: 'Noto Naskh Arabic',
+                fontSize: 16,
               ),
-              const SizedBox(height: 12),
-              Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade100,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade300),
-                ),
-                child: Column(
-                  children: [
-                    const SelectableText(
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Flexible(
+                    child: Text(
                       emailAddress,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
-                        color: Colors.blue,
+                        color: Colors.black87,
                       ),
-                      textAlign: TextAlign.center,
                     ),
-                    const SizedBox(height: 8),
-                    IconButton(
-                      icon: const Icon(Icons.copy, size: 20),
-                      onPressed: () {
-                        Clipboard.setData(const ClipboardData(text: emailAddress));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            content: Text('تم نسخ البريد الإلكتروني'),
-                            duration: Duration(seconds: 2),
-                            backgroundColor: Colors.green,
-                          ),
-                        );
-                      },
-                      tooltip: 'نسخ',
-                    ),
-                  ],
-                ),
+                  ),
+                  const SizedBox(width: 8),
+                  IconButton(
+                    icon: const Icon(Icons.copy, size: 20),
+                    onPressed: () async {
+                      await Clipboard.setData(
+                        const ClipboardData(text: emailAddress),
+                      );
+                      if (!context.mounted) return;
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('تم نسخ البريد الإلكتروني'),
+                          duration: Duration(seconds: 2),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    },
+                    tooltip: 'نسخ',
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 10),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+                border: Border.all(color: Colors.grey[300]!),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.chat, color: Colors.green, size: 20),
+                  const SizedBox(width: 8),
+                  const Text(
+                    'واتساب:',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                      fontFamily: 'Noto Naskh Arabic',
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Directionality(
+                    textDirection: TextDirection.ltr,
+                    child: InkWell(
+                      onTap: () async {
+                        final whatsappNumber = '+966546388404';
+                        final whatsappUrl = Uri.parse('https://wa.me/${whatsappNumber.replaceAll('+', '')}');
+                        if (await canLaunchUrl(whatsappUrl)) {
+                          await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+                        }
+                      },
+                      child: Text(
+                        '+966546388404',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                          fontFamily: 'Noto Naskh Arabic',
+                          decoration: TextDecoration.underline,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
         actions: [
           TextButton(
