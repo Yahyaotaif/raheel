@@ -607,13 +607,17 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Text(
-                        'أو',
-                        style: TextStyle(
-                          color: Colors.grey[600],
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      child: Consumer<LanguageProvider>(
+                        builder: (context, languageProvider, _) {
+                          return Text(
+                            languageProvider.languageCode == 'ar' ? 'أو' : 'or',
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          );
+                        },
                       ),
                     ),
                     Expanded(
