@@ -34,6 +34,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+    bool _obscurePassword = true;
   Future<void> _cleanupOldTripsStartup() async {
     try {
       await Supabase.instance.client.rpc('cleanup_old_trips');
@@ -445,13 +446,68 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 const SizedBox(height: 12),
                 // Password Field
-                _buildStyleTextField(
-                  controller: _passwordController,
-                  label: AppLocalizations.of(context).password,
-                  hint: '',
-                  icon: Icons.lock_outline,
-                  obscureText: true,
+                SizedBox(
                   width: 340,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.05),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: TextField(
+                      controller: _passwordController,
+                      obscureText: _obscurePassword,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock_outline, color: kAppBarColor, size: 22),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                            color: Colors.grey[600],
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _obscurePassword = !_obscurePassword;
+                            });
+                          },
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: Colors.grey[300]!, width: 1.5),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(color: kAppBarColor, width: 2),
+                        ),
+                        labelText: AppLocalizations.of(context).password,
+                        labelStyle: TextStyle(
+                          color: Colors.grey[600],
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Noto Naskh Arabic',
+                        ),
+                        hintText: '',
+                        hintStyle: TextStyle(
+                          color: Colors.grey[400],
+                          fontFamily: 'Noto Naskh Arabic',
+                        ),
+                        filled: true,
+                        fillColor: Colors.white,
+                        contentPadding: const EdgeInsets.symmetric(
+                          vertical: 16,
+                          horizontal: 4,
+                        ),
+                      ),
+                      style: const TextStyle(fontSize: 16, color: Colors.black87),
+                    ),
+                  ),
                 ),
                 const SizedBox(height: 12),
                 // Remember Me Checkbox
